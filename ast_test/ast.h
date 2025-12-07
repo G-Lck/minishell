@@ -12,10 +12,10 @@
 
 typedef struct s_ast
 {
-	int type;
-	char *raw;
-	struct s_ast *next_left;
-	struct s_ast *next_right;
+	int				type;
+	char			*raw;
+	struct s_ast	*next_left;
+	struct s_ast	*next_right;
 } t_ast;
 
 
