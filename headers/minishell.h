@@ -28,20 +28,22 @@ typedef struct s_token
 {
 	char	*token;
 	int		type;
+	int		index;
 }	t_token;
 
 
 
 typedef struct s_minishell
 {
-	char	*input;
 	t_list	*tokens_list;
+	char	*input;
 }	t_minishell;
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
-int	create_token(char *str, int type, t_minishell *minishell);
+int	create_token(char *str, int type, int index, t_minishell *minishell);
 int	get_token_type(char *token);
+void	pop_token(int index, t_list **head);
 
 //Utils
 int	is_wspace(int c);

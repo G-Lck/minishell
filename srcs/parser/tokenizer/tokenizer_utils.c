@@ -6,7 +6,7 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2025/12/09 15:06:22 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/09 16:50:56 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,4 +93,19 @@ int	get_token_type(char *token)
 			return (REDIR_OUT);
 	}
 	return (TOKEN_ERROR);
+}
+
+/*Parcours la liste de token et affiche leurs valeurs*/
+void	print_token(t_minishell *minishell)
+{
+	t_list	*tmp;
+	t_token	*node;
+
+	tmp = minishell->tokens_list;
+	while (tmp)
+	{
+		node = tmp->content;
+		ft_printf("[%s (%d)] -> ", node->token, node->index);
+		tmp = tmp->next;
+	}
 }
