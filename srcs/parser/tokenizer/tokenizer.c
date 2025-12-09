@@ -6,7 +6,7 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:08:35 by theo              #+#    #+#             */
-/*   Updated: 2025/12/08 17:15:06 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/09 13:19:39 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,5 @@ int	tokenizer(char *cmd_line, t_minishell *minishell)
 		else
 			index ++;
 	}
-	print_token(minishell);
-	free_token_list(&minishell->tokens_list);
+	return (1);
 }
