@@ -1,11 +1,11 @@
 NAME = minishell
 
-SRCS = 	$(wildcard srcs/*.c) \
-		$(wildcard srcs/utils/*.c) \
+SRCS =	$(wildcard srcs/utils/*.c) \
 		$(wildcard srcs/parser/tokenizer/*.c)
-
+MAIN_SRCS = srcs/main.c
 
 OBJS = ${SRCS:.c=.o}
+MAIN_OBJS = ${MAIN_SRCS:.c=.o}
 CC = gcc
 RM = rm -f
 CFLAGS = -Iheaders
@@ -15,16 +15,25 @@ all : ${NAME}
 %.o : %.c
 	${CC} ${CFLAGS} -c $< -o $@
 
-${NAME} : ${OBJS}
+${NAME} : ${OBJS} ${MAIN_OBJS}
 	${MAKE} -C ./libft
-	$(CC) $(OBJS) ./libft/libft.a -o $(NAME)
+	$(CC) $(OBJS) ${MAIN_OBJS} ./libft/libft.a -o $(NAME)
+
+theo: ${OBJS}
+	${MAKE} -C ./libft
+	$(CC) $(OBJS) -Iheaders tests/main-theo.c ./libft/libft.a -o minishell-theo
+
+garance: ${OBJS}
+	${MAKE} -C ./libft
+	$(CC) $(OBJS) -Iheaders tests/main-garance.c ./libft/libft.a -o minishell-garance
 
 clean:
-	${RM} ${OBJS}
+	${RM} ${OBJS} ${MAIN_OBJS}
 	make clean -C ./libft
 
 fclean: clean
 	${RM} ${NAME}
+	${RM} minishell-theo minishell-garance
 	make fclean -C ./libft
 
 re: fclean all

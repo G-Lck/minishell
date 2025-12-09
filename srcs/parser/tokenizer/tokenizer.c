@@ -6,11 +6,11 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:08:35 by theo              #+#    #+#             */
-/*   Updated: 2025/12/09 13:19:39 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/09 13:43:33 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "minishell.h"
 
 /*
 Inutile
