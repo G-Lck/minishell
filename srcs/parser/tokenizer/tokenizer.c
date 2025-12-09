@@ -6,18 +6,20 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:08:35 by theo              #+#    #+#             */
-/*   Updated: 2025/12/09 13:43:33 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/09 15:06:45 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-Inutile
+Fonction inutile pour le moment.
+Permet de supprimer les doubles quotes et singles quotes de delimation tout
+en preservant ceux a afficher
 */
 static int	string_cleaner(char *string, t_minishell *minishell)
 {
-	char	*string_token;
+	char	*tmp;
 	int		in_quotes;
 	int		in_dquotes;
 	int		index;
@@ -27,8 +29,8 @@ static int	string_cleaner(char *string, t_minishell *minishell)
 	index = 0;
 	in_dquotes = 0;
 	in_quotes = 0;
-	string_token = ft_calloc(sizeof(char), ft_strlen(string + 1));
-	if (!string_token)
+	tmp = ft_calloc(sizeof(char), ft_strlen(string + 1));
+	if (!tmp)
 		return (-1);
 	while (string[index])
 	{
@@ -40,7 +42,7 @@ static int	string_cleaner(char *string, t_minishell *minishell)
 			|| (string[index] == 39 && in_dquotes == 1)
 			|| string[index] != '"' && string[index] != 39)
 		{
-			string_token[ptr_index] = string[index];
+			tmp[ptr_index] = string[index];
 			ptr_index ++;
 		}
 		index ++;
@@ -60,7 +62,7 @@ t_token *node en contenu.
 */
 static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
 {
-	t_token	*node;
+	char	*tmp;
 	int		in_quotes;
 	int		in_dquotes;
 	int		current;
@@ -68,9 +70,6 @@ static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
 	current = *index;
 	in_quotes = 0;
 	in_dquotes = 0;
-	node = malloc(sizeof(t_token));
-	if (!node)
-		return (0);
 	while (cmd_line[*index])
 	{
 		if (cmd_line[*index] == '"' || cmd_line[*index] == 39)
@@ -84,12 +83,12 @@ static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
 			break ;
 		*index += 1;
 	}
-	node->token = ft_substr(cmd_line, current, (*index - current));
-	if (!node->token)
-		return (free(node), 0);
-	node->type = STRING;
-	ft_lstadd_back(&minishell->tokens_list, ft_lstnew(node));
-	return (1);
+	tmp = ft_substr(cmd_line, current, (*index - current));
+	if (!tmp)
+		return (0);
+	if (!create_token(tmp, STRING, minishell))
+		return (free(tmp), 0);
+	return (free(tmp), 1);
 }
 
 /*
@@ -98,60 +97,28 @@ que sur les parentheses.
 Elle ajoute une nouvelle node a la liste t_list *tokens_list et lui donne
 t_token *node en contenu. 
 */
-int	get_token_type(char *token)
+static int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
 {
-	if (ft_strlen(token) == 2)
-	{
-		if (token[1] == '|')
-			return (OR);
-		else if (token[1] == '&')
-			return (AND);
-		else if (token[1] == '<')
-			return (HERE_DOC);
-		else
-			return (APPEND);
-	}
-	else
-	{
-		if (token[0] == '|')
-			return (PIPE);
-		else if (token[0] == '(')
-			return (OPEN_BRACKET);
-		else if (token[0] == ')')
-			return (CLOSE_BRACKET);
-		else if (token[0] == '<')
-			return (REDIR_IN);
-		else
-			return (REDIR_OUT);
-	}
-	return (TOKEN_ERROR);
-}
+	char	*tmp;
+	int		ptr_index;
 
-int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
-{
-	t_token	*node;
-	int		ptr_token;
-
-	ptr_token = 0;
-	node = malloc(sizeof(t_token));
-	if (!node)
+	ptr_index = 0;
+	tmp = ft_calloc(sizeof(char), 3);
+	if (!tmp)
 		return (0);
-	node->token = ft_calloc(sizeof(char), 3);
-	if (!node->token)
-		return (free(node), 0);
-	node->token[ptr_token ++] = cmd_line[*index];
+	tmp[ptr_index ++] = cmd_line[*index];
 	*index += 1;
 	if (cmd_line[*index] && (cmd_line[*index] == '&'
 		|| cmd_line[*index] == '|')
 		|| cmd_line[*index] == '>'
 		|| cmd_line[*index] == '<')
 	{
-		node->token[ptr_token ++] = cmd_line[*index];
+		tmp[ptr_index ++] = cmd_line[*index];
 		*index += 1;
 	}
-	node->type = get_token_type(node->token);
-	ft_lstadd_back(&minishell->tokens_list, ft_lstnew(node));
-	return (1);
+	if (!create_token(tmp, get_token_type(tmp), minishell))
+		return (free(tmp), 0);
+	return (free(tmp), 1);
 }
 
 /*
