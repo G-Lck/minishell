@@ -40,6 +40,8 @@ typedef struct s_minishell
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
+int	create_token(char *str, int type, t_minishell *minishell);
+int	get_token_type(char *token);
 
 //Utils
 int	is_wspace(int c);

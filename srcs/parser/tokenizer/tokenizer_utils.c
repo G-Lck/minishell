@@ -6,7 +6,7 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2025/12/09 13:43:28 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/09 15:06:22 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,33 +63,34 @@ int	is_operator(char *str, int index)
 	return (0);
 }
 
-void	free_token_list(t_list **head)
+/*
+Identifie et retourne le type de token
+*/
+int	get_token_type(char *token)
 {
-	t_list *tmp;
-	t_token *node;
-
-	while (*head)
+	if (ft_strlen(token) == 2)
 	{
-		tmp = *head;
-		node = tmp->content;
-		*head = (*head)->next;
-		free (node->token);
-		free (node);
-		free (tmp);
+		if (token[1] == '|')
+			return (OR);
+		else if (token[1] == '&')
+			return (AND);
+		else if (token[1] == '<')
+			return (HERE_DOC);
+		else
+			return (APPEND);
 	}
-	*head = NULL;
-}
-
-void	print_token(t_minishell *minishell)
-{
-	t_list	*tmp;
-	t_token	*node;
-
-	tmp = minishell->tokens_list;
-	while (tmp)
+	else
 	{
-		node = tmp->content;
-		ft_printf("[%s (%d)] -> ", node->token, node->type);
-		tmp = tmp->next;
+		if (token[0] == '|')
+			return (PIPE);
+		else if (token[0] == '(')
+			return (OPEN_BRACKET);
+		else if (token[0] == ')')
+			return (CLOSE_BRACKET);
+		else if (token[0] == '<')
+			return (REDIR_IN);
+		else
+			return (REDIR_OUT);
 	}
+	return (TOKEN_ERROR);
 }
