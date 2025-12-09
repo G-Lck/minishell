@@ -6,7 +6,7 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:08:35 by theo              #+#    #+#             */
-/*   Updated: 2025/12/09 15:06:45 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/09 15:26:30 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ les chaines.
 Elle ajoute une nouvelle node a la liste t_list *tokens_list et lui donne
 t_token *node en contenu. 
 */
-static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
+static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell, int current_token_index)
 {
 	char	*tmp;
 	int		in_quotes;
@@ -86,7 +86,7 @@ static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
 	tmp = ft_substr(cmd_line, current, (*index - current));
 	if (!tmp)
 		return (0);
-	if (!create_token(tmp, STRING, minishell))
+	if (!create_token(tmp, STRING, current_token_index, minishell))
 		return (free(tmp), 0);
 	return (free(tmp), 1);
 }
@@ -97,7 +97,7 @@ que sur les parentheses.
 Elle ajoute une nouvelle node a la liste t_list *tokens_list et lui donne
 t_token *node en contenu. 
 */
-static int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell)
+static int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell, int current_token_index)
 {
 	char	*tmp;
 	int		ptr_index;
@@ -116,7 +116,7 @@ static int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell
 		tmp[ptr_index ++] = cmd_line[*index];
 		*index += 1;
 	}
-	if (!create_token(tmp, get_token_type(tmp), minishell))
+	if (!create_token(tmp, get_token_type(tmp), current_token_index, minishell))
 		return (free(tmp), 0);
 	return (free(tmp), 1);
 }
@@ -130,20 +130,22 @@ Les fonctions renvoies 0 en cas d'erreurs d'allocations.
 */
 int	tokenizer(char *cmd_line, t_minishell *minishell)
 {
+	int	current_token_index;
 	int	index;
 
+	current_token_index = 0;
 	index = 0;
 	while (cmd_line[index])
 	{
 		if (cmd_line[index] == '"' || cmd_line[index] == 39
 			|| !is_separator(cmd_line, index))
 		{
-			if (!string_tokenizer(cmd_line, &index, minishell))
+			if (!string_tokenizer(cmd_line, &index, minishell, current_token_index ++))
 				return (free_token_list(&minishell->tokens_list), 0);
 		}
 		else if (is_operator(cmd_line, index))
 		{
-			if (!operator_tokenizer(cmd_line, &index, minishell))
+			if (!operator_tokenizer(cmd_line, &index, minishell, current_token_index ++))
 				return (free_token_list(&minishell->tokens_list), 0);
 		}
 		else
