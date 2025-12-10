@@ -2,38 +2,31 @@
 
 void	ft_astprint(t_ast *ast)
 {
-	printf(" %s\n", ast->raw);
+	ft_printf(" %s\n", ast->token);
 	if (ast->next_left != NULL)
 	{
 		ft_printf("l");
 		ft_astprint(ast->next_left);
-		printf("r");
+		ft_printf("r");
 		ft_astprint(ast->next_right);
 	}
 	return ;
 }
-int	is_in(char c, char *str)
+int	is_op(t_token_type t)
 {
-	int i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (1);
-		i++;
-	}
+	if (t == AND)
+		return (1);
 	return (0);
 }
 
-t_ast	*ft_astnew(char *content, int type)
+t_ast	*ft_astnew(t_token *token_content, int type)
 {
 	t_ast *node;
 
 	node = malloc(sizeof(t_ast));
 	if (!node)
 		return (NULL);
-	node->raw = content;
+	node->token = token_content;
 	node->next_left = NULL;
 	node->next_right = NULL;
 	return (node);
@@ -41,19 +34,22 @@ t_ast	*ft_astnew(char *content, int type)
 
 void	create_ast(t_ast **node)
 {
-	char	*str;
+	t_token	*token;
 	int		i;
 	t_ast	*node_left;
 	t_ast	*node_right;
 	int		len;
+	t_token_type t;
 
-	str = (*node)->raw;
-	len = strlen(str);
-	while(str[i])
+	t = 1;
+	token = (*node)->token;
+	len = ft_lstsize(token);
+	i = 0;
+	while(i < len)
 	{
-		if (is_in(str[i], "*+_/"))
+		if (is_op(t, ))
 		{
-			(*node)->raw = strndup(str + i, 1); // devient operateur
+			(*node)->token = strndup(str + i, 1); // devient operateur
 			node_left = ft_astnew(strndup(str, i), 1); // cree gauche
 			node_right = ft_astnew(str + i + 1, 1); // cree droite
 			(*node)->next_left = node_left;
@@ -65,7 +61,8 @@ void	create_ast(t_ast **node)
 	}
 	return ;
 }
-int	main(int argc, char **argv)
+
+/*int	main(int argc, char **argv)
 {
 	int		i;
 	t_ast	*node;
@@ -77,11 +74,11 @@ int	main(int argc, char **argv)
 	i = 0;
 	if (argc != 2)
 	{
-		printf("error");
+		ft_printf("error");
 		return (0);
 	}
 	node = ft_astnew(argv[1], 0);
 	create_ast(&node);
 	ft_astprint(node);
 
-}
+}*/
