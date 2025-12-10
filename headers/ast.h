@@ -1,19 +1,11 @@
 # ifndef AST_H
 # define AST_H
 
-# ifndef NODE_TYPE
-# define OPERATION 0
-# define VALUE 1
-# endif
-
-# include <stdio.h>
-# include <string.h>
-# include <stdlib.h>
+# include "minishell.h"
 
 typedef struct s_ast
 {
-	int				type;
-	char			*raw;
+	struct t_token	*token;
 	struct s_ast	*next_left;
 	struct s_ast	*next_right;
 } t_ast;
