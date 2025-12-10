@@ -6,7 +6,7 @@
 /*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2025/12/10 15:54:33 by theo             ###   ########.fr       */
+/*   Updated: 2025/12/10 16:11:46 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	print_token(t_minishell *minishell)
 	while (tmp)
 	{
 		node = tmp->content;
-		ft_printf("[%s] -> ", node->token);
+		ft_printf("[%s] -> ", node->literal);
 		tmp = tmp->next;
 	}
 }

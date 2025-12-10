@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_manager.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/09 14:43:07 by thbouver          #+#    #+#             */
-/*   Updated: 2025/12/09 16:50:52 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:12:00 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_token_list(t_list **head)
 		tmp = *head;
 		node = tmp->content;
 		*head = (*head)->next;
-		free (node->token);
+		free (node->literal);
 		free (node);
 		free (tmp);
 	}
@@ -42,8 +42,8 @@ int	create_token(char *str, int type, int index, t_minishell *minishell)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return (0);
-	new_token->token = ft_strdup(str);
-	if (!new_token->token)
+	new_token->literal = ft_strdup(str);
+	if (!new_token->literal)
 		return (0);
 	new_token->type = type;
 	new_node = ft_lstnew(new_token);
@@ -76,7 +76,7 @@ void	free_token(t_list *node)
 	t_token	*token_node;
 	
 	token_node = node->content;
-	free (token_node->token);
+	free (token_node->literal);
 	free (token_node);
 	free (node);
 }
