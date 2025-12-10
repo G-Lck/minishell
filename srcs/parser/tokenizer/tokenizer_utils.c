@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2025/12/09 16:50:56 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:11:46 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	print_token(t_minishell *minishell)
 	while (tmp)
 	{
 		node = tmp->content;
-		ft_printf("[%s (%d)] -> ", node->token, node->index);
+		ft_printf("[%s] -> ", node->literal);
 		tmp = tmp->next;
 	}
 }
