@@ -1,6 +1,6 @@
 # include "ast.h"
 
-void	ft_astadd_back_left(t_ast **lst, t_ast *new)
+/*void	ft_astadd_back_left(t_ast **lst, t_ast *new)
 {
 	t_ast	*last;
 
@@ -41,4 +41,4 @@ t_ast	*ft_astnew(t_token *content, int type)
 	node->next_left = NULL;
 	node->next_right = NULL;
 	return (node);
-}
+}*/

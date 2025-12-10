@@ -10,7 +10,4 @@ typedef struct s_ast
 	struct s_ast	*next_right;
 } t_ast;
 
-
-t_ast	*ft_astnew(char *content, int type);
-
 # endif

@@ -1,6 +1,6 @@
 # include "ast.h"
 
-void	ft_astprint(t_ast *ast)
+/*void	ft_astprint(t_ast *ast)
 {
 	ft_printf(" %s\n", ast->token);
 	if (ast->next_left != NULL)
@@ -14,7 +14,7 @@ void	ft_astprint(t_ast *ast)
 }
 int	is_op(t_token_type t)
 {
-	if (t == AND)
+	if (t == AND || t == OR || t == PIPE)
 		return (1);
 	return (0);
 }
@@ -47,7 +47,7 @@ void	create_ast(t_ast **node)
 	i = 0;
 	while(i < len)
 	{
-		if (is_op(t, ))
+		if (is_op(t))
 		{
 			(*node)->token = strndup(str + i, 1); // devient operateur
 			node_left = ft_astnew(strndup(str, i), 1); // cree gauche
@@ -60,7 +60,7 @@ void	create_ast(t_ast **node)
 		i++;
 	}
 	return ;
-}
+}*/
 
 /*int	main(int argc, char **argv)
 {
