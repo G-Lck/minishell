@@ -5,7 +5,7 @@ void	ft_astprint(t_ast *ast)
 	printf(" %s\n", ast->raw);
 	if (ast->next_left != NULL)
 	{
-		ft_printf("l");
+		printf("l");
 		ft_astprint(ast->next_left);
 		printf("r");
 		ft_astprint(ast->next_right);
