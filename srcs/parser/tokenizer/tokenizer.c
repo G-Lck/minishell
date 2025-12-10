@@ -6,7 +6,7 @@
 /*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:08:35 by theo              #+#    #+#             */
-/*   Updated: 2025/12/10 16:12:04 by theo             ###   ########.fr       */
+/*   Updated: 2025/12/10 16:38:48 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,11 @@ static int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell
 		return (0);
 	tmp[ptr_index ++] = cmd_line[*index];
 	*index += 1;
-	if (cmd_line[*index] && (cmd_line[*index] == '&'
-		|| cmd_line[*index] == '|')
-		|| cmd_line[*index] == '>'
-		|| cmd_line[*index] == '<')
+	if (cmd_line[*index] &&
+		((cmd_line[*index] == '&'  && cmd_line[*index - 1] == '&')
+		|| (cmd_line[*index] == '|' && cmd_line[*index - 1] == '|')
+		|| (cmd_line[*index] == '>' && cmd_line[*index - 1] == '>')
+		|| (cmd_line[*index] == '<' && cmd_line[*index - 1] == '<')))
 	{
 		tmp[ptr_index ++] = cmd_line[*index];
 		*index += 1;
