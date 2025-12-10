@@ -6,7 +6,7 @@ int	main(int argc, char *argv[])
 
 	minishell.tokens_list = NULL;
 
-	tokenizer("&&(&|&|(hello&&     bonj'\"hey\"'our)) bonjour ||", &minishell);
+	tokenizer("echo bonjour && (((((((echo&&(echo || bonjour))))))echo ||echo)bonjour||echo)", &minishell);
 	syntax_checker(&minishell);
 	print_token(&minishell);
 	free_token_list(&minishell.tokens_list);
