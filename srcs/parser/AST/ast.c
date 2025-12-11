@@ -1,10 +1,14 @@
 # include "minishell.h"
 
-/*void	ft_astprint(t_ast *ast)
+/*void	ft_astprint(t_minishell *minishell)
 {
+	t_ast	*ast;
 	t_token	*token;
+	t_list	*lst_token;
 
-	token = ast->lst_token;
+	ast = minishell->ast;
+	lst_token = ast->lst_token;
+	token = lst_token->content;
 	ft_printf(" %s\n", token->literal);
 	if (ast->next_left != NULL)
 	{
@@ -69,7 +73,7 @@ int	is_op(t_token_type t)
 	return (0);
 }
 
-void	create_ast(t_ast **node)
+void	create_ast(t_ast *node)
 {
 	int		i;
 	t_list	*lst_token;
@@ -77,26 +81,28 @@ void	create_ast(t_ast **node)
 	t_ast	*node_left;
 	t_ast	*node_right;
 
-	lst_token = (*node)->lst_token;
+	ft_printf("enter create_ast()\n");
+	lst_token = node->lst_token;
 	i = 0;
-	while(i < (*node)->lst_len)
+	while(i < node->lst_len - 1)
 	{
-		ft_printf("ici\n");
+		ft_printf("i: %i\n", i);
+		ft_printf("len: %i\n", node->lst_len);
 		token = lst_token->content;
-		ft_printf("ici\n");
-		ft_printf("token: %s\n", (token->literal));
+		//print_token(lst_token);
 		if (is_op(token->type))
 		{
-			node_left = ft_astnew((*node)->lst_token, i); // cree gauche
+			ft_printf("op\n");
+			node_left = ft_astnew(node->lst_token, i); // cree gauche
 			node_left->lst_len = i;
 			node_right = ft_astnew(lst_token->next, i); // cree droite
-			node_right->lst_len = (*node)->lst_len;
-			(*node)->lst_token = lst_token;
-			(*node)->lst_len = 1;
-			(*node)->next_left = node_left;
-			(*node)->next_right = node_right;
-			create_ast(&node_left);
-			create_ast(&node_right);
+			node_right->lst_len = node->lst_len - i - 1;
+			node->lst_token = lst_token;
+			node->lst_len = 1;
+			node->next_left = node_left;
+			node->next_right = node_right;
+			create_ast(node_left);
+			create_ast(node_right);
 		}
 		lst_token = lst_token->next;
 		i++;
