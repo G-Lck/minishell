@@ -6,7 +6,7 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
-/*   Updated: 2025/12/11 14:30:55 by thbouver         ###   ########.fr       */
+/*   Updated: 2025/12/11 15:06:02 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ static int	bracket_checker(t_minishell *minishell)
 	return (1);
 }
 
+/*check si les quotes et doubles quotes sont fermee*/
 static int	check_quotes(char *token_literal)
 {
 	int	index;

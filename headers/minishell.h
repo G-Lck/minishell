@@ -7,6 +7,8 @@
 # include "stdlib.h"
 # include "fcntl.h"
 # include "ast.h"
+# include <readline/history.h>
+# include <readline/readline.h>
 
 typedef struct s_token t_token;
 typedef struct s_ast t_ast;

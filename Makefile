@@ -21,11 +21,11 @@ ${NAME} : ${OBJS} ${MAIN_OBJS}
 
 theo: ${OBJS}
 	${MAKE} -C ./libft
-	$(CC) $(OBJS) -Iheaders tests/main-theo.c ./libft/libft.a -o minishell-theo
+	$(CC) $(OBJS) -Iheaders tests/main-theo.c ./libft/libft.a -lreadline -lncurses -o minishell-theo
 
 garance: ${OBJS}
 	${MAKE} -C ./libft
-	$(CC) $(OBJS) -Iheaders tests/main-garance.c ./libft/libft.a -o minishell-garance
+	$(CC) $(OBJS) -Iheaders tests/main-garance.c ./libft/libft.a -lreadline -lncurses -o minishell-garance
 
 clean:
 	${RM} ${OBJS} ${MAIN_OBJS}
