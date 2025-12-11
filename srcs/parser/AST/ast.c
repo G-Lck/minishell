@@ -20,6 +20,24 @@
 	return ;
 }*/
 
+void print_ast(t_ast *node)
+{
+	t_list	*lst_token;
+	t_token	*token;
+
+	lst_token = node->lst_token;
+	token = lst_token->content;
+	ft_printf(" %s\n", token->literal);
+	if (node->next_left != NULL && node->next_right != NULL)
+	{
+		ft_printf("left");
+		print_ast(node->next_left);
+		ft_printf("right");
+		print_ast(node->next_right);
+	}
+	return ;
+}
+
 /*t_list *ft_lstextract(t_list *lst, int position)
 {
 	int	i;
@@ -36,7 +54,7 @@
 	return (lst);
 }*/
 
-/*t_list	*ft_lstgoto(t_list *lst, int position)
+t_list	*lst_go_to(t_list *lst, int position)
 {
 	int i;
 
@@ -47,7 +65,7 @@
 		i++;
 	}
 	return (lst);
-}*/
+}
 
 
 /*t_list *ft_lstcut(t_list *lst, int position)
@@ -66,6 +84,44 @@
 	return (temp);
 }*/
 
+int	remove_parenthesis(t_ast **node)
+{
+	int		i;
+	int 	len;
+	t_list	*lst_token;
+	t_token *token;
+	int		p;
+
+	lst_token = (*node)->lst_token;
+	token = lst_token->content;
+	i = 0;
+	p = 0;
+	len = (*node) ->lst_len;
+	while (i < len - 1)
+	{
+		if (token->type != OPEN_BRACKET && i == 0)
+			return (0);
+		if (token->type == OPEN_BRACKET)
+			p++;
+		if (token->type == CLOSE_BRACKET)
+			p--;
+		if (p == 0)
+			return (0);
+		lst_token = lst_token->next;
+		token = lst_token->content;
+		i++;
+	}
+	if (token->type != CLOSE_BRACKET)
+		return (0);
+	ft_printf("ouiiiiiii\n");
+	lst_token = (*node)->lst_token;
+	lst_token = lst_token->next;
+	(*node)->lst_token = lst_token;
+	(*node)->lst_len -= 2;
+	return (1);
+	
+}
+
 int	is_op(t_token_type t)
 {
 	if (t == AND || t == OR || t == PIPE)
@@ -80,32 +136,51 @@ void	create_ast(t_ast *node)
 	t_token	*token;
 	t_ast	*node_left;
 	t_ast	*node_right;
+	int		p;
 
-	ft_printf("enter create_ast()\n");
-	lst_token = node->lst_token;
-	i = 0;
-	while(i < node->lst_len - 1)
+	if (node->lst_len <= 1)
 	{
+		ft_printf("out\n");
+		return ;
+	}
+	while (1)
+	{
+		if (!remove_parenthesis(&node))
+			break;
+	}
+	p = 0;
+	ft_printf("enter create_ast()\n");
+	ft_printf("len: %i\n", node->lst_len);
+	lst_token = node->lst_token;
+	i = node->lst_len - 1;
+	while(i > 0)
+	{
+		lst_token = lst_go_to(node->lst_token, i);
 		ft_printf("i: %i\n", i);
-		ft_printf("len: %i\n", node->lst_len);
 		token = lst_token->content;
-		//print_token(lst_token);
-		if (is_op(token->type))
+		ft_printf("token %s\n", token->literal);
+		if (is_op(token->type) && p == 0 )
 		{
 			ft_printf("op\n");
 			node_left = ft_astnew(node->lst_token, i); // cree gauche
 			node_left->lst_len = i;
-			node_right = ft_astnew(lst_token->next, i); // cree droite
+			node_right = ft_astnew(lst_token->next, node->lst_len - i - 1); // cree droite
 			node_right->lst_len = node->lst_len - i - 1;
+			ft_printf("len right: %i\n", node->lst_len - i - 1);
 			node->lst_token = lst_token;
 			node->lst_len = 1;
 			node->next_left = node_left;
 			node->next_right = node_right;
 			create_ast(node_left);
 			create_ast(node_right);
+			break;
 		}
-		lst_token = lst_token->next;
-		i++;
+		ft_printf("ici\n");
+		if (token->type == OPEN_BRACKET)
+			p++;
+		if (token->type == CLOSE_BRACKET)
+			p--;
+		i--;
 	}
 	return ;
 }

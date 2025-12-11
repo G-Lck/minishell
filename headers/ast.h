@@ -18,5 +18,6 @@ void	ft_astadd_right(t_ast **ast, t_ast *new);
 t_ast	*ft_astnew(t_list *lst_token, int len);
 void	create_ast(t_ast *node);
 void	test_ast(t_minishell *minishell);
+void	print_ast(t_ast *node);
 
 # endif
