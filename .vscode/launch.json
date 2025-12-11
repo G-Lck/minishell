@@ -8,7 +8,7 @@
 		"name": "(gdb) Launch",
 		"type": "cppdbg",
 		"request": "launch",
-		"program": "${workspaceFolder}/ast_test/a.out",
+		"program": "${workspaceFolder}/minishell-garance",
 		"args": [],
 		"stopAtEntry": false,
 		"cwd": "${fileDirname}",
