@@ -24,14 +24,15 @@ void	ft_astadd_right(t_ast **ast, t_ast *new)
 	(*ast)->next_right = new;
 }
 
-t_ast	*ft_astnew(t_token *content)
+t_ast	*ft_astnew(t_list *lst_token, int len)
 {
 	t_ast *node;
 
 	node = malloc(sizeof(t_ast));
 	if (!node)
 		return (NULL);
-	node->token = content;
+	node->lst_token = lst_token;
+	node->lst_len = len;
 	node->next_left = NULL;
 	node->next_right = NULL;
 	return (node);

@@ -6,8 +6,10 @@
 # include "unistd.h"
 # include "stdlib.h"
 # include "fcntl.h"
+# include "ast.h"
 
 typedef struct s_token t_token;
+typedef struct s_ast t_ast;
 
 typedef enum e_token_type
 {
@@ -36,6 +38,7 @@ typedef struct s_token
 typedef struct s_minishell
 {
 	t_list	*tokens_list;
+	t_ast	*ast;
 	char	*input;
 }	t_minishell;
 
