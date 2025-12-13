@@ -2,7 +2,9 @@
 
 typedef enum e_node_type
 {
-	OPERATOR,
+	AND_OP,
+	OR_OP,
+	PIPE_OP,
 	CMD
 } node_type;
 
@@ -12,24 +14,47 @@ typedef struct s_test
 	struct s_test	*left;
 	node_type		node_type;
 	char			*literal;
-	int fail;
+	int				exec_status;
 } t_test;
 
-void	ast_descent(t_test node, int exit)
+void	ast_descent(t_test *node)
 {
-	if (node.node_type == OPERATOR)
-	{
-		ast_descent (*node.left, 0);
-	}
+	if (node->node_type == AND_OP || node->node_type == OR_OP || node->node_type == PIPE_OP)
+		ast_descent (node->left);
 	else
 	{
-		ft_printf("(%s)", node.literal);
-		if (node.fail == 1)
-			exit = 1;
+		ft_printf("(%s)", node->literal);
 		return ;
 	}
-	if (exit == 0)
-		ast_descent(*node.right, 0);
+
+	if (node->node_type == AND_OP)
+	{
+		if (node->left->exec_status == 0)
+		{
+			ast_descent(node->right);
+			node->exec_status = node->right->exec_status;
+		}
+		else
+			node->exec_status = node->left->exec_status;
+		return ;
+	}
+	else if (node->node_type == OR_OP)
+	{
+		if (node->left->exec_status != 0)
+		{
+			ast_descent(node->right);
+			node->exec_status = node->right->exec_status;
+		}
+		else
+			node->exec_status = node->left->exec_status;
+		return ;
+	}
+	else if (node->node_type == PIPE_OP)
+	{
+		ast_descent(node->right);
+		node->exec_status = node->left->exec_status;
+		return ;
+	}
 }
 
 int	main(int argc, char *argv[])
@@ -55,8 +80,8 @@ int	main(int argc, char *argv[])
 	t_test third_level_left;
 	t_test third_level_right;
 
-	head.node_type = OPERATOR;
-	second_level_left.node_type = OPERATOR;
+	head.node_type = PIPE_OP;
+	second_level_left.node_type = AND_OP;
 	second_level_right.node_type = CMD;
 	third_level_left.node_type = CMD;
 	third_level_right.node_type = CMD;
@@ -66,16 +91,16 @@ int	main(int argc, char *argv[])
 	third_level_left.literal = "echo a";
 	third_level_right.literal = "echo b";
 
-	head.fail = 0;
-	second_level_left.fail = 0;
-	third_level_left.fail = 1;
-	third_level_right.fail = 0;
-	second_level_right.fail = 0;
+	head.exec_status = 0;
+	second_level_left.exec_status = 0;
+	third_level_left.exec_status = 1;
+	third_level_right.exec_status = 0;
+	second_level_right.exec_status = 0;
 
 	head.left = &second_level_left;
 	head.right = &second_level_right;
 	second_level_left.left = &third_level_left;
 	second_level_left.right = &third_level_right;
 
-	ast_descent(head, 0);
+	ast_descent(&head);
 }
