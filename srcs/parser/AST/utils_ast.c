@@ -1,32 +1,8 @@
-# include "ast.h"
-
-void	ft_astadd_left(t_ast **ast, t_ast *new)
-{
-	if (ast == NULL)
-		return ;
-	if (*ast == NULL)
-	{
-		*ast = new;
-		return ;
-	}
-	(*ast)->next_left = new;
-}
-
-void	ft_astadd_right(t_ast **ast, t_ast *new)
-{
-	if (ast == NULL)
-		return ;
-	if (*ast == NULL)
-	{
-		*ast = new;
-		return ;
-	}
-	(*ast)->next_right = new;
-}
+#include "ast.h"
 
 t_ast	*ft_astnew(t_list *lst_token, int len)
 {
-	t_ast *node;
+	t_ast	*node;
 
 	node = malloc(sizeof(t_ast));
 	if (!node)
@@ -36,4 +12,22 @@ t_ast	*ft_astnew(t_list *lst_token, int len)
 	node->next_left = NULL;
 	node->next_right = NULL;
 	return (node);
+}
+
+void	print_ast(t_ast *node)
+{
+	t_list	*lst_token;
+	t_token	*token;
+
+	lst_token = node->lst_token;
+	token = lst_token->content;
+	ft_printf(" %s\n", token->literal);
+	if (node->next_left != NULL && node->next_right != NULL)
+	{
+		ft_printf("left");
+		print_ast(node->next_left);
+		ft_printf("right");
+		print_ast(node->next_right);
+	}
+	return ;
 }
