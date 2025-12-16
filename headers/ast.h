@@ -5,12 +5,29 @@
 
 typedef struct s_minishell t_minishell;
 
+typedef enum e_node_type
+{
+	AND_OP,
+	OR_OP,
+	PIPE_OP,
+	CMD
+} t_node_type;
+
+typedef struct s_redir
+{
+	t_token_type	redir_type;
+	char			*target;
+}	t_redir;
+
 typedef struct s_ast
 {
+	t_node_type	node_type;
 	t_list	*lst_token;
-	int		lst_len;
 	t_list	*next_left;
 	t_list	*next_right;
+	t_list	*redirs;
+	int		lst_len;
+	int		exec_status;
 } t_ast;
 
 void	ft_astadd_left(t_ast **ast, t_ast *new);
