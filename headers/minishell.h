@@ -6,6 +6,7 @@
 # include "unistd.h"
 # include "stdlib.h"
 # include "fcntl.h"
+# include "stdbool.h"
 # include <readline/readline.h>
 # include "token.h"
 # include "ast.h"

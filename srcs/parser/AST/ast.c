@@ -41,6 +41,7 @@ void	remove_parenthesis(t_ast *node, int p)
 	}
 	if (token->type != CLOSE_BRACKET)
 		return ;
+	node->is_subshell = true;
 	lst_token = node->lst_token;
 	lst_token = lst_token->next;
 	node->lst_token = lst_token;
@@ -50,7 +51,14 @@ void	remove_parenthesis(t_ast *node, int p)
 
 int	is_op(t_token_type t)
 {
-	if (t == AND || t == OR || t == PIPE)
+	if (t == AND || t == OR)
+		return (1);
+	return (0);
+}
+
+int	is_pipe(t_token_type t)
+{
+	if (t == PIPE)
 		return (1);
 	return (0);
 }
@@ -89,7 +97,24 @@ void	create_ast(t_ast *node)
 		if (is_op(token->type) && p == 0)
 		{
 			new_node(node, lst_token, i);
-			break ;
+			return ;
+		}
+		if (token->type == OPEN_BRACKET)
+			p++;
+		if (token->type == CLOSE_BRACKET)
+			p--;
+		i--;
+	}
+	p = 0;
+	i = i = node->lst_len - 1;
+	while (i > 0)
+	{
+		lst_token = lst_go_to(node->lst_token, i);
+		token = lst_token->content;
+		if (is_pipe(token->type) && p == 0)
+		{
+			new_node(node, lst_token, i);
+			return ;
 		}
 		if (token->type == OPEN_BRACKET)
 			p++;
