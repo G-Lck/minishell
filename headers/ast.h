@@ -7,10 +7,10 @@ typedef struct s_minishell t_minishell;
 
 typedef enum e_node_type
 {
-	AND_OP,
-	OR_OP,
-	PIPE_OP,
-	CMD
+	AND_OP = 0,
+	OR_OP = 1,
+	PIPE_OP = 2,
+	CMD = 3
 } t_node_type;
 
 typedef struct s_redir
@@ -21,14 +21,14 @@ typedef struct s_redir
 
 typedef struct s_ast
 {
-	t_node_type	node_type;
-	t_list	*lst_token;
+	t_node_type		node_type;
+	t_list			*lst_token;
 	struct s_ast	*next_left;
 	struct s_ast	*next_right;
-	t_list	*redirs;
-	int		lst_len;
-	int		exec_status;
-	bool	is_subshell;
+	t_list			*redirs;
+	int				lst_len;
+	int				exec_status;
+	bool			is_subshell;
 } t_ast;
 
 t_ast	*ft_astnew(t_list *lst_token, int len);
