@@ -36,5 +36,6 @@ void	create_ast(t_ast *node);
 void	test_ast(t_minishell *minishell);
 void	print_ast(t_ast *node);
 void	print_ast_pretty(t_ast *node);
+void	free_ast(t_ast *node);
 
 # endif

@@ -16,5 +16,6 @@ int	main(void)
 	print_ast_pretty(minishell.ast);
 	ft_printf("\nBegin exec\n\n");
 	exec_ast(minishell.ast);
+	free_ast(minishell.ast);
 	free_token_list(&minishell.tokens_list);
 }

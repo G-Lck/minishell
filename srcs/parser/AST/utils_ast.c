@@ -16,6 +16,16 @@ t_ast	*ft_astnew(t_list *lst_token, int len)
 	return (node);
 }
 
+void	free_ast(t_ast *node)
+{
+	if (node->next_left != NULL)
+		free_ast(node->next_left);
+	if (node->next_right != NULL)
+		free_ast(node->next_right);
+	free(node);
+	return ;
+}
+
 void	print_ast(t_ast *node)
 {
 	t_list	*lst_token;
