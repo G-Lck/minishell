@@ -63,7 +63,7 @@ int	is_pipe(t_token_type t)
 	return (0);
 }
 
-void	new_node(t_ast *node, t_list *lst_token, int i)
+void	new_node(t_ast *node, t_list *lst_token, int i, enum e_token_type token_type)
 {
 	t_ast	*node_left;
 	t_ast	*node_right;
@@ -74,6 +74,7 @@ void	new_node(t_ast *node, t_list *lst_token, int i)
 	node_right->lst_len = node->lst_len - i - 1;
 	node->lst_token = lst_token;
 	node->lst_len = 1;
+	node->node_type = token_type;
 	node->next_left = node_left;
 	node->next_right = node_right;
 	create_ast(node_left);
@@ -96,7 +97,7 @@ void	create_ast(t_ast *node)
 		token = lst_token->content;
 		if (is_op(token->type) && p == 0)
 		{
-			new_node(node, lst_token, i);
+			new_node(node, lst_token, i, token->type);
 			return ;
 		}
 		if (token->type == OPEN_BRACKET)
@@ -113,7 +114,7 @@ void	create_ast(t_ast *node)
 		token = lst_token->content;
 		if (is_pipe(token->type) && p == 0)
 		{
-			new_node(node, lst_token, i);
+			new_node(node, lst_token, i, token->type);
 			return ;
 		}
 		if (token->type == OPEN_BRACKET)

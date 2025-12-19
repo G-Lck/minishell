@@ -10,6 +10,7 @@ t_ast	*ft_astnew(t_list *lst_token, int len)
 	node->lst_token = lst_token;
 	node->lst_len = len;
 	node->is_subshell = false;
+	node->node_type = 3;
 	node->next_left = NULL;
 	node->next_right = NULL;
 	return (node);

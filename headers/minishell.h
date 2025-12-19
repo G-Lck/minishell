@@ -35,4 +35,7 @@ int	is_operator(char *str, int index);
 void	free_token_list(t_list **head);
 void	print_token(t_minishell *minishell);
 
+//exec_ast
+int	exec_ast(t_ast *node);
+
 #endif
