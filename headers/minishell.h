@@ -19,6 +19,8 @@ typedef struct s_minishell
 	t_list	*tokens_list;
 	t_ast	*ast;
 	char	*input;
+	int		exit_code;
+	int		last_status;
 }	t_minishell;
 
 //Parser/Tokenizer
