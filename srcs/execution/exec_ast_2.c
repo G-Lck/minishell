@@ -2,7 +2,7 @@
 
 void	exec_pipeline(t_ast *node)
 {
-	
+
 }
 
 void	ast_descent(t_ast *node)

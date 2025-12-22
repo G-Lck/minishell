@@ -41,5 +41,6 @@ void	print_token(t_minishell *minishell);
 
 //exec_ast
 int	exec_ast(t_ast *node);
+void	commands_setup(t_ast *node);
 
 #endif
