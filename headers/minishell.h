@@ -23,6 +23,8 @@ typedef struct s_minishell
 	int		last_status;
 }	t_minishell;
 
+void	ast_descent(t_ast *node);
+
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
 int	create_token(char *str, int type, int index, t_minishell *minishell);
