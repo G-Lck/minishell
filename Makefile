@@ -10,7 +10,7 @@ OBJS = ${SRCS:.c=.o}
 MAIN_OBJS = ${MAIN_SRCS:.c=.o}
 CC = gcc
 RM = rm -f
-CFLAGS = -Iheaders
+CFLAGS = -Iheaders -g
 
 all : ${NAME}
 
@@ -23,7 +23,7 @@ ${NAME} : ${OBJS} ${MAIN_OBJS}
 
 theo: ${OBJS}
 	${MAKE} -C ./libft
-	$(CC) $(OBJS) -Iheaders tests/main-theo.c ./libft/libft.a -lreadline -lncurses -o minishell-theo
+	$(CC) $(OBJS) -Iheaders -g tests/main-theo.c ./libft/libft.a -lreadline -lncurses -o minishell-theo
 
 garance: ${OBJS}
 	${MAKE} -C ./libft

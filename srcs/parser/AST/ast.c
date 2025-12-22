@@ -77,6 +77,7 @@ void	new_node(t_ast *node, t_list *lst_token, int i, enum e_token_type token_typ
 	node->node_type = token_type;
 	node->next_left = node_left;
 	node->next_right = node_right;
+	node->redirs = NULL;
 	create_ast(node_left);
 	create_ast(node_right);
 }
