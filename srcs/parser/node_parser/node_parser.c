@@ -6,7 +6,7 @@
 /*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/05 15:00:29 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/01/05 17:45:09 by thbouver         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,10 @@ int	node_preparation(t_ast *node)
 	while (index < node->lst_len)
 	{
 		token = node->lst_token->content;
-		if (token->type == REDIR_IN || token->type == REDIR_OUT)
+		if (token->type == REDIR_IN || token->type == REDIR_OUT || token->type == HERE_DOC || token->type == APPEND)
 		{
-			if (node->lst_token->next == NULL)
-				break ;
 			tmp = node->lst_token->next->content;
-			create_redir_node(tmp->literal, token->type, node);
+			create_redir_nosde(tmp->literal, token->type, node);
 			node->lst_token = node->lst_token->next;
 			index ++;
 		}
