@@ -12,7 +12,7 @@ void	ast_descent(t_ast *node)
 	else
 	{
 		t_token *token = node->lst_token->content;
-		ft_printf("(%s)", token->literal);
+		node_preparation(node);
 		return ;
 	}
 

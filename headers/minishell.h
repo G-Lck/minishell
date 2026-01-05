@@ -24,6 +24,7 @@ typedef struct s_minishell
 }	t_minishell;
 
 void	ast_descent(t_ast *node);
+int	node_preparation(t_ast *node);
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
