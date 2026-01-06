@@ -16,7 +16,7 @@ int	main(int argc, char *argv[])
 			minishell.ast = ft_astnew(minishell.tokens_list, ft_lstsize(minishell.tokens_list));
 			create_ast(minishell.ast);
 			print_ast_pretty(minishell.ast);
-			ast_descent(minishell.ast);
+			// ast_descent(minishell.ast);
 		}
 		free_ast(minishell.ast);
 		free_token_list(&minishell.tokens_list);

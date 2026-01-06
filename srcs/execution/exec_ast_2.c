@@ -5,14 +5,19 @@ void	exec_pipeline(t_ast *node)
 	
 }
 
+void	exec_node(t_ast *node)
+{
+	
+}
+
 void	ast_descent(t_ast *node)
 {
 	if (node->node_type == AND_OP || node->node_type == OR_OP || node->node_type == PIPE_OP)
 		ast_descent (node->next_left);
 	else
 	{
-		t_token *token = node->lst_token->content;
-		node_preparation(node);
+		if (!node->is_subshell)
+			exec_node(node);
 		return ;
 	}
 
