@@ -2,17 +2,27 @@
 
 void	exec_pipeline(t_ast *node)
 {
-	
+
 }
 
-void	ast_descent(t_ast *node)
+void	exec_node(t_ast *node, t_minishell *data)
+{
+	char	*cmd;
+	int	status;
+
+	cmd = find_command(node, data->envp);
+
+	status = 0;
+}
+
+void	ast_descent(t_ast *node, t_minishell *data)
 {
 	if (node->node_type == AND_OP || node->node_type == OR_OP || node->node_type == PIPE_OP)
-		ast_descent (node->next_left);
+		ast_descent (node->next_left, data);
 	else
 	{
-		t_token *token = node->lst_token->content;
-		ft_printf("(%s)", token->literal);
+		if (!node->is_subshell)
+			exec_node(node, data);
 		return ;
 	}
 
@@ -20,7 +30,7 @@ void	ast_descent(t_ast *node)
 	{
 		if (node->next_left->exec_status == 0)
 		{
-			ast_descent(node->next_right);
+			ast_descent(node->next_right, data);
 			node->exec_status = node->next_right->exec_status;
 		}
 		else
@@ -30,7 +40,7 @@ void	ast_descent(t_ast *node)
 	{
 		if (node->next_left->exec_status != 0)
 		{
-			ast_descent(node->next_right);
+			ast_descent(node->next_right, data);
 			node->exec_status = node->next_right->exec_status;
 		}
 		else
@@ -38,7 +48,7 @@ void	ast_descent(t_ast *node)
 	}
 	else if (node->node_type == PIPE_OP)
 	{
-		ast_descent(node->next_right);
+		ast_descent(node->next_right, data);
 		node->exec_status = node->next_left->exec_status;
 	}
 	return ;

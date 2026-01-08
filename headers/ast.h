@@ -29,7 +29,7 @@ typedef struct s_ast
 	int				lst_len;
 	int				exec_status;
 	bool			is_subshell;
-} t_ast;
+}  t_ast;
 
 t_ast	*ft_astnew(t_list *lst_token, int len);
 void	create_ast(t_ast *node);
