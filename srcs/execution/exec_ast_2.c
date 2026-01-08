@@ -8,10 +8,21 @@ void	exec_pipeline(t_ast *node)
 void	exec_node(t_ast *node, t_minishell *data)
 {
 	char	*cmd;
-	int	status;
+	int		status;
 
-	cmd = find_command(node, data->envp);
-
+	cmd = find_command(node, &status, data->envp);
+	ft_printf("%s ", ((t_token*)node->lst_token->content)->literal);
+	if (cmd != NULL)
+	{
+		if (status == 0)
+			ft_printf("Is directory\n");
+		else if (status == -1)
+			ft_printf("Not executable\n");
+		else
+			ft_printf("Excutable !\n");
+	}
+	if (!cmd)
+		ft_printf("Command not found\n");
 	status = 0;
 }
 
