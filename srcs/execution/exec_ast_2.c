@@ -10,6 +10,7 @@ void	exec_node(t_ast *node, t_minishell *data)
 	char	*cmd;
 	int		status;
 
+	status = 1;
 	cmd = find_command(node, &status, data->envp);
 	ft_printf("%s ", ((t_token*)node->lst_token->content)->literal);
 	if (cmd != NULL)
@@ -21,7 +22,7 @@ void	exec_node(t_ast *node, t_minishell *data)
 		else
 			ft_printf("Excutable !\n");
 	}
-	if (!cmd)
+	else
 		ft_printf("Command not found\n");
 	status = 0;
 }
