@@ -10,20 +10,17 @@ void	exec_node(t_ast *node, t_minishell *data)
 	char	*cmd;
 	int		status;
 
-	status = 1;
+	status = COMMAND_NOT_FOUND;
 	cmd = find_command(node, &status, data->envp);
 	ft_printf("%s ", ((t_token*)node->lst_token->content)->literal);
-	if (cmd != NULL)
-	{
-		if (status == 0)
-			ft_printf("Is directory\n");
-		else if (status == -1)
-			ft_printf("Not executable\n");
-		else
-			ft_printf("Excutable !\n");
-	}
-	else
+	if (status == OK)
+		ft_printf("Excutable !\n");
+	else if (status == COMMAND_NOT_FOUND)
 		ft_printf("Command not found\n");
+	else if (status == IS_DIRECTORY)
+		ft_printf("Is directory\n");
+	else if (status == PERMISSION_DENIED)
+		ft_printf("Permission denied\n");
 	status = 0;
 }
 

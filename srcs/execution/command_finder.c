@@ -86,11 +86,13 @@ char *find_command(t_ast *node, int *status, char *envp[])
 	token = node->lst_token->content;
 	if (access(token->literal, F_OK) == 0)
 	{
-		if (is_dir(token->literal) == 1 && token->literal[0] != '.' && token->literal[1] != '/')
-			return (*status = 0, NULL);
+		if (is_dir(token->literal) == 1 && token->literal[0] == '.' && token->literal[1] == '/')
+			return (*status = IS_DIRECTORY, NULL);
+		if (is_dir(token->literal) == 1)
+			return (*status = IS_DIRECTORY, NULL);
 		if (access(token->literal, X_OK) == -1)
-			return (*status = -1, NULL);
-		return (token->literal);
+			return (*status = PERMISSION_DENIED, NULL);
+		return (*status = OK, token->literal);
 	}
 	while (envp[index])
 	{
@@ -98,11 +100,15 @@ char *find_command(t_ast *node, int *status, char *envp[])
 		{
 			cmd_path = get_path(token->literal, envp[index]);
 			if (cmd_path)
+			{
 				if (access(cmd_path, X_OK) == -1)
-					return (free(cmd_path), *status = -1, NULL);
-			return (cmd_path);
+					return (free(cmd_path), *status = PERMISSION_DENIED, NULL);
+				else
+					return (*status = OK, cmd_path);
+			}
+			break;
 		}
 		index ++;
 	}
-	return (NULL);
+	return (*status = COMMAND_NOT_FOUND, NULL);
 }
