@@ -25,7 +25,6 @@ typedef enum e_cmd_status
 	OK = 1 
 } t_cmd_status;
 
-
 typedef struct s_minishell
 {
 	t_list	*tokens_list;
@@ -36,7 +35,6 @@ typedef struct s_minishell
 	int		exit_code;
 	int		last_status;
 }	t_minishell;
-
 
 void	ast_descent(t_ast *node, t_minishell *data);
 int	node_preparation(t_ast *node);
