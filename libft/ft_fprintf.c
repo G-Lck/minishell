@@ -26,7 +26,7 @@ size_t	ft_formats_fd(int fd, va_list *args, char format)
 	else if (format == 'p')
 		readed_char += ft_print_ptr_fd(fd, va_arg(*args, uintptr_t));
 	else if (format == 'd' || format == 'i')
-		readed_char += ft_print_numberfd(fd, va_arg(*args, int));
+		readed_char += ft_print_number_fd(fd, va_arg(*args, int));
 	else if (format == 'x')
 		readed_char += ft_print_hexadecimal_fd(fd, va_arg(*args, unsigned int), 0);
 	else if (format == 'X')

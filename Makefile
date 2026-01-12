@@ -2,7 +2,9 @@ NAME = minishell
 
 SRCS =	$(wildcard srcs/utils/*.c) \
 		$(wildcard srcs/parser/**/*.c) \
-		$(wildcard srcs/execution/**/*.c)
+		$(wildcard srcs/execution/*.c) \
+		$(wildcard srcs/execution/**/*.c) \
+		$(wildcard srcs/execution/**/**/*.c)
 MAIN_SRCS = srcs/main.c
 
 OBJS = ${SRCS:.c=.o}
@@ -27,6 +29,10 @@ theo: ${OBJS}
 garance: ${OBJS}
 	${MAKE} -C ./libft
 	$(CC) $(OBJS) -Iheaders tests/main-garance.c ./libft/libft.a -lreadline -lncurses -o minishell-garance
+
+echo: ${OBJS}
+	${MAKE} -C ./libft
+	$(CC) $(OBJS) -Iheaders tests/main-echo.c ./libft/libft.a -lreadline -lncurses -o minishell-echo
 
 clean:
 	${RM} ${OBJS} ${MAIN_OBJS}
