@@ -12,6 +12,8 @@ int		ft_exit(t_list *args, t_minishell *minishell);
 
 int		ft_echo(char **args, t_env *env);
 char	*expand_variables(char *str, t_env *env);
+int		ft_env(t_env *env);
+int		ft_pwd(void);
 
 
 # endif

@@ -30,10 +30,6 @@ garance: ${OBJS}
 	${MAKE} -C ./libft
 	$(CC) $(OBJS) -Iheaders tests/main-garance.c ./libft/libft.a -lreadline -lncurses -o minishell-garance
 
-echo: ${OBJS}
-	${MAKE} -C ./libft
-	$(CC) $(OBJS) -Iheaders tests/main-echo.c ./libft/libft.a -lreadline -lncurses -o minishell-echo
-
 clean:
 	${RM} ${OBJS} ${MAIN_OBJS}
 	make clean -C ./libft
