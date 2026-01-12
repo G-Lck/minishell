@@ -52,3 +52,18 @@ void	free_env(t_env *env)
 		env = tmp;
 	}
 }
+
+int	ft_env(t_env *env)
+{
+	t_env	*tmp;
+
+	if (!env)
+		return (1);
+	tmp = env;
+	while (tmp)
+	{
+		ft_printf("%s=%s\n", tmp->key, tmp->value);
+		tmp = tmp->next;
+	}
+	return (0);
+}

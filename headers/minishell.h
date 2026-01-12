@@ -54,9 +54,4 @@ void	print_token(t_minishell *minishell);
 //exec_ast
 int	exec_ast(t_ast *node);
 
-// env
-t_env	*create_env_var(char *key, char *value);
-void	add_env_var(t_env **head, char *key, char *value);
-void	free_env(t_env *env);
-
 #endif
