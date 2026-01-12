@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 int	is_dir(char *path)
 {
 	char	buff[1];
