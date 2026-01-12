@@ -10,12 +10,21 @@
 # include <readline/readline.h>
 # include "token.h"
 # include "ast.h"
+# include "builtins.h"
 
 typedef struct s_token t_token;
 typedef struct s_ast t_ast;
 
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}   t_env;
+
 typedef struct s_minishell
 {
+	t_env	*env;
 	t_list	*tokens_list;
 	t_ast	*ast;
 	char	*input;
@@ -44,5 +53,10 @@ void	print_token(t_minishell *minishell);
 
 //exec_ast
 int	exec_ast(t_ast *node);
+
+// env
+t_env	*create_env_var(char *key, char *value);
+void	add_env_var(t_env **head, char *key, char *value);
+void	free_env(t_env *env);
 
 #endif
