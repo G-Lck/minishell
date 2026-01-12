@@ -28,9 +28,14 @@ typedef struct s_minishell
 	t_list	*tokens_list;
 	t_ast	*ast;
 	char	*input;
+	char	**envp;
 	int		exit_code;
 	int		last_status;
 }	t_minishell;
+
+void	ast_descent(t_ast *node, t_minishell *data);
+int	node_preparation(t_ast *node);
+char *find_command(t_ast *node, char *envp[]);
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
