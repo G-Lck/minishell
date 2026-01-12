@@ -2,7 +2,8 @@
 
 void	exec_pipeline(t_ast *node, t_minishell *data)
 {
-
+	node_preparation(node->next_left);
+	ft_printf("%s\n", ((t_token *)node->next_left->lst_token->content)->literal);
 }
 
 void	exec_node(t_ast *node, t_minishell *data)
@@ -41,16 +42,13 @@ void	ast_descent(t_ast *node, t_minishell *data)
 		ast_descent (node->next_left, data);
 	else if (node->node_type == PIPE_OP)
 	{
-		node_preparation(node);
-		if (node->node_type = PIPE_OP)
-			exec_pipeline(node, data);
-		else
-			exec_node(node, data);
+		exec_pipeline(node, data);
 		return ;
 	}
 	else
 	{
 		exec_node(node, data);
+		return ;
 	}
 
 	if (node->node_type == AND_OP)
