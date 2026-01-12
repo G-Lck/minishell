@@ -16,6 +16,7 @@ typedef struct s_ast t_ast;
 
 typedef struct s_minishell
 {
+	t_list	*env;
 	t_list	*tokens_list;
 	t_ast	*ast;
 	char	*input;
