@@ -4,6 +4,7 @@
 # include "minishell.h"
 
 #define EXIT_SHELL 2
+#define PATH_MAX 4096
 
 typedef struct s_minishell t_minishell;
 typedef struct s_env t_env;
