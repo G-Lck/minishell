@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_env.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_env	*create_env_var(char *key, char *value)
@@ -6,7 +18,7 @@ t_env	*create_env_var(char *key, char *value)
 
 	node = malloc(sizeof(t_env));
 	if (!node)
-		return NULL;
+		return (NULL);
 	node->key = ft_strdup(key);
 	node->value = ft_strdup(value);
 	if (!node->key || !node->value)
@@ -14,7 +26,7 @@ t_env	*create_env_var(char *key, char *value)
 		free(node->key);
 		free(node->value);
 		free(node);
-		return NULL;
+		return (NULL);
 	}
 	node->next = NULL;
 	return (node);

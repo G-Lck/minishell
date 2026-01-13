@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_echo.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 
-int is_option_n(char *arg)
+int	is_option_n(char *arg)
 {
 	int	i;
+
 	if (arg[0] != '-')
 		return (0);
 	i = 1;
@@ -17,9 +30,11 @@ int is_option_n(char *arg)
 
 int	ft_echo(char **args, t_env *env)
 {
-	int	i = 1;
-	int	newline = 1;
+	int	i;
+	int	newline;
 
+	i = 1;
+	newline = 1;
 	while (args[i] && is_option_n(args[i]))
 	{
 		newline = 0;
