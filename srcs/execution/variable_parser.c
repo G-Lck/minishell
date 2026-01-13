@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_echo.c                                          :+:      :+:    :+:   */
+/*   variable_parser.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,42 +12,41 @@
 
 #include "builtins.h"
 
-int	is_option_n(char *arg)
+static char	*handle_special_var(char c)
 {
-	int	i;
+	char	*temp;
 
-	if (arg[0] != '-')
-		return (0);
-	i = 1;
-	while (arg[i])
-	{
-		if (arg[i] != 'n')
-			return (0);
-		i++;
-	}
-	return (1);
+	temp = malloc(sizeof(char) * 3);
+	if (!temp)
+		return (NULL);
+	temp[0] = '$';
+	temp[1] = c;
+	temp[2] = '\0';
+	return (temp);
 }
 
-int	ft_echo(char **args, t_env *env)
+static char	*handle_normal_var(char *str)
 {
-	int	i;
-	int	newline;
+	int		i;
+	char	*name;
 
 	i = 1;
-	newline = 1;
-	while (args[i] && is_option_n(args[i]))
-	{
-		newline = 0;
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
-	}
-	while (args[i])
-	{
-		ft_printf("%s", args[i], env);
-		if (args[i + 1])
-			ft_printf(" ");
-		i++;
-	}
-	if (newline)
-		ft_printf("\n");
-	return (0);
+	if (i == 1)
+		return (ft_strdup(""));
+	name = malloc(sizeof(char) * (i + 1));
+	if (!name)
+		return (NULL);
+	ft_strlcpy(name, str, i + 1);
+	return (name);
+}
+
+char	*get_var_name(char *str)
+{
+	if (ft_strlen(str) == 1 || !(ft_isalpha(str[1]) || str[1] == '_'))
+		return (ft_strdup("$"));
+	if (str[1] == '$' || str[1] == '?' || ft_isdigit(str[1]))
+		return (handle_special_var(str[1]));
+	return (handle_normal_var(str));
 }

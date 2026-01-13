@@ -14,7 +14,7 @@
 
 int	ft_pwd(void)
 {
-	char	cwd;
+	char	*cwd;
 
 	cwd = malloc(sizeof(char) * PATH_MAX);
 	if (!cwd)
@@ -22,10 +22,10 @@ int	ft_pwd(void)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		ft_printf("pwd: error retrieving current directory\n");
-		free (cwd);
+		free(cwd);
 		return (1);
 	}
 	ft_printf("%s\n", cwd);
-	free (cwd);
+	free(cwd);
 	return (0);
 }
