@@ -18,7 +18,8 @@ int	main(int argc, char *argv[], char *envp[])
 		{
 			minishell.ast = ft_astnew(minishell.tokens_list, ft_lstsize(minishell.tokens_list));
 			create_ast(minishell.ast);
-			print_ast_pretty(minishell.ast);
+			//print_ast_pretty(minishell.ast);
+			rl_reset_terminal(NULL);
 			ast_descent(minishell.ast, &minishell);
 		}
 		//Free les lst_token et les redirs dans chaque node

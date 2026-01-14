@@ -13,6 +13,7 @@ void	run_child_process(t_ast	*node, char *cmd, char *envp[])
 	argv[0] = "usr/bin/echo";
 	argv[1] = "bonjour";
 	argv[2] = NULL;
+	write(1, "CHILD STDOUT OK\n", 16);
 	execve("/usr/bin/echo", argv, envp);
 	perror("execve");
 }

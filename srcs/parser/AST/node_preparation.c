@@ -6,7 +6,7 @@
 /*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/14 12:45:06 by theo             ###   ########.fr       */
+/*   Updated: 2026/01/14 14:12:44 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	create_redir_node(char *target, t_token_type type, t_ast *node)
 	if (!new_node)
 		return (free(new_redir->target), free(new_redir), 0);
 	ft_lstadd_back(&node->redirs, new_node);
-	ft_printf("redir : %d -> %s\n", new_redir->redir_type, new_redir->target);
+	//ft_printf("redir : %d -> %s\n", new_redir->redir_type, new_redir->target);
 	return (1);
 }
 
@@ -48,7 +48,7 @@ int	create_command_node(t_token *token, t_ast *node)
 	if (!new_node)
 		return (free(new_token->literal), free(new_token), 0);
 	ft_lstadd_back(&node->exec_token, new_node);
-	ft_printf("token basic : %s\n", token->literal);
+	//ft_printf("token basic : %s\n", token->literal);
 	return (1);
 }
 
@@ -74,5 +74,5 @@ int	node_preparation(t_ast *node)
 		node->lst_token = node->lst_token->next;
 		index ++;
 	}
-	ft_printf("\n");
+//	ft_printf("\n");
 }
