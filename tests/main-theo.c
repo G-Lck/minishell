@@ -6,8 +6,10 @@ int	main(int argc, char *argv[], char *envp[])
 
 	minishell.tokens_list = NULL;
 	minishell.envp = envp;
-
+	minishell.current_dir = ft_calloc(sizeof(char), 100);
+	minishell.current_dir = getcwd(minishell.current_dir, 100);
 	write (1, "\033[H\033[2J", 8);
+	ft_printf("%s\n", minishell.current_dir);
 	while (1)
 	{
 		minishell.input = readline("\e[0;36m\nMinihell > \e[0;33m");

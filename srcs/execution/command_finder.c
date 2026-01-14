@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+int	is_dir(char *path)
+{
+	char	buff[1];
+	int		fd;
+
+	fd = open(path, O_RDONLY);
+	if (!fd)
+		return (0);
+	if (read(fd, buff, 1) == -1 && errno == EISDIR)
+		return (close(fd), 1);
+	return (close(fd), 0);
+}
+
 static char	*ft_strcat(char *dest, char *src)
 {
 	char	*tmp;
@@ -62,22 +75,39 @@ static char	*get_path(char *cmd, char *envp_path)
 	return (NULL);
 }
 
-char *find_command(t_ast *node, char *envp[])
+char *find_command(t_ast *node, int *status, char *envp[])
 {
+	t_token	*token;
 	char	*cmd_path;
 	int		index;
 
 	index = 0;
+	token = node->lst_token->content;
+	if (access(token->literal, F_OK) == 0)
+	{
+		if (is_dir(token->literal) == 1 && token->literal[0] == '.' && token->literal[1] == '/')
+			return (*status = IS_DIRECTORY, NULL);
+		if (is_dir(token->literal) == 1)
+			return (*status = IS_DIRECTORY, NULL);
+		if (access(token->literal, X_OK) == -1)
+			return (*status = PERMISSION_DENIED, NULL);
+		return (*status = OK, token->literal);
+	}
 	while (envp[index])
 	{
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
 		{
-			cmd_path = get_path(((t_token *)(node->lst_token->content))->literal, envp[index]);
-			if (access(cmd_path, X_OK) == -1)
-				return (free(cmd_path), NULL);
-			return (cmd_path);
+			cmd_path = get_path(token->literal, envp[index]);
+			if (cmd_path)
+			{
+				if (access(cmd_path, X_OK) == -1)
+					return (free(cmd_path), *status = PERMISSION_DENIED, NULL);
+				else
+					return (*status = OK, cmd_path);
+			}
+			break;
 		}
 		index ++;
 	}
-	return (NULL);
+	return (*status = COMMAND_NOT_FOUND, NULL);
 }
