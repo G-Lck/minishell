@@ -6,6 +6,18 @@ void	exec_pipeline(t_ast *node, t_minishell *data)
 	ft_printf("%s\n", ((t_token *)node->next_left->lst_token->content)->literal);
 }
 
+void	run_child_process(t_ast	*node, char *cmd, char *envp[])
+{
+	char *argv[3];
+
+	argv[0] = "usr/bin/echo";
+	argv[1] = "bonjour";
+	argv[2] = NULL;
+	write(1, "CHILD STDOUT OK\n", 16);
+	execve("/usr/bin/echo", argv, envp);
+	perror("execve");
+}
+
 void	exec_node(t_ast *node, t_minishell *data)
 {
 	char	*cmd;
@@ -13,9 +25,15 @@ void	exec_node(t_ast *node, t_minishell *data)
 
 	status = COMMAND_NOT_FOUND;
 	cmd = find_command(node, &status, data->envp);
-	ft_printf("%s ", ((t_token*)node->lst_token->content)->literal);
+	ft_printf("%s ", cmd);
 	if (status == OK)
+	{
+		int	pid = fork();
+		if (pid == 0)
+			run_child_process(node, cmd, data->envp);
+		waitpid(pid, &status, 0);
 		ft_printf("Excutable !\n");
+	}
 	else if (status == COMMAND_NOT_FOUND)
 	{
 		node->exec_status = 127;
@@ -36,17 +54,30 @@ void	exec_node(t_ast *node, t_minishell *data)
 	}
 }
 
+void	print_token_list(t_list *list)
+{
+	t_token	*token;
+
+	while (list)
+	{
+		token = list->content;
+		ft_printf("token :  %s\n", token->literal);
+		list = list->next;
+	}
+}
+
 void	ast_descent(t_ast *node, t_minishell *data)
 {
 	if (node->node_type == AND_OP || node->node_type == OR_OP)
 		ast_descent (node->next_left, data);
 	else if (node->node_type == PIPE_OP)
 	{
-		exec_pipeline(node, data);
+		//exec_pipeline(node, data);
 		return ;
 	}
 	else
 	{
+		node_preparation(node);
 		exec_node(node, data);
 		return ;
 	}

@@ -82,7 +82,7 @@ char *find_command(t_ast *node, int *status, char *envp[])
 	int		index;
 
 	index = 0;
-	token = node->lst_token->content;
+	token = node->exec_token->content;
 	if (access(token->literal, F_OK) == 0)
 	{
 		if (is_dir(token->literal) == 1 && token->literal[0] == '.' && token->literal[1] == '/')

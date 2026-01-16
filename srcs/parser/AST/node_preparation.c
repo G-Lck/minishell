@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   node_parser.c                                      :+:      :+:    :+:   */
+/*   node_preparation.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/06 13:58:15 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/01/14 14:12:44 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	create_redir_node(char *target, t_token_type type, t_ast *node)
 	if (!new_node)
 		return (free(new_redir->target), free(new_redir), 0);
 	ft_lstadd_back(&node->redirs, new_node);
-	ft_printf("redir : %d -> %s\n", new_redir->redir_type, new_redir->target);
+	//ft_printf("redir : %d -> %s\n", new_redir->redir_type, new_redir->target);
 	return (1);
 }
 
@@ -47,8 +47,8 @@ int	create_command_node(t_token *token, t_ast *node)
 	new_node = ft_lstnew(new_token);
 	if (!new_node)
 		return (free(new_token->literal), free(new_token), 0);
-	ft_lstadd_back(&node->lst_token, new_node);
-	ft_printf("token basic : %s\n",token->literal);
+	ft_lstadd_back(&node->exec_token, new_node);
+	//ft_printf("token basic : %s\n", token->literal);
 	return (1);
 }
 
@@ -57,7 +57,7 @@ int	node_preparation(t_ast *node)
 	int	index = 0;
 	t_token *token;
 	t_token *tmp;
-	
+
 	while (index < node->lst_len)
 	{
 		token = node->lst_token->content;
@@ -74,5 +74,5 @@ int	node_preparation(t_ast *node)
 		node->lst_token = node->lst_token->next;
 		index ++;
 	}
-	ft_printf("\n");
+//	ft_printf("\n");
 }
