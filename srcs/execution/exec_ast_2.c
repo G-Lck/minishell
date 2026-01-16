@@ -81,7 +81,6 @@ void	ast_descent(t_ast *node, t_minishell *data)
 		exec_node(node, data);
 		return ;
 	}
-
 	if (node->node_type == AND_OP)
 	{
 		if (node->next_left->exec_status == 0)
