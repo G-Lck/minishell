@@ -53,7 +53,8 @@ int	tokenizer(char *cmd_line, t_minishell *minishell);
 int	create_token(char *str, int type, int index, t_minishell *minishell);
 int	get_token_type(char *token);
 void	pop_token(int index, t_list **head);
-int	syntax_checker(t_minishell *minishell);
+int	feel_env(t_env **env, char *envp[]);
+char	*get_env_value(char *key, t_env *env);
 
 //Utils
 int	is_wspace(int c);

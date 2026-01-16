@@ -12,7 +12,7 @@
 
 #include "builtins.h"
 
-static char	*get_env_value(char *key, t_env *env)
+char	*get_env_value(char *key, t_env *env)
 {
 	t_env	*var;
 
@@ -80,10 +80,14 @@ static int	substitute_variable(char *result, int *j, char *str, t_env *env)
 
 char	*expand_variables(char *str, t_env *env)
 {
+	int		in_quotes;
+	int		in_dquotes;
 	int		i;
 	int		j;
 	char	*result;
 
+	in_quotes = 0;
+	in_dquotes = 0;
 	i = 0;
 	j = 0;
 	result = malloc(get_len_variables(str, env));
@@ -91,7 +95,11 @@ char	*expand_variables(char *str, t_env *env)
 		return (NULL);
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '"' && in_quotes == 0)
+			in_dquotes = !in_dquotes;
+		else if (str[i] == '\'' && in_dquotes == 0)
+			in_quotes = !in_quotes;
+		if (str[i] == '$' && in_quotes != 1)
 			i += substitute_variable(result, &j, &str[i], env);
 		else
 			result[j++] = str[i++];
