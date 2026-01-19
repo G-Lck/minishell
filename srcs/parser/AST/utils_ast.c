@@ -7,8 +7,8 @@ t_ast	*ft_astnew(t_list *lst_token, int len)
 	node = malloc(sizeof(t_ast));
 	if (!node)
 		return (NULL);
-	node->exec_token = NULL;
 	node->redirs = NULL;
+	node->exec_token = ft_calloc(sizeof(char *), 1);
 	node->lst_token = lst_token;
 	node->lst_len = len;
 	node->is_subshell = false;
