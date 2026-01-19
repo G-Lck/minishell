@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-void	exec_pipeline(t_ast *node, t_minishell *data)
+void	exec_pipeline(t_ast *node, t_minishell *minishell)
 {
-	node_preparation(node->next_left);
+	node_preparation(node->next_left, minishell);
 	ft_printf("%s\n", ((t_token *)node->next_left->lst_token->content)->literal);
 }
 
@@ -56,20 +56,36 @@ void	exec_node(t_ast *node, t_minishell *data)
 
 void	print_token_list(t_list *list)
 {
-	t_token	*token;
+	t_redir	*redir;
 
 	while (list)
 	{
-		token = list->content;
-		ft_printf("token :  %s\n", token->literal);
+		redir = list->content;
+		ft_printf("redir : %d : %s\n", redir->redir_type, redir->target);
 		list = list->next;
 	}
 }
 
-void	ast_descent(t_ast *node, t_minishell *data)
+void	debug_node(t_ast *node)
+{
+	int	index;
+
+	index = 0;
+	ft_printf("\n-----------\n");
+	while (node->exec_token[index])
+	{
+		ft_printf("%s -> ", node->exec_token[index]);
+		index ++;
+	}
+	ft_printf("\n");
+	print_token_list(node->redirs);
+	ft_printf("-----------\n");
+}
+
+void	ast_descent(t_ast *node, t_minishell *minishell)
 {
 	if (node->node_type == AND_OP || node->node_type == OR_OP)
-		ast_descent (node->next_left, data);
+		ast_descent (node->next_left, minishell);
 	else if (node->node_type == PIPE_OP)
 	{
 		//exec_pipeline(node, data);
@@ -77,15 +93,16 @@ void	ast_descent(t_ast *node, t_minishell *data)
 	}
 	else
 	{
-		node_preparation(node);
-		exec_node(node, data);
+		node_preparation(node, minishell);
+		debug_node(node);
+		//exec_node(node, data);
 		return ;
 	}
 	if (node->node_type == AND_OP)
 	{
 		if (node->next_left->exec_status == 0)
 		{
-			ast_descent(node->next_right, data);
+			ast_descent(node->next_right, minishell);
 			node->exec_status = node->next_right->exec_status;
 		}
 		else
@@ -95,7 +112,7 @@ void	ast_descent(t_ast *node, t_minishell *data)
 	{
 		if (node->next_left->exec_status != 0)
 		{
-			ast_descent(node->next_right, data);
+			ast_descent(node->next_right, minishell);
 			node->exec_status = node->next_right->exec_status;
 		}
 		else
@@ -103,7 +120,7 @@ void	ast_descent(t_ast *node, t_minishell *data)
 	}
 	else if (node->node_type == PIPE_OP)
 	{
-		ast_descent(node->next_right, data);
+		ast_descent(node->next_right, minishell);
 		node->exec_status = node->next_left->exec_status;
 	}
 	return ;
