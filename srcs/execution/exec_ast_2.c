@@ -1,38 +1,38 @@
 #include "minishell.h"
 
-void	exec_pipeline(t_ast *node, t_minishell *data)
-{
-	node_preparation(node->next_left);
-	ft_printf("%s\n", ((t_token *)node->next_left->lst_token->content)->literal);
-}
-
 void	exec_node(t_ast *node, t_minishell *data)
 {
-	char	*cmd;
+	pid_t	pid;
 	int		status;
 
-	status = COMMAND_NOT_FOUND;
-	cmd = find_command(node, &status, data->envp);
-	ft_printf("%s ", ((t_token*)node->lst_token->content)->literal);
-	if (status == OK)
-		ft_printf("Excutable !\n");
-	else if (status == COMMAND_NOT_FOUND)
+	// Fork pour exécuter la commande
+	pid = fork();
+	if (pid == -1)
 	{
-		node->exec_status = 127;
-		ft_printf("Command not found\n");
+		perror("Fork failed");
+		node->exec_status = 1;
 		return ;
 	}
-	else if (status == IS_DIRECTORY)
+
+	if (pid == 0)
 	{
-		node->exec_status = 126;
-		ft_printf("Is directory\n");
-		return ;
+		simple_command_exec(node, data);
+		exit(EXIT_FAILURE);
 	}
-	else if (status == PERMISSION_DENIED)
+	else
 	{
-		node->exec_status = 126;
-		ft_printf("Permission denied\n");
-		return ;
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("waitpid failed");
+			node->exec_status = 1;
+		}
+		else
+		{
+			if (WIFEXITED(status))
+				node->exec_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				node->exec_status = 128 + WTERMSIG(status);
+		}
 	}
 }
 
