@@ -26,6 +26,7 @@ typedef struct s_ast
 	struct s_ast	*next_left;
 	struct s_ast	*next_right;
 	t_list			*redirs;
+	char			**exec_token;
 	int				lst_len;
 	int				exec_status;
 	bool			is_subshell;

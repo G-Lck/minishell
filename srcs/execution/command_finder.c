@@ -77,27 +77,25 @@ static char	*get_path(char *cmd, char *envp_path)
 
 char *find_command(t_ast *node, int *status, char **envp)
 {
-	t_token	*token;
 	char	*cmd_path;
 	int		index;
 
 	index = 0;
-	token = node->lst_token->content;
-	if (access(token->literal, F_OK) == 0)
+	if (access(node->exec_token[0], F_OK) == 0)
 	{
-		if (is_dir(token->literal) == 1 && token->literal[0] == '.' && token->literal[1] == '/')
+		if (is_dir(node->exec_token[0]) == 1 && node->exec_token[0][0] == '.' && node->exec_token[0][0] == '/')
 			return (*status = IS_DIRECTORY, NULL);
-		if (is_dir(token->literal) == 1)
+		if (is_dir(node->exec_token[0]) == 1)
 			return (*status = IS_DIRECTORY, NULL);
-		if (access(token->literal, X_OK) == -1)
+		if (access(node->exec_token[0], X_OK) == -1)
 			return (*status = PERMISSION_DENIED, NULL);
-		return (*status = OK, token->literal);
+		return (*status = OK, node->exec_token[0]);
 	}
 	while (envp[index])
 	{
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
 		{
-			cmd_path = get_path(token->literal, envp[index]);
+			cmd_path = get_path(node->exec_token[0], envp[index]);
 			if (cmd_path)
 			{
 				if (access(cmd_path, X_OK) == -1)

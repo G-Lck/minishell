@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helpers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#             */
-/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr       */
+/*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
+/*   Updated: 2026/01/16 16:22:37 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,24 @@ void	free_env(t_env *env)
 		free(env);
 		env = tmp;
 	}
+}
+
+int	feel_env(t_env **env, char *envp[])
+{
+	char	**splited_env_var;
+	int		index;
+
+	index = 0;
+	while (envp[index])
+	{
+		splited_env_var = ft_split(envp[index], '=');
+		if (!splited_env_var)
+			return (0);
+		add_env_var(env, splited_env_var[0], splited_env_var[1]);
+		free(splited_env_var[0]);
+		free(splited_env_var[1]);
+		free(splited_env_var);
+		index ++;
+	}
+	return (1);
 }

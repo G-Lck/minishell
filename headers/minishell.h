@@ -46,7 +46,7 @@ typedef struct s_minishell
 }	t_minishell;
 
 void	ast_descent(t_ast *node, t_minishell *data);
-int		node_preparation(t_ast *node);
+int	node_preparation(t_ast *node, t_minishell *minishell);
 char 	*find_command(t_ast *node, int *status, char **envp);
 void	simple_command_exec(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
@@ -56,7 +56,10 @@ int	tokenizer(char *cmd_line, t_minishell *minishell);
 int	create_token(char *str, int type, int index, t_minishell *minishell);
 int	get_token_type(char *token);
 void	pop_token(int index, t_list **head);
+int	feel_env(t_env **env, char *envp[]);
+char	*get_env_value(char *key, t_env *env);
 int	syntax_checker(t_minishell *minishell);
+void	free_tab(char **tab);
 
 //Utils
 int		is_wspace(int c);
