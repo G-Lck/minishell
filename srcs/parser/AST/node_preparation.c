@@ -98,7 +98,7 @@ char	*get_token_literal(char *token_literal, t_minishell *minishell)
 {
 	char	*new_token_literal;
 
-	if (token_literal[0] != '$')
+	if (ft_strchr(token_literal, '$') == NULL)
 	{
 		new_token_literal = ft_strdup(token_literal);
 		if (!new_token_literal)
