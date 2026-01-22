@@ -1,56 +1,38 @@
 #include "minishell.h"
 
-void	exec_pipeline(t_ast *node, t_minishell *minishell)
-{
-	node_preparation(node->next_left, minishell);
-	ft_printf("%s\n", ((t_token *)node->next_left->lst_token->content)->literal);
-}
-
-void	run_child_process(t_ast	*node, char *cmd, char *envp[])
-{
-	char *argv[3];
-
-	argv[0] = "usr/bin/echo";
-	argv[1] = "bonjour";
-	argv[2] = NULL;
-	write(1, "CHILD STDOUT OK\n", 16);
-	execve("/usr/bin/echo", argv, envp);
-	perror("execve");
-}
-
 void	exec_node(t_ast *node, t_minishell *data)
 {
-	char	*cmd;
+	pid_t	pid;
 	int		status;
 
-	status = COMMAND_NOT_FOUND;
-	cmd = find_command(node, &status, data->envp);
-	ft_printf("%s ", cmd);
-	if (status == OK)
+	// Fork pour exécuter la commande
+	pid = fork();
+	if (pid == -1)
 	{
-		int	pid = fork();
-		if (pid == 0)
-			run_child_process(node, cmd, data->envp);
-		waitpid(pid, &status, 0);
-		ft_printf("Excutable !\n");
-	}
-	else if (status == COMMAND_NOT_FOUND)
-	{
-		node->exec_status = 127;
-		ft_printf("Command not found\n");
+		perror("Fork failed");
+		node->exec_status = 1;
 		return ;
 	}
-	else if (status == IS_DIRECTORY)
+
+	if (pid == 0)
 	{
-		node->exec_status = 126;
-		ft_printf("Is directory\n");
-		return ;
+		simple_command_exec(node, data);
+		exit(EXIT_FAILURE);
 	}
-	else if (status == PERMISSION_DENIED)
+	else
 	{
-		node->exec_status = 126;
-		ft_printf("Permission denied\n");
-		return ;
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("waitpid failed");
+			node->exec_status = 1;
+		}
+		else
+		{
+			if (WIFEXITED(status))
+				node->exec_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				node->exec_status = 128 + WTERMSIG(status);
+		}
 	}
 }
 
@@ -88,14 +70,14 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 		ast_descent (node->next_left, minishell);
 	else if (node->node_type == PIPE_OP)
 	{
-		//exec_pipeline(node, data);
+		exec_pipeline(node, minishell);
 		return ;
 	}
 	else
 	{
-		node_preparation(node, minishell);
-		debug_node(node);
-		//exec_node(node, data);
+		//node_preparation(node, minishell);
+		//debug_node(node);
+		simple_command_exec(node, minishell);
 		return ;
 	}
 	if (node->node_type == AND_OP)

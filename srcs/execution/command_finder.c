@@ -75,7 +75,7 @@ static char	*get_path(char *cmd, char *envp_path)
 	return (NULL);
 }
 
-char *find_command(t_ast *node, int *status, char *envp[])
+char *find_command(t_ast *node, int *status, char **envp)
 {
 	char	*cmd_path;
 	int		index;

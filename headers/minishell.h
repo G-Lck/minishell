@@ -24,6 +24,7 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }   t_env;
+
 typedef enum e_cmd_status
 {
 	PERMISSION_DENIED = 0,
@@ -50,6 +51,9 @@ char *wildcards_parser(char *src);
 char	*get_token_literal(char *token_literal, t_minishell *minishell);
 char *find_command(t_ast *node, int *status, char *envp[]);
 char	*ft_strcat(char *dest, char *src);
+char 	*find_command(t_ast *node, int *status, char **envp);
+void	simple_command_exec(t_ast *node, t_minishell *data);
+void	exec_pipeline(t_ast *node, t_minishell *data);
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
@@ -62,9 +66,9 @@ int	syntax_checker(t_minishell *minishell);
 void	free_tab(char **tab);
 
 //Utils
-int	is_wspace(int c);
-int	is_separator(char *str, int index);
-int	is_operator(char *str, int index);
+int		is_wspace(int c);
+int		is_separator(char *str, int index);
+int		is_operator(char *str, int index);
 void	free_token_list(t_list **head);
 void	print_token(t_minishell *minishell);
 

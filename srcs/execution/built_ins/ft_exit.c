@@ -28,27 +28,24 @@ int	ft_isnumber(char *str)
 	return (1);
 }
 
-int	ft_exit(t_list *args, t_minishell *minishell)
+int	ft_exit(char **args, t_minishell *minishell)
 {
-	t_token	*arg;
-
-	if (!args)
+	if (!args[1])
 	{
 		minishell->exit_code = minishell->last_status;
 		return (EXIT_SHELL);
 	}
-	arg = args->content;
-	if (!ft_isnumber(arg->literal))
+	if (!ft_isnumber(args[1]))
 	{
 		ft_fprintf(2, "exit: numeric argument required\n");
 		minishell->exit_code = 255;
 	}
-	else if (args->next)
+	else if (args[2])
 	{
 		ft_fprintf(2, "exit: too many arguments\n");
 		return (1);
 	}
 	else
-		minishell->exit_code = ft_atoi(arg->literal) % 256;
+		minishell->exit_code = ft_atoi(args[1]) % 256;
 	return (EXIT_SHELL);
 }
