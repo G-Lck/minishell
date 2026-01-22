@@ -13,7 +13,7 @@ int	is_dir(char *path)
 	return (close(fd), 0);
 }
 
-static char	*ft_strcat(char *dest, char *src)
+char	*ft_strcat(char *dest, char *src)
 {
 	char	*tmp;
 

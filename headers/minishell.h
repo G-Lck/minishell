@@ -47,6 +47,10 @@ typedef struct s_minishell
 
 void	ast_descent(t_ast *node, t_minishell *data);
 int	node_preparation(t_ast *node, t_minishell *minishell);
+char *wildcards_parser(char *src);
+char	*get_token_literal(char *token_literal, t_minishell *minishell);
+char *find_command(t_ast *node, int *status, char *envp[]);
+char	*ft_strcat(char *dest, char *src);
 char 	*find_command(t_ast *node, int *status, char **envp);
 void	simple_command_exec(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
