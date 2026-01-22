@@ -70,14 +70,14 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 		ast_descent (node->next_left, minishell);
 	else if (node->node_type == PIPE_OP)
 	{
-		//exec_pipeline(node, data);
+		exec_pipeline(node, minishell);
 		return ;
 	}
 	else
 	{
-		node_preparation(node, minishell);
-		debug_node(node);
-		//exec_node(node, data);
+		//node_preparation(node, minishell);
+		//debug_node(node);
+		simple_command_exec(node, minishell);
 		return ;
 	}
 	if (node->node_type == AND_OP)

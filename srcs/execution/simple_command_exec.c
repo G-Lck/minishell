@@ -73,7 +73,7 @@ int is_builtin_and_execute(char **args, t_minishell *minishell)
 	return (-1);
 }
 
-void simple_command_exec(t_ast *node, t_minishell *data)
+void simple_command_exec(t_ast *node, t_minishell *minishell)
 {
 	char **args;
 	int builtin_status;
@@ -81,32 +81,30 @@ void simple_command_exec(t_ast *node, t_minishell *data)
 	char *cmd_path;
 	int i;
 
+	ft_printf("-1\n");
 	if (!node || !node->lst_token)
 		exit(EXIT_FAILURE);
-
+	ft_printf("0\n");
 	args = tokens_to_args(node->lst_token);
 	if (!args)
 		exit(EXIT_FAILURE);
+	ft_printf("1\n");
 
-	ft_printf("EXEC: ");
-	for (i = 0; args[i]; i++)
-		ft_printf("%s ", args[i]);
-	ft_printf("\n");
-
-	builtin_status = is_builtin_and_execute(args, data);
+	builtin_status = is_builtin_and_execute(args, minishell);
 	if (builtin_status != -1)
 	{
 		free_args(args);
 		exit(builtin_status);
 	}
+	ft_printf("2\n");
 
 	ft_printf("External command: %s\n", args[0]);
-	cmd_path = find_command(node, &status, data->envp);
+	cmd_path = find_command(node, &status, minishell->envp);
 
 	if (status == OK)
 	{
 		ft_printf("Command found at: %s\n", cmd_path);
-		if (execve(cmd_path, args, data->envp) == -1)
+		if (execve(cmd_path, args, minishell->envp) == -1)
 		{
 			perror(args[0]);
 			free_args(args);
@@ -115,7 +113,7 @@ void simple_command_exec(t_ast *node, t_minishell *data)
 	}
 	else
 	{
-		if (execve(args[0], args, data->envp) == -1)
+		if (execve(args[0], args, minishell->envp) == -1)
 		{
 			ft_printf("minishell: %s: command not found\n", args[0]);
 			free_args(args);
