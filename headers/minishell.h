@@ -48,7 +48,7 @@ typedef struct s_minishell
 void	ast_descent(t_ast *node, t_minishell *data);
 int	node_preparation(t_ast *node, t_minishell *minishell);
 char 	*find_command(t_ast *node, int *status, char **envp);
-void	simple_command_exec(t_ast *node, t_minishell *data);
+void	exec_node(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
 
 //Parser/Tokenizer
@@ -68,7 +68,5 @@ int		is_operator(char *str, int index);
 void	free_token_list(t_list **head);
 void	print_token(t_minishell *minishell);
 
-//exec_ast
-int	exec_ast(t_ast *node);
 
 #endif
