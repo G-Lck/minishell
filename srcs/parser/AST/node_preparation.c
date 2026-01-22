@@ -136,8 +136,3 @@ int	node_preparation(t_ast *node, t_minishell *minishell)
 	}
 	return (0);
 }
-
-
-"echo"
-"bonjour ca va"$var 
-"oui et toi $TEST test" = 1 token
