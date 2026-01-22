@@ -33,6 +33,6 @@ int	main(int argc, char *argv[], char *envp[])
 	// 	free_token_list(&minishell.tokens_list);
 	// }
 	// return (0);
-	char *str = "bonjour /$PATH/";
-	ft_printf("%s", get_token_literal(str, &minishell));
+
+	char	**str = wildcards_parser("test", &minishell);
 }

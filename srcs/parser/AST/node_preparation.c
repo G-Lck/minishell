@@ -28,6 +28,22 @@ t_list	*new_redir_node(char *target, t_token_type type)
 	return (new_node);
 }
 
+t_list	*new_exec_node(char *token_literal, t_token_type type)
+{
+	t_list	*new_node;
+	t_token	*new_exec_token;
+
+	new_exec_token = malloc(sizeof(t_token));
+	if (!new_exec_token)
+		return (NULL);
+	new_exec_token->type = type;
+	new_exec_token->literal = ft_strdup(token_literal);
+	if (!new_exec_token->literal)
+		return(NULL);
+	new_node = ft_lstnew(new_exec_token);
+	return (new_node);
+}
+
 int	check_wspaces(char *str)
 {
 	int	index;
@@ -65,35 +81,6 @@ int	create_redir_node(char *target, t_token_type type, t_ast *node, t_minishell 
 	return (1);
 }
 
-int	count_exec_tokens(char **tokens)
-{
-	int	count;
-
-	count = 0;
-	while (tokens[count])
-		count ++;
-	return (count);
-}
-
-char **dup_tab(char **src, int size)
-{
-	char	**new_tab;
-	int		index;
-
-	index = 0;
-	new_tab = ft_calloc(sizeof(char *), size + 1);
-	if (!new_tab)
-		return (NULL);
-	while (src[index])
-	{
-		new_tab[index] = ft_strdup(src[index]);
-		if (!new_tab[index])
-			return (NULL);
-		index ++;
-	}
-	return (new_tab);
-}
-
 char	*get_token_literal(char *token_literal, t_minishell *minishell)
 {
 	char	*new_token_literal;
@@ -117,25 +104,11 @@ char	*get_token_literal(char *token_literal, t_minishell *minishell)
 
 int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 {
-	char	**tmp;
-	int		index;
+	t_list	*new_node;
 
-	index = 0;
 
-	if (count_exec_tokens(node->exec_token) == 0)
-	{
-		free(node->exec_token);
-		node->exec_token = ft_calloc(sizeof(char *), 2);
-		node->exec_token[0] = get_token_literal(token->literal, minishell);
-		return (1);
-	}
-	tmp = dup_tab(node->exec_token, count_exec_tokens(node->exec_token) + 1);
-	if (!tmp)
-		return (0);
-	tmp[count_exec_tokens(node->exec_token)] = get_token_literal(token->literal, minishell);
-	free_tab(node->exec_token);
-	node->exec_token = dup_tab(tmp, count_exec_tokens(tmp));
-	free_tab(tmp);
+	new_node = new_exec_node(token->literal, token->type);
+	ft_lstadd_back(&node->exec_lst, new_node);
 	return (1);
 }
 
@@ -163,3 +136,8 @@ int	node_preparation(t_ast *node, t_minishell *minishell)
 	}
 	return (0);
 }
+
+
+"echo"
+"bonjour ca va"$var 
+"oui et toi $TEST test" = 1 token
