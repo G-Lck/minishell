@@ -14,6 +14,7 @@
 # include "token.h"
 # include "ast.h"
 # include "builtins.h"
+#include <dirent.h>
 
 typedef struct s_token t_token;
 typedef struct s_ast t_ast;
@@ -47,7 +48,7 @@ typedef struct s_minishell
 
 void	ast_descent(t_ast *node, t_minishell *data);
 int	node_preparation(t_ast *node, t_minishell *minishell);
-char *wildcards_parser(char *src);
+char **wildcards_parser(char *pattern, t_minishell *minishell);
 char	*get_token_literal(char *token_literal, t_minishell *minishell);
 char *find_command(t_ast *node, int *status, char *envp[]);
 char	*ft_strcat(char *dest, char *src);
