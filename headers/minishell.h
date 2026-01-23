@@ -56,6 +56,8 @@ char 	*find_command(t_ast *node, int *status, char **envp);
 void	simple_command_exec(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
 
+t_token *split_expansion(char *token_literal);
+
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
 int	create_token(char *str, int type, int index, t_minishell *minishell);

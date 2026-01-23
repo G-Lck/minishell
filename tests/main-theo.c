@@ -11,6 +11,8 @@ int	main(int argc, char *argv[], char *envp[])
 	minishell.env = NULL;
 	if (!feel_env(&minishell.env, envp))
 		return (1);
+
+	split_expansion("bonjour\"$test\"");
 	// char *str = "bonjour ca\"\'$HOME\'\" va";
 	// str = expand_variables(str, minishell.env);
 	// printf("%s", str);
@@ -32,7 +34,5 @@ int	main(int argc, char *argv[], char *envp[])
 	// 	free_ast(minishell.ast);
 	// 	free_token_list(&minishell.tokens_list);
 	// }
-	// return (0);
-
-	char	**str = wildcards_parser("test", &minishell);
+	return (0);
 }

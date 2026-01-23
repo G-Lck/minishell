@@ -75,9 +75,9 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 	}
 	else
 	{
-		//node_preparation(node, minishell);
+		node_preparation(node, minishell);
 		//debug_node(node);
-		simple_command_exec(node, minishell);
+		//simple_command_exec(node, minishell);
 		return ;
 	}
 	if (node->node_type == AND_OP)

@@ -102,11 +102,63 @@ char	*get_token_literal(char *token_literal, t_minishell *minishell)
 	return (NULL);
 }
 
+
+// t_token *split_expansion(char *token_literal)
+// {
+// 	char	**tab = malloc(sizeof(char) * 3);
+// 	int	index;
+// 	int	saved_index;
+// 	int	in_quotes;
+// 	int	in_dquotes;
+
+
+// 	index = 0;
+// 	saved_index = 0;
+// 	in_quotes = 0;
+// 	in_dquotes = 0;
+// 	tab[0] = NULL;
+// 	tab[1] = NULL;
+// 	tab[2] = NULL;
+
+// 	while (token_literal[index])
+// 	{
+// 		if (token_literal[index] == '"' && in_quotes == 0)
+// 			in_dquotes = !in_dquotes;
+// 		else if (token_literal[index] == '\'' && in_dquotes == 0)
+// 			in_quotes = !in_quotes;
+// 		index ++;
+// 		if (token_literal[index] == '$' && in_dquotes == 0)
+// 		{
+// 			saved_index = index;
+// 			tab[0] = ft_substr(token_literal, 0, index);
+// 			while (token_literal[index])
+// 			{
+// 				if (!ft_isalnum(token_literal[index]) && token_literal[index] != '_')
+// 					break ;
+// 				index ++;
+// 			}
+// 			tab[1] = ft_substr(token_literal, saved_index, saved_index - index);
+// 			saved_index = index;
+// 			while (token_literal[index])
+// 				index ++;
+// 			tab[2] = ft_substr(token_literal, saved_index, saved_index - index);
+// 			break ;
+// 		}
+// 	}
+// 	ft_printf("[0] %s\n", tab[0]);
+// 	ft_printf("[1] %s\n", tab[1]);
+// 	ft_printf("[2] %s\n", tab[2]);
+// }
+
 int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 {
 	t_list	*new_node;
 
 
+	if (ft_strchr(token->literal, '$') != NULL)
+	{
+		split_expansion(token->literal);
+	}
 	new_node = new_exec_node(token->literal, token->type);
 	ft_lstadd_back(&node->exec_lst, new_node);
 	return (1);
