@@ -35,7 +35,6 @@ int	ft_echo(char **args, t_env *env)
 
 	i = 1;
 	newline = 1;
-	ft_printf("we are in echo\n");
 	while (args[i] && is_option_n(args[i]))
 	{
 		newline = 0;
@@ -43,7 +42,7 @@ int	ft_echo(char **args, t_env *env)
 	}
 	while (args[i])
 	{
-		ft_printf("%s", args[i], env);
+		ft_printf("%s", args[i]);
 		if (args[i + 1])
 			ft_printf(" ");
 		i++;
