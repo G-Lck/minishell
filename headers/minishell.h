@@ -55,6 +55,7 @@ char	*ft_strcat(char *dest, char *src);
 char 	*find_command(t_ast *node, int *status, char **envp);
 void	exec_node(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
+char	**tokens_to_args(t_list *token_list, int len);
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
@@ -73,5 +74,6 @@ int		is_operator(char *str, int index);
 void	free_token_list(t_list **head);
 void	print_token(t_minishell *minishell);
 
-
+// exec
+void	exec_executable(t_ast *node, t_minishell *minishell);
 #endif

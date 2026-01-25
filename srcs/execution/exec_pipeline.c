@@ -216,7 +216,6 @@ void	execute_pipeline_recursive(t_ast *node, t_minishell *data, t_pipeline *pipe
 
 	if (node->node_type == CMD)
 	{
-		ft_printf("coucou\n");
 		execute_single_command(node, data, pipeline, *cmd_index);
 		(*cmd_index)++;
 		return ;
@@ -248,11 +247,8 @@ void	execute_single_command(t_ast *node, t_minishell *minishell,
 
 		args = tokens_to_args(node->lst_token, node->lst_len);
 		node->exec_token = args;
-		ft_printf("%s\n", args[0]);
-		ft_printf("hello\n");
-		exec_node(node, minishell);
 		close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
-
+		exec_node(node, minishell);
 		exit(node->exec_status);
 	}
 	else
