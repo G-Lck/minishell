@@ -2,8 +2,6 @@
 
 void	init_minishell(t_minishell *minishell, char **envp)
 {
-	extern char **environ;
-
 	minishell->tokens_list = NULL;
 	minishell->ast = NULL;
 	minishell->input = NULL;
@@ -93,7 +91,7 @@ int	main(int argc, char*argv[], char *envp[])
 		process_command(input, &minishell);
 		free(input);
 	}
-
+	cleanup_minishell(&minishell);
 	ft_printf("Force à toi\n");
 	return (0);
 }

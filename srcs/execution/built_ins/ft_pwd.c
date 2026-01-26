@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "../../../headers/minishell.h"
 
 int	ft_pwd(void)
 {

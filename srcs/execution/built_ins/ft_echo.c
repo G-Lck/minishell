@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "../../../headers/minishell.h"
 
 int	is_option_n(char *arg)
 {
