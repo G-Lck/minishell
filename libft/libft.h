@@ -62,7 +62,7 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_itoa(int n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
-char	**ft_split(char const *s, char c);
+char	**ft_split(char const *s, char *set);
 char	*ft_realloc(char *dest, char *src);
 int		char_isfind(char *str, char c);
 void	*ft_memset(void *pointer, int value, size_t count);

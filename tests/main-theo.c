@@ -12,8 +12,9 @@ int	main(int argc, char *argv[], char *envp[])
 	if (!feel_env(&minishell.env, envp))
 		return (1);
 
-	split_expansion("bonjour\"$test\"");
-	// char *str = "bonjour ca\"\'$HOME\'\" va";
+	split_expansion("\"$vartest\" \"caca\"", &minishell);
+
+	// char *str = "'$vartest'$vartest";
 	// str = expand_variables(str, minishell.env);
 	// printf("%s", str);
 	// write (1, "\033[H\033[2J", 8);

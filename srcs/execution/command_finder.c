@@ -54,7 +54,7 @@ static char	*get_path(char *cmd, char *envp_path)
 
 	index = 0;
 	cmd_path = NULL;
-	splited_path = ft_split(envp_path, ':');
+	splited_path = ft_split(envp_path, ":");
 	if (!splited_path)
 		return (NULL);
 	while (splited_path[index])

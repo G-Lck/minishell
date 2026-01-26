@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   node_preparation.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/19 16:30:40 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/01/26 13:58:11 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,53 +102,67 @@ char	*get_token_literal(char *token_literal, t_minishell *minishell)
 	return (NULL);
 }
 
+int	token_counter(char *expanded_token)
+{
+	int	count;
+	int	index;
+	int	in_quote;
+	int	in_dquote;
 
-// t_token *split_expansion(char *token_literal)
-// {
-// 	char	**tab = malloc(sizeof(char) * 3);
-// 	int	index;
-// 	int	saved_index;
-// 	int	in_quotes;
-// 	int	in_dquotes;
+	count = 1;
+	index = 0;
+	in_quote = 0;
+	in_dquote = 0;
+	while (expanded_token[index])
+	{
+		if (expanded_token[index] == '"' && in_quote == 0)
+			in_dquote = !in_dquote;
+		if (expanded_token[index] == 39 && in_dquote == 0)
+			in_quote = !in_quote;
+		if ((in_quote != 1 || in_dquote != 1) && is_wspace(expanded_token[index]))
+			count ++;
+		index ++;
+	}
+	return (count);
+}
 
+void	fill_token_tab(t_token *token_tab, char *expanded_token)
+{
+	char	*tmp;
+	int		in_quotes;
+	int		in_dquotes;
+	int		current;
+	int		index;
 
-// 	index = 0;
-// 	saved_index = 0;
-// 	in_quotes = 0;
-// 	in_dquotes = 0;
-// 	tab[0] = NULL;
-// 	tab[1] = NULL;
-// 	tab[2] = NULL;
+	in_quotes = 0;
+	in_dquotes = 0;
+	while (expanded_token[index])
+	{
+		if (expanded_token[index] == '"' && in_quotes == 0)
+			in_dquotes = !in_dquotes;
+		if (expanded_token[index] == 39 && in_dquotes == 0)
+			in_quotes = !in_quotes;
+		if (is_wspace(expanded_token[index]))
+		{
+			token_tab ++;
+			while (expanded_token[index] && is_wspace(expanded_token[index]))
+				index ++;
+		}
+		index += 1;
+	}
+}
 
-// 	while (token_literal[index])
-// 	{
-// 		if (token_literal[index] == '"' && in_quotes == 0)
-// 			in_dquotes = !in_dquotes;
-// 		else if (token_literal[index] == '\'' && in_dquotes == 0)
-// 			in_quotes = !in_quotes;
-// 		index ++;
-// 		if (token_literal[index] == '$' && in_dquotes == 0)
-// 		{
-// 			saved_index = index;
-// 			tab[0] = ft_substr(token_literal, 0, index);
-// 			while (token_literal[index])
-// 			{
-// 				if (!ft_isalnum(token_literal[index]) && token_literal[index] != '_')
-// 					break ;
-// 				index ++;
-// 			}
-// 			tab[1] = ft_substr(token_literal, saved_index, saved_index - index);
-// 			saved_index = index;
-// 			while (token_literal[index])
-// 				index ++;
-// 			tab[2] = ft_substr(token_literal, saved_index, saved_index - index);
-// 			break ;
-// 		}
-// 	}
-// 	ft_printf("[0] %s\n", tab[0]);
-// 	ft_printf("[1] %s\n", tab[1]);
-// 	ft_printf("[2] %s\n", tab[2]);
-// }
+t_token *split_expansion(char *literal, t_minishell *minishell)
+{
+	t_token	*token_tab;
+	char	*expanded_token;
+
+	expanded_token = expand_variables(literal, minishell->env);
+	token_tab = ft_calloc(sizeof(t_token), token_counter(expanded_token));
+	if (!token_tab)
+		return (NULL);
+	fill_token_tab(token_tab, expanded_token);
+}
 
 int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 {
@@ -157,7 +171,7 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 
 	if (ft_strchr(token->literal, '$') != NULL)
 	{
-		split_expansion(token->literal);
+		//split_expansion(token->literal);
 	}
 	new_node = new_exec_node(token->literal, token->type);
 	ft_lstadd_back(&node->exec_lst, new_node);

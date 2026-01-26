@@ -55,8 +55,7 @@ char	*ft_strcat(char *dest, char *src);
 char 	*find_command(t_ast *node, int *status, char **envp);
 void	simple_command_exec(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
-
-t_token *split_expansion(char *token_literal);
+t_token *split_expansion(char *literal, t_minishell *minishell);
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
