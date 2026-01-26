@@ -1,6 +1,11 @@
 #ifndef PIPELINE_H
 # define PIPELINE_H
 
+# include <sys/types.h>
+
+typedef struct s_ast t_ast;
+typedef struct s_minishell t_minishell;
+
 typedef struct s_pipeline
 {
 	int			**pipes_tab;

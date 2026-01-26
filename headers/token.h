@@ -1,6 +1,8 @@
 #ifndef TOKEN_H
 # define TOKEN_H
 
+# include "../libft/libft.h"
+
 typedef enum e_token_type
 {
 	AND = 0,

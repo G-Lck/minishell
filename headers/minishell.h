@@ -1,23 +1,25 @@
-#ifndef MINI_H
-# define MINI_H
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-# include "../libft/libft.h"
-# include "stdio.h"
-# include "unistd.h"
-# include "stdlib.h"
-# include "errno.h"
-# include "fcntl.h"
-# include "stdbool.h"
+
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <stdbool.h>
 # include <readline/readline.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <dirent.h>
+
+# include "../libft/libft.h"
+
 # include "token.h"
 # include "ast.h"
 # include "builtins.h"
-#include <dirent.h>
+# include "pipeline.h"
 
-typedef struct s_token t_token;
-typedef struct s_ast t_ast;
 
 typedef struct s_env
 {
