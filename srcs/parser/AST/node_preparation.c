@@ -126,55 +126,96 @@ int	token_counter(char *expanded_token)
 	return (count);
 }
 
-void	fill_token_tab(t_token *token_tab, char *expanded_token)
+int	create_token_literal(t_token *token_tab, char *str, int *index)
 {
-	char	*tmp;
 	int		in_quotes;
 	int		in_dquotes;
 	int		current;
-	int		index;
 
+	current = *index;
 	in_quotes = 0;
 	in_dquotes = 0;
+	while (str[*index])
+	{
+		if (str[*index] == '"' || str[*index] == 39)
+		{
+			if (str[*index] == '"' && in_quotes == 0)
+				in_dquotes = !in_dquotes;
+			if (str[*index] == 39 && in_dquotes == 0)
+				in_quotes = !in_quotes;
+		}
+		if (is_separator(str, *index) && in_quotes == 0 && in_dquotes == 0)
+			break ;
+		*index += 1;
+	}
+	token_tab->literal = ft_substr(str, current, (*index - current));
+	if (!token_tab)
+		return (0);
+	return (1);
+}
+
+void	fill_token_tab(t_token *token_tab, char *expanded_token)
+{
+	int	index;
+	int	token_tab_index;
+
+	index = 0;
+	token_tab_index = 0;
 	while (expanded_token[index])
 	{
-		if (expanded_token[index] == '"' && in_quotes == 0)
-			in_dquotes = !in_dquotes;
-		if (expanded_token[index] == 39 && in_dquotes == 0)
-			in_quotes = !in_quotes;
-		if (is_wspace(expanded_token[index]))
+		if (expanded_token[index] == '"' || expanded_token[index] == '\''
+				|| expanded_token[index])
 		{
-			token_tab ++;
-			while (expanded_token[index] && is_wspace(expanded_token[index]))
-				index ++;
+			create_token_literal(&token_tab[token_tab_index], expanded_token, &index);
+			token_tab_index ++;
 		}
-		index += 1;
+		index ++;
 	}
 }
 
-t_token *split_expansion(char *literal, t_minishell *minishell)
+t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell)
 {
 	t_token	*token_tab;
+	int		index;
 	char	*expanded_token;
 
+	index = 0;
 	expanded_token = expand_variables(literal, minishell->env);
-	token_tab = ft_calloc(sizeof(t_token), token_counter(expanded_token));
+	*token_count = token_counter(expanded_token);
+	token_tab = ft_calloc(sizeof(t_token), *token_count);
 	if (!token_tab)
 		return (NULL);
 	fill_token_tab(token_tab, expanded_token);
+	return (token_tab);
 }
 
 int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 {
+	int		token_count;
+	int		index;
 	t_list	*new_node;
+	t_token	*token_tab;
 
-
+	index = 0;
 	if (ft_strchr(token->literal, '$') != NULL)
 	{
-		//split_expansion(token->literal);
+		token_tab = split_expension(token->literal, &token_count, minishell);
+		while (index < token_count)
+		{
+			new_node = new_exec_node(token_tab[index].literal, STRING);
+			ft_lstadd_back(&node->exec_lst, new_node);
+			index ++;
+		}
 	}
-	new_node = new_exec_node(token->literal, token->type);
-	ft_lstadd_back(&node->exec_lst, new_node);
+	else if (token->literal[0] == '*')
+	{
+		//wildcards parser
+	}
+	else
+	{
+		new_node = new_exec_node(token->literal, token->type);
+		ft_lstadd_back(&node->exec_lst, new_node);
+	}
 	return (1);
 }
 

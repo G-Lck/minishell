@@ -12,7 +12,7 @@ OBJS = ${SRCS:.c=.o}
 MAIN_OBJS = ${MAIN_SRCS:.c=.o}
 CC = gcc
 RM = rm -f
-CFLAGS = -Iheaders -g
+CFLAGS = -Iheaders
 
 all : ${NAME}
 
