@@ -6,7 +6,7 @@
 /*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/29 19:06:51 by theo             ###   ########.fr       */
+/*   Updated: 2026/01/29 19:36:24 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,15 +267,17 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 	}
 	else if (need_to_glob(token->literal))
 	{
-		// int	index = 0;
-		// char	**tab;
+		int	index = 0;
+		char	**tab;
 
-		// tab = wildcards_parser(token->literal, minishell);
-		// while (tab[index])
-		// {
-		// 	ft_printf("%s", tab[index]);
-		// 	index ++;
-		// }
+		cleaned_string = string_cleaner(token->literal);
+		tab = wildcards_parser(cleaned_string, minishell);
+		while (tab[index])
+		{
+			new_node = new_exec_node(tab[index], token->type);
+			ft_lstadd_back(&node->exec_lst, new_node);
+			index ++;
+		}
 	}
 	else
 	{
