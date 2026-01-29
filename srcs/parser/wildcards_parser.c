@@ -29,7 +29,7 @@ int	pattern_checker(char *ref, char *pat, int n, int m)
 char **wildcards_parser(char *pattern, t_minishell *minishell)
 {
 	char	**results;
-	DIR		*dir = opendir("/home/thbouver/Desktop/github/minishell");
+	DIR		*dir = opendir(minishell->current_dir);
 
 	struct dirent	*dent;
 	dent = readdir(dir);
@@ -37,10 +37,11 @@ char **wildcards_parser(char *pattern, t_minishell *minishell)
 	{
 		if (dent->d_name[0] != '.')
 		{
-			if (pattern_checker(dent->d_name, "*.c", ft_strlen(dent->d_name), ft_strlen("*.c")))
+			if (pattern_checker(dent->d_name, pattern, ft_strlen(dent->d_name), ft_strlen(pattern)))
 				ft_printf("[MATCH!] : %s\n", dent->d_name);
 		}
 		dent = readdir(dir);
 	}
 	closedir(dir);
+	return (results);
 }

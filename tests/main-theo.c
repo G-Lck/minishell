@@ -11,7 +11,6 @@ int	main(int argc, char *argv[], char *envp[])
 	minishell.env = NULL;
 	if (!feel_env(&minishell.env, envp))
 		return (1);
-
 	char *str = "'$vartest'$vartest";
 	str = expand_variables(str, minishell.env);
 	printf("%s", str);

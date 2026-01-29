@@ -6,7 +6,7 @@
 /*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/26 13:58:11 by theo             ###   ########.fr       */
+/*   Updated: 2026/01/29 19:06:51 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,40 @@ t_list	*new_exec_node(char *token_literal, t_token_type type)
 		return(NULL);
 	new_node = ft_lstnew(new_exec_token);
 	return (new_node);
+}
+
+char	*string_cleaner(char *string)
+{
+	int		index;
+	int		index_2;
+	int		in_dquote;
+	int		in_quote;
+	char	*cleaned_string;
+
+	index = 0;
+	index_2 = 0;
+	in_dquote = 0;
+	in_quote = 0;
+	cleaned_string = ft_calloc(sizeof(char), ft_strlen(string) + 1);
+	if (!cleaned_string)
+		return (0);
+	while (string[index])
+	{
+		if (string[index] == '"' && in_quote == 0)
+		{
+			in_dquote = !in_dquote;
+			index ++;
+		}
+		else if (string[index] == '\'' && in_dquote == 0)
+		{
+			in_quote = !in_quote;
+			index ++;
+		}
+		else
+			cleaned_string[index_2 ++] = string[index ++];
+	}
+	free(string);
+	return (cleaned_string);
 }
 
 int	check_wspaces(char *str)
@@ -149,6 +183,7 @@ int	create_token_literal(t_token *token_tab, char *str, int *index)
 		*index += 1;
 	}
 	token_tab->literal = ft_substr(str, current, (*index - current));
+	token_tab->literal = string_cleaner(token_tab->literal);
 	if (!token_tab)
 		return (0);
 	return (1);
@@ -189,8 +224,31 @@ t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell
 	return (token_tab);
 }
 
+int	need_to_glob(char *token_literal)
+{
+	int	in_dquotes;
+	int	in_quotes;
+	int	index;
+
+	in_dquotes = 0;
+	in_quotes = 0;
+	index = 0;
+	while (token_literal[index])
+	{
+		if (token_literal[index] == '"' && in_quotes == 0)
+			in_dquotes = !in_dquotes;
+		if (token_literal[index] == 39 && in_dquotes == 0)
+			in_quotes = !in_quotes;
+		if (in_quotes == 0 && in_dquotes == 0 && token_literal[index] == '*')
+			return (1);
+		index ++;
+	}
+	return (0);
+}
+
 int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 {
+	char	*cleaned_string;
 	int		token_count;
 	int		index;
 	t_list	*new_node;
@@ -207,13 +265,24 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 			index ++;
 		}
 	}
-	else if (token->literal[0] == '*')
+	else if (need_to_glob(token->literal))
 	{
-		//wildcards parser
+		// int	index = 0;
+		// char	**tab;
+
+		// tab = wildcards_parser(token->literal, minishell);
+		// while (tab[index])
+		// {
+		// 	ft_printf("%s", tab[index]);
+		// 	index ++;
+		// }
 	}
 	else
 	{
-		new_node = new_exec_node(token->literal, token->type);
+		cleaned_string = string_cleaner(token->literal);
+		if (!cleaned_string)
+			return (0);
+		new_node = new_exec_node(cleaned_string, token->type);
 		ft_lstadd_back(&node->exec_lst, new_node);
 	}
 	return (1);
