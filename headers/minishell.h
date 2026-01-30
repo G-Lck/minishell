@@ -63,6 +63,7 @@ int	get_token_type(char *token);
 void	pop_token(int index, t_list **head);
 int	feel_env(t_env **env, char *envp[]);
 char	*get_env_value(char *key, t_env *env);
+void	free_env2(t_env **head);
 int	syntax_checker(t_minishell *minishell);
 void	free_tab(char **tab);
 
