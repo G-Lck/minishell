@@ -245,7 +245,7 @@ void	execute_single_command(t_ast *node, t_minishell *minishell,
 	{
 		setup_pipe_redirections(pipeline->pipes_tab, cmd_index, pipeline->total_cmds, node);
 
-		args = tokens_to_args(node->lst_token, node->lst_len);
+		args = tokens_to_args(node->exec_lst);
 		node->exec_token = args;
 		close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
 		exec_node(node, minishell);

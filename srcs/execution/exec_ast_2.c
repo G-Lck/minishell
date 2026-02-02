@@ -99,24 +99,39 @@ void	print_token_list(t_list *redir_lst, t_list *exec_lst)
 	ft_printf("-----------\n");
 }
 
-char **tokens_to_args(t_list *token_list, int len)
+int	ft_lstlen(t_list *lst)
+{
+	int i;
+
+	i = 0;
+	while(lst)
+	{
+		i++;
+		lst = lst->next;
+	}
+	return (i);
+}
+
+char **tokens_to_args(t_list *token_list)
 {
 	t_list *current;
 	t_token *token;
 	char **args;
 	int i;
+	int len;
 
 	if (!token_list)
 		return (NULL);
 	current = token_list;
 
+	len = ft_lstlen(token_list);
 
 	args = malloc(sizeof(char *) * (len + 1));
 	if (!args)
 		return (NULL);
 	current = token_list;
 	i = 0;
-	while (current && i < len)
+	while (current)
 	{
 		token = (t_token *)current->content;
 		if (token && token->literal)
@@ -126,7 +141,7 @@ char **tokens_to_args(t_list *token_list, int len)
 		current = current->next;
 		i++;
 	}
-	args[len] = NULL;
+	args[i] = NULL;
 
 	return (args);
 }
@@ -167,9 +182,9 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 	}
 	else
 	{
-		//node_preparation(node, minishell);
+		node_preparation(node, minishell);
 		//debug_node(node);
-		args = tokens_to_args(node->lst_token, node->lst_len);
+		args = tokens_to_args(node->exec_lst);
 		node->exec_token = args;
 		exec_node(node, minishell);
 	}
