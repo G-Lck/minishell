@@ -1,7 +1,5 @@
-# ifndef BUILTINS_H
+#ifndef BUILTINS_H
 # define BUILTINS_H
-
-# include "minishell.h"
 
 #define EXIT_SHELL 2
 #define PATH_MAX 4096
@@ -9,8 +7,8 @@
 typedef struct s_minishell t_minishell;
 typedef struct s_env t_env;
 
+// built_ins
 int		ft_exit(char **args, t_minishell *minishell);
-
 int		ft_echo(char **args, t_env *env);
 char	*expand_variables(char *str, t_env *env);
 char	*get_var_name(char *str);

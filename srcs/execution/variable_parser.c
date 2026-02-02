@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "../../headers/minishell.h"
 
 static char	*handle_special_var(char c)
 {

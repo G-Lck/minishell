@@ -16,11 +16,9 @@ void	exec_pipeline(t_ast *node, t_minishell *data)
 	}
 
 	execute_pipeline_commands(node, data, pipeline);
-
 	close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
 
 	wait_for_pipeline_completion(pipeline, node);
-
 	cleanup_pipeline_data(pipeline);
 }
 
@@ -230,9 +228,10 @@ void	execute_pipeline_recursive(t_ast *node, t_minishell *data, t_pipeline *pipe
 	}
 }
 
-void	execute_single_command(t_ast *node, t_minishell *data,
+void	execute_single_command(t_ast *node, t_minishell *minishell,
 	t_pipeline *pipeline, int cmd_index)
 {
+	char **args;
 	pid_t	pid;
 
 	pid = fork();
@@ -246,10 +245,10 @@ void	execute_single_command(t_ast *node, t_minishell *data,
 	{
 		setup_pipe_redirections(pipeline->pipes_tab, cmd_index, pipeline->total_cmds, node);
 
+		args = tokens_to_args(node->lst_token, node->lst_len);
+		node->exec_token = args;
 		close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
-
-		simple_command_exec(node, data);
-
+		exec_node(node, minishell);
 		exit(node->exec_status);
 	}
 	else

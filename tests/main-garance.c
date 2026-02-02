@@ -2,8 +2,6 @@
 
 void	init_minishell(t_minishell *minishell, char **envp)
 {
-	extern char **environ;
-
 	minishell->tokens_list = NULL;
 	minishell->ast = NULL;
 	minishell->input = NULL;
@@ -66,10 +64,11 @@ void	process_command(char *input, t_minishell *minishell)
 	cleanup_minishell(minishell);
 }
 
-int	main(char **envp)
+int	main(int argc, char*argv[], char *envp[])
 {
 	t_minishell	minishell;
 	char		*input;
+
 
 	ft_printf("Enter commands to test tokenization -> AST -> execution\n");
 	ft_printf("Type 'q' to quit\n\n");
@@ -92,7 +91,7 @@ int	main(char **envp)
 		process_command(input, &minishell);
 		free(input);
 	}
-
+	cleanup_minishell(&minishell);
 	ft_printf("Force à toi\n");
 	return (0);
 }

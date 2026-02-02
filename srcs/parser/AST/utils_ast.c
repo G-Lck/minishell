@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "../../../headers/minishell.h"
 
 t_ast	*ft_astnew(t_list *lst_token, int len)
 {
@@ -9,7 +9,7 @@ t_ast	*ft_astnew(t_list *lst_token, int len)
 		return (NULL);
 	node->redirs = NULL;
 	node->exec_lst = NULL;
-	node->exec_token = ft_calloc(sizeof(char *), 1);
+	node->exec_token = NULL;
 	node->lst_token = lst_token;
 	node->lst_len = len;
 	node->is_subshell = false;
@@ -55,15 +55,26 @@ void	free_redir_lst(t_list **head)
 }
 
 
+void free_redir(void *content)
+{
+    t_redir *redir = (t_redir *)content;
+    if (redir)
+    {
+        free(redir->target);  // si target est alloué
+        free(redir);
+    }
+}
+
 void	free_ast(t_ast *node)
 {
 	if (node->next_left != NULL)
 		free_ast(node->next_left);
 	if (node->next_right != NULL)
 		free_ast(node->next_right);
-	free_exec_lst(&node->exec_lst);
-	free_redir_lst(&node->redirs);
-	free(node->exec_token);
+	//if (node->lst_token)
+		//free_token_list(&(node->lst_token));
+	if (node->redirs)
+		ft_lstclear(&(node->redirs), free_redir);
 	free(node);
 	return ;
 }

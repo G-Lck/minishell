@@ -73,7 +73,7 @@ void	new_node(t_ast *node, t_list *lst_token, int i, enum e_token_type token_typ
 	node_right = ft_astnew(lst_token->next, node->lst_len - i - 1);
 	node_right->lst_len = node->lst_len - i - 1;
 	node->lst_token = lst_token;
-	node->exec_token = ft_calloc(sizeof(char *), 1);
+	node->exec_token = NULL;
 	node->exec_lst = NULL;
 	node->redirs = NULL;
 	node->lst_len = 1;

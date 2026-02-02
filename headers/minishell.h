@@ -1,23 +1,25 @@
-#ifndef MINI_H
-# define MINI_H
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-# include "../libft/libft.h"
-# include "stdio.h"
-# include "unistd.h"
-# include "stdlib.h"
-# include "errno.h"
-# include "fcntl.h"
-# include "stdbool.h"
+
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <stdbool.h>
 # include <readline/readline.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <dirent.h>
+
+# include "../libft/libft.h"
+
 # include "token.h"
 # include "ast.h"
 # include "builtins.h"
-#include <dirent.h>
+# include "pipeline.h"
 
-typedef struct s_token t_token;
-typedef struct s_ast t_ast;
 
 typedef struct s_env
 {
@@ -53,8 +55,9 @@ char	*get_token_literal(char *token_literal, t_minishell *minishell);
 char *find_command(t_ast *node, int *status, char *envp[]);
 char	*ft_strcat(char *dest, char *src);
 char 	*find_command(t_ast *node, int *status, char **envp);
-void	simple_command_exec(t_ast *node, t_minishell *data);
+void	exec_node(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
+char	**tokens_to_args(t_list *token_list, int len);
 
 //Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
@@ -74,7 +77,6 @@ int		is_operator(char *str, int index);
 void	free_token_list(t_list **head);
 void	print_token(t_minishell *minishell);
 
-//exec_ast
-int	exec_ast(t_ast *node);
-
+// exec
+void	exec_executable(t_ast *node, t_minishell *minishell);
 #endif
