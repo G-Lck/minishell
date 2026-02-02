@@ -3,16 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 09:24:16 by theo              #+#    #+#             */
-/*   Updated: 2026/01/19 15:46:36 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/01/26 12:27:21 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	get_size(char const *str, char separator)
+int	is_sep(char *set, char c)
+{
+	int	index;
+
+	index = 0;
+	while (set[index])
+	{
+		if (set[index] == c)
+			return (1);
+		index ++;
+	}
+	return (0);
+}
+
+int	get_size(char const *str, char *set)
 {
 	int	index;
 	int	size;
@@ -21,10 +35,10 @@ int	get_size(char const *str, char separator)
 	size = 0;
 	while (str[index])
 	{
-		if (str[index] != separator)
+		if (!is_sep(set, str[index]))
 		{
 			size ++;
-			while (str[index + 1] && str[index + 1] != separator)
+			while (str[index + 1] && !is_sep(set, str[index + 1]))
 				index ++;
 		}
 		index ++;
@@ -32,7 +46,7 @@ int	get_size(char const *str, char separator)
 	return (size);
 }
 
-void	allocation(char const *str, char separator, char **ptr)
+void	allocation(char const *str, char *set, char **ptr)
 {
 	int	index;
 	int	ptr_index;
@@ -42,10 +56,10 @@ void	allocation(char const *str, char separator, char **ptr)
 	ptr_index = 0;
 	while (str[index])
 	{
-		if (str[index] != separator)
+		if (!is_sep(set, str[index]))
 		{
 			size = 0;
-			while (str[index + 1] && str[index + 1] != separator)
+			while (str[index + 1] && !is_sep(set, str[index + 1]))
 			{
 				size ++;
 				index ++;
@@ -59,7 +73,7 @@ void	allocation(char const *str, char separator, char **ptr)
 	}
 }
 
-void	fill_tab(char const *str, char separator, char **ptr)
+void	fill_tab(char const *str, char *set, char **ptr)
 {
 	int	index;
 	int	ptr_i;
@@ -69,10 +83,10 @@ void	fill_tab(char const *str, char separator, char **ptr)
 	ptr_i = 0;
 	while (str[index])
 	{
-		if (str[index] != separator)
+		if (!is_sep(set, str[index]))
 		{
 			ptr_j = 0;
-			while (str[index + 1] && str[index + 1] != separator)
+			while (str[index + 1] && !is_sep(set, str[index + 1]))
 			{
 				ptr[ptr_i][ptr_j] = str[index];
 				ptr_j ++;
@@ -85,14 +99,14 @@ void	fill_tab(char const *str, char separator, char **ptr)
 	}
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char *set)
 {
 	char	**ptr;
 
-	ptr = ft_calloc(sizeof(char *), (get_size(s, c) + 1));
+	ptr = ft_calloc(sizeof(char *), (get_size(s, set) + 1));
 	if (!ptr)
 		return (NULL);
-	allocation(s, c, ptr);
-	fill_tab(s, c, ptr);
+	allocation(s, set, ptr);
+	fill_tab(s, set, ptr);
 	return (ptr);
 }

@@ -19,6 +19,42 @@ t_ast	*ft_astnew(t_list *lst_token, int len)
 	return (node);
 }
 
+void	free_exec_lst(t_list **head)
+{
+	t_token	*token;
+	t_list	*tmp;
+
+	while (*head)
+	{
+		tmp = *head;
+		*head = (*head)->next;
+		token = tmp->content;
+		free (token->literal);
+		free (token);
+		free (tmp);
+		tmp = NULL;
+	}
+	*head = NULL;
+}
+
+void	free_redir_lst(t_list **head)
+{
+	t_redir	*redir;
+	t_list	*tmp;
+
+	while (*head)
+	{
+		tmp = *head;
+		*head = (*head)->next;
+		redir = tmp->content;
+		free (redir->target);
+		free (tmp);
+		tmp = NULL;
+	}
+	*head = NULL;
+}
+
+
 void free_redir(void *content)
 {
     t_redir *redir = (t_redir *)content;

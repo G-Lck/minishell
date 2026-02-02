@@ -6,7 +6,7 @@
 /*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:08:35 by theo              #+#    #+#             */
-/*   Updated: 2025/12/10 16:38:48 by theo             ###   ########.fr       */
+/*   Updated: 2026/01/29 18:14:48 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,39 +17,6 @@ Fonction inutile pour le moment.
 Permet de supprimer les doubles quotes et singles quotes de delimation tout
 en preservant ceux a afficher
 */
-static int	string_cleaner(char *string, t_minishell *minishell)
-{
-	char	*tmp;
-	int		in_quotes;
-	int		in_dquotes;
-	int		index;
-	int		ptr_index;
-
-	ptr_index = 0;
-	index = 0;
-	in_dquotes = 0;
-	in_quotes = 0;
-	tmp = ft_calloc(sizeof(char), ft_strlen(string + 1));
-	if (!tmp)
-		return (-1);
-	while (string[index])
-	{
-		if (string[index] == '"' && in_quotes == 0)
-			in_dquotes = !in_dquotes;
-		else if (string[index] == 39 && in_dquotes == 0)
-			in_quotes = !in_quotes;
-		if ((string[index] == '"' && in_quotes == 1)
-			|| (string[index] == 39 && in_dquotes == 1)
-			|| string[index] != '"' && string[index] != 39)
-		{
-			tmp[ptr_index] = string[index];
-			ptr_index ++;
-		}
-		index ++;
-	}
-	ft_printf("[%s] ", string);
-	return (1);
-}
 
 /*
 String_Tokenizer s'occupe de creer les tokens sur les chaines de characteres.
@@ -58,7 +25,7 @@ ou une parenthese.
 La fonction n'enleve pas les doubles quotes et les singles quotes delimitant
 les chaines.
 Elle ajoute une nouvelle node a la liste t_list *tokens_list et lui donne
-t_token *node en contenu. 
+t_token *node en contenu.
 */
 static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell, int current_token_index)
 {
@@ -95,7 +62,7 @@ static int	string_tokenizer(char *cmd_line, int *index, t_minishell *minishell, 
 Operator_Tokenizer s'occupe de creer les tokens sur les operateurs logique ainsi
 que sur les parentheses.
 Elle ajoute une nouvelle node a la liste t_list *tokens_list et lui donne
-t_token *node en contenu. 
+t_token *node en contenu.
 */
 static int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell, int current_token_index)
 {
@@ -124,7 +91,7 @@ static int	operator_tokenizer(char *cmd_line, int *index, t_minishell *minishell
 
 /*
 Fonction d'entree du tokenizer
-La fonction lit l'input du shell et creer des tokens en fonction des operateurs, 
+La fonction lit l'input du shell et creer des tokens en fonction des operateurs,
 des whites space ainsi que des chaines de characteres.
 L'index est directement modifier par les fonctions qui creer les tokens.
 Les fonctions renvoies 0 en cas d'erreurs d'allocations.

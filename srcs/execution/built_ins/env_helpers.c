@@ -6,7 +6,7 @@
 /*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/01/16 16:22:37 by theo             ###   ########.fr       */
+/*   Updated: 2026/01/26 12:08:07 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,18 +79,34 @@ void	set_env_var(t_env **env, char *key, char *value)
 	add_env_var(env, key, value);
 }
 
-void	free_env(t_env *env)
+// void	free_env(t_env *env)
+// {
+// 	t_env	*tmp;
+
+// 	while (env)
+// 	{
+// 		tmp = env->next;
+// 		free(env->key);
+// 		free(env->value);
+// 		free(env);
+// 		env = tmp;
+// 	}
+// }
+
+void	free_env2(t_env **head)
 {
 	t_env	*tmp;
 
-	while (env)
+	while (*head)
 	{
-		tmp = env->next;
-		free(env->key);
-		free(env->value);
-		free(env);
-		env = tmp;
+		tmp = *head;
+		*head = (*head)->next;
+		free (tmp->key);
+		free (tmp->value);
+		free (tmp);
+		tmp = NULL;
 	}
+	*head = NULL;
 }
 
 int	feel_env(t_env **env, char *envp[])
@@ -101,13 +117,11 @@ int	feel_env(t_env **env, char *envp[])
 	index = 0;
 	while (envp[index])
 	{
-		splited_env_var = ft_split(envp[index], '=');
+		splited_env_var = ft_split(envp[index], "=");
 		if (!splited_env_var)
 			return (0);
 		add_env_var(env, splited_env_var[0], splited_env_var[1]);
-		free(splited_env_var[0]);
-		free(splited_env_var[1]);
-		free(splited_env_var);
+		free_tab(splited_env_var);
 		index ++;
 	}
 	return (1);

@@ -77,31 +77,25 @@ void	exec_executable(t_ast *node, t_minishell *minishell)
 	}
 }
 
-void	print_token_list(t_list *list)
+void	print_token_list(t_list *redir_lst, t_list *exec_lst)
 {
 	t_redir	*redir;
+	t_token *token;
 
-	while (list)
+	ft_printf("-----------\n");
+	while (exec_lst)
 	{
-		redir = list->content;
-		ft_printf("redir : %d : %s\n", redir->redir_type, redir->target);
-		list = list->next;
-	}
-}
-
-void	debug_node(t_ast *node)
-{
-	int	index;
-
-	index = 0;
-	ft_printf("\n-----------\n");
-	while (node->exec_token[index])
-	{
-		ft_printf("%s -> ", node->exec_token[index]);
-		index ++;
+		token = exec_lst->content;
+		ft_printf("[%s] ->", token->literal);
+		exec_lst = exec_lst->next;
 	}
 	ft_printf("\n");
-	print_token_list(node->redirs);
+	while (redir_lst)
+	{
+		redir = redir_lst->content;
+		ft_printf("redir : %d : %s\n", redir->redir_type, redir->target);
+		redir_lst = redir_lst->next;
+	}
 	ft_printf("-----------\n");
 }
 
