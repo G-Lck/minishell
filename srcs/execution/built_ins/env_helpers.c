@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helpers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/01/26 12:08:07 by theo             ###   ########.fr       */
+/*   Updated: 2026/02/03 11:31:05 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void	free_env2(t_env **head)
 	*head = NULL;
 }
 
-int	feel_env(t_env **env, char *envp[])
+int	fill_env(t_env **env, char *envp[])
 {
 	char	**splited_env_var;
 	int		index;

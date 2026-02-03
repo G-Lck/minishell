@@ -6,9 +6,16 @@ void	init_minishell(t_minishell *minishell, char **envp)
 	minishell->ast = NULL;
 	minishell->input = NULL;
 	minishell->envp = envp;
+	minishell->env = NULL;
 	minishell->current_dir = NULL;
 	minishell->exit_code = 0;
 	minishell->last_status = 0;
+
+	if (!fill_env(&minishell->env, envp))
+	{
+		ft_printf("Error: failed to initialize environment\n");
+		exit(1);
+	}
 }
 
 void	cleanup_minishell(t_minishell *minishell)
@@ -27,6 +34,11 @@ void	cleanup_minishell(t_minishell *minishell)
 	{
 		free(minishell->input);
 		minishell->input = NULL;
+	}
+	if (minishell->env)
+	{
+		free_env2(&minishell->env);
+		minishell->env = NULL;
 	}
 }
 
