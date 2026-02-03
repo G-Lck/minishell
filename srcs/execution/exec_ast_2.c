@@ -186,6 +186,7 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 		//debug_node(node);
 		args = tokens_to_args(node->exec_lst);
 		node->exec_token = args;
+
 		exec_node(node, minishell);
 	}
 	return ;

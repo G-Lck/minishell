@@ -15,7 +15,7 @@ int	main(int argc, char *argv[], char *envp[])
 	minishell.current_dir = ft_calloc(sizeof(char), 100);
 	minishell.current_dir = getcwd(minishell.current_dir, 100);
 	minishell.env = NULL;
-	if (!feel_env(&minishell.env, envp))
+	if (!fill_env(&minishell.env, envp))
 		return (1);
 
 		minishell.input = readline("\e[0;36m\nMinihell > \e[0;33m");
