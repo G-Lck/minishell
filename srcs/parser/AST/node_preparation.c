@@ -277,6 +277,7 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 			new_node = new_exec_node(tab[index], token->type);
 			ft_lstadd_back(&node->exec_lst, new_node);
 			index ++;
+			
 		}
 	}
 	else
