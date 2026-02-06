@@ -85,13 +85,6 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 			ft_lstadd_back(&node->exec_lst, new_node);
 			index ++;
 		}
-		// index = 0;
-		// while (index < token_count)
-		// {
-		// 	free(token_tab[index].literal);
-		// 	index ++;
-		// }
-		// free (token_tab);
 	}
 	else if (need_to_glob(token->literal))
 	{
@@ -99,7 +92,7 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 		char	**tab;
 
 		cleaned_string = ft_strdup(token->literal);
-		cleaned_string = string_cleaner(token->literal);
+		cleaned_string = string_cleaner(cleaned_string);
 		tab = wildcards_parser(cleaned_string, minishell);
 		while (tab[index])
 		{
@@ -107,7 +100,8 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 			ft_lstadd_back(&node->exec_lst, new_node);
 			index ++;
 		}
-		// free_tab(tab);
+		free(cleaned_string);
+		free_tab(tab);
 	}
 	else
 	{
