@@ -77,17 +77,19 @@ int	ft_export(char **args, t_env **env)
 	int	ret;
 
 	ret = 0;
-	if (!args || !args[0])
+	if (!args[1])
 	{
 		print_sorted_env(*env);
 		return (0);
 	}
-	i = 0;
+	i = 1;
 	while (args[i])
 	{
-		if (export_variable(args[i], env) != 0)
+		ft_printf("args are %s\n", args[i]);
+		if (export_variable(args[i], env) == 0)
 			ret = 1;
 		i++;
 	}
+	ft_printf("%i\n", ret);
 	return (ret);
 }

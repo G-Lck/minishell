@@ -19,7 +19,7 @@ int		ft_unset(char **args, t_env **env);
 int		ft_cd(char **args, t_env **env);
 
 // env_helpers.c
-void	add_env_var(t_env **head, char *key, char *value);
+void	add_env_var(t_env **env, char *key, char *value);
 void	set_env_var(t_env **env, char *key, char *value);
 t_env	*create_env_var(char *key, char *value);
 t_env	*find_env_var(t_env *env, char *key);

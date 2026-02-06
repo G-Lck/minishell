@@ -16,19 +16,35 @@
 Parcours la liste et libere la chaine de characetere literal du token, le
 content ainsi que la node.
 */
+void	safe_free(void **ptr)
+{
+	if (*ptr)
+	{
+		ft_printf("la\n");
+		free(*ptr);
+		ft_printf("la\n");
+		*ptr = NULL;
+	}
+	
+}
 void	free_token_list(t_list **head)
 {
 	t_list *tmp;
 	t_token *node;
-
 	while (*head)
 	{
 		tmp = *head;
 		node = tmp->content;
 		*head = (*head)->next;
-		free (node->literal);
-		free (node);
-		free (tmp);
+		ft_printf("coucou1\n");
+		if(node && node->literal)
+			free(node->literal);
+		ft_printf("coucou2\n");
+		if (node)
+			free(&node);
+		ft_printf("coucou3\n");
+		if (tmp)
+			free(&tmp);
 	}
 	*head = NULL;
 }

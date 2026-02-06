@@ -32,20 +32,21 @@ t_env	*create_env_var(char *key, char *value)
 	return (node);
 }
 
-void	add_env_var(t_env **head, char *key, char *value)
+void	add_env_var(t_env **env, char *key, char *value)
 {
 	t_env	*new;
 	t_env	*tmp;
 
+	ft_printf("enter in add_env_var\n");
 	new = create_env_var(key, value);
 	if (!new)
 		return ;
-	if (!*head)
+	if (!*env)
 	{
-		*head = new;
+		*env = new;
 		return ;
 	}
-	tmp = *head;
+	tmp = *env;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
@@ -69,6 +70,7 @@ void	set_env_var(t_env **env, char *key, char *value)
 {
 	t_env	*var;
 
+	ft_printf("enter in set_env_var\n");
 	var = find_env_var(*env, key);
 	if (var)
 	{

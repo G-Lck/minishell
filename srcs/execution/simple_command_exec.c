@@ -20,23 +20,24 @@ int is_builtin_and_execute(char **args, t_minishell *minishell)
 {
 	if (!args || !args[0])
 		return (-1);
-	if (ft_strncmp(args[0], "echo", 4) == 0 && ft_strlen(args[0]) == 4)
+	else if (ft_strncmp(args[0], "echo", 4) == 0 && ft_strlen(args[0]) == 4)
 		return (ft_echo(args, minishell->env));
-	if (ft_strncmp(args[0], "cd", 2) == 0 && ft_strlen(args[0]) == 2)
+	else if (ft_strncmp(args[0], "cd", 2) == 0 && ft_strlen(args[0]) == 2)
 		return (ft_cd(args, &minishell->env));
-	if (ft_strncmp(args[0], "pwd", 3) == 0 && ft_strlen(args[0]) == 3)
+	else if (ft_strncmp(args[0], "pwd", 3) == 0 && ft_strlen(args[0]) == 3)
 		return (ft_pwd());
-	if (ft_strncmp(args[0], "export", 6) == 0 && ft_strlen(args[0]) == 6)
+	else if (ft_strncmp(args[0], "export", 6) == 0 && ft_strlen(args[0]) == 6)
 		return (ft_export(args, &minishell->env));
-	if (ft_strncmp(args[0], "unset", 5) == 0 && ft_strlen(args[0]) == 5)
+	else if (ft_strncmp(args[0], "unset", 5) == 0 && ft_strlen(args[0]) == 5)
 		return (ft_unset(args, &minishell->env));
-	if (ft_strncmp(args[0], "env", 3) == 0 && ft_strlen(args[0]) == 3)
+	else if (ft_strncmp(args[0], "env", 3) == 0 && ft_strlen(args[0]) == 3)
 		return (ft_env(minishell->env));
-	if (ft_strncmp(args[0], "exit", 4) == 0 && ft_strlen(args[0]) == 4)
+	else if (ft_strncmp(args[0], "exit", 4) == 0 && ft_strlen(args[0]) == 4)
 		return (ft_exit(args, minishell));
 	return (-1);
 }
 
+// faire les redirections
 void exec_node(t_ast *node, t_minishell *minishell)
 {
 	char **args;
@@ -45,7 +46,7 @@ void exec_node(t_ast *node, t_minishell *minishell)
 	char *cmd_path;
 	int i;
 
-	args = node->exec_token;
+	args = node->exec_token; // ca cest de la merde je pense
 	if (!node || !node->exec_token)
 		exit(EXIT_FAILURE);
 	if (!args)

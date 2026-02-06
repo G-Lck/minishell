@@ -79,4 +79,7 @@ void	print_token(t_minishell *minishell);
 
 // exec
 void	exec_executable(t_ast *node, t_minishell *minishell);
+
+// ff
+void	cleanup_minishell(t_minishell *minishell);
 #endif

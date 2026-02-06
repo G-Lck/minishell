@@ -67,12 +67,11 @@ void free_redir(void *content)
 
 void	free_ast(t_ast *node)
 {
+	ft_printf("2\n");
 	if (node->next_left != NULL)
 		free_ast(node->next_left);
 	if (node->next_right != NULL)
 		free_ast(node->next_right);
-	//if (node->lst_token)
-		//free_token_list(&(node->lst_token));
 	if (node->redirs)
 		ft_lstclear(&(node->redirs), free_redir);
 	free(node);

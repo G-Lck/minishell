@@ -12,14 +12,29 @@
 
 #include "../../../headers/minishell.h"
 
+static char	*get_current_dir(void)
+{
+	char	*cwd;
+
+	cwd = malloc(PATH_MAX);
+	if (!cwd)
+		return (NULL);
+	if (getcwd(cwd, PATH_MAX) == NULL)
+	{
+		free(cwd);
+		return (NULL);
+	}
+	return (cwd);
+}
+
 int	ft_pwd(void)
 {
 	char	*cwd;
 
-	cwd = malloc(sizeof(char) * PATH_MAX);
 	if (!cwd)
 		return (0);
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	cwd = get_current_dir();
+	if (cwd == NULL)
 	{
 		ft_printf("pwd: error retrieving current directory\n");
 		free(cwd);

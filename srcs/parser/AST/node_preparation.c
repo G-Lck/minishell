@@ -28,7 +28,7 @@ t_list	*new_redir_node(char *target, t_token_type type)
 	return (new_node);
 }
 
-t_list	*new_exec_node(char *token_literal, t_token_type type)
+t_list	*new_exec_node(char *token_literal, t_token_type type) // changer le nom, cest une t-list
 {
 	t_list	*new_node;
 	t_token	*new_exec_token;
@@ -220,7 +220,7 @@ t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell
 	token_tab = ft_calloc(sizeof(t_token), *token_count);
 	if (!token_tab)
 		return (NULL);
-	fill_token_tab(token_tab, expanded_token);
+	fill_token_tab(token_tab, expanded_token);// peut-etre il faudrait la free
 	return (token_tab);
 }
 
@@ -289,7 +289,7 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 	}
 	return (1);
 }
-
+// freeeeeee les tableauxxxxxxxxxxxxxxxx
 int	node_preparation(t_ast *node, t_minishell *minishell)
 {
 	int	index = 0;

@@ -11,14 +11,9 @@ void	init_minishell(t_minishell *minishell, char **envp)
 	minishell->exit_code = 0;
 	minishell->last_status = 0;
 
-	if (!fill_env(&minishell->env, envp))
-	{
-		ft_printf("Error: failed to initialize environment\n");
-		exit(1);
-	}
 }
 
-void	cleanup_minishell(t_minishell *minishell)
+void	reinit_minishell(t_minishell *minishell)
 {
 	if (minishell->tokens_list)
 	{
@@ -35,6 +30,31 @@ void	cleanup_minishell(t_minishell *minishell)
 		free(minishell->input);
 		minishell->input = NULL;
 	}
+}
+
+void	cleanup_minishell(t_minishell *minishell)
+{
+	ft_printf("1\n");
+	if (minishell->tokens_list)
+	{
+		ft_printf("ici\n");
+		free_token_list(&minishell->tokens_list);
+		ft_printf("la\n");
+		minishell->tokens_list = NULL;
+	}
+	ft_printf("1\n");
+	if (minishell->ast)
+	{
+		free_ast(minishell->ast);
+		minishell->ast = NULL;
+	}
+	ft_printf("1\n");
+	if (minishell->input)
+	{
+		free(minishell->input);
+		minishell->input = NULL;
+	}
+	ft_printf("1\n");
 	if (minishell->env)
 	{
 		free_env2(&minishell->env);
@@ -73,7 +93,8 @@ void	process_command(char *input, t_minishell *minishell)
 	print_ast_pretty(minishell->ast);
 	ft_printf("Execution:\n");
 	ast_descent(minishell->ast, minishell);
-	cleanup_minishell(minishell);
+	free_ast(minishell->ast);
+	minishell->ast=NULL;
 }
 
 int	main(int argc, char*argv[], char *envp[])
@@ -84,10 +105,15 @@ int	main(int argc, char*argv[], char *envp[])
 
 	ft_printf("Enter commands to test tokenization -> AST -> execution\n");
 	ft_printf("Type 'q' to quit\n\n");
+	init_minishell(&minishell, envp);
+	if (!fill_env(&(&minishell)->env, envp))
+	{
+		ft_printf("Error: failed to initialize environment\n");
+		exit(1);
+	}
 
 	while (1)
 	{
-		init_minishell(&minishell, envp);
 		input = readline("minishell> ");
 		if (ft_strncmp(input, "q", 1) == 0)
 		{
@@ -102,6 +128,7 @@ int	main(int argc, char*argv[], char *envp[])
 		minishell.input = ft_strdup(input);
 		process_command(input, &minishell);
 		free(input);
+		reinit_minishell(&minishell);
 	}
 	cleanup_minishell(&minishell);
 	ft_printf("Force à toi\n");

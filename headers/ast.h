@@ -23,11 +23,11 @@ typedef struct s_redir
 typedef struct s_ast
 {
 	t_node_type		node_type;
-	t_list			*lst_token;
+	t_list			*lst_token; // celui ou on pointe partout
 	struct s_ast	*next_left;
 	struct s_ast	*next_right;
 	t_list			*redirs;
-	t_list			*exec_lst;
+	t_list			*exec_lst; // celle apres lexpansion et wildcards
 	char			**exec_token;
 	int				lst_len;
 	int				exec_status;
