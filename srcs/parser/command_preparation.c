@@ -85,10 +85,17 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 			ft_lstadd_back(&node->exec_lst, new_node);
 			index ++;
 		}
+		index = 0;
+		while (index < token_count)
+		{
+			free(token_tab[index].literal);
+			index ++;
+		}
+		free (token_tab);
 	}
 	else if (need_to_glob(token->literal))
 	{
-		int	index = 0;
+		index = 0;
 		char	**tab;
 
 		cleaned_string = ft_strdup(token->literal);
