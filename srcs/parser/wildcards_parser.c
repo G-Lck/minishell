@@ -98,7 +98,7 @@ char **wildcards_parser(char *pattern, t_minishell *minishell)
 	results = ft_calloc(sizeof(char *), get_tab_size(pattern, minishell) + 1);
 	if (tab_size == 0)
 	{
-		results[0] = pattern;
+		results[0] = ft_strdup(pattern);
 		return (results);
 	}
 	dir = opendir(minishell->current_dir);
