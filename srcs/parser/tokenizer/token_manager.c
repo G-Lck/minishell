@@ -19,20 +19,19 @@ content ainsi que la node.
 void	free_token_list(t_list **head)
 {
 	t_list *tmp;
-	t_token *node;
+	t_token *token;
 
 	while (*head)
 	{
 		tmp = *head;
-		node = tmp->content;
+		token = tmp->content;
 		*head = (*head)->next;
-		free (node->literal);
-		free (node);
+		free (token->literal);
+		free (token);
 		free (tmp);
 	}
 	*head = NULL;
 }
-
 /*Creer un nouveau token et l'ajoute a la liste de tokens.*/
 int	create_token(char *str, int type, int index, t_minishell *minishell)
 {

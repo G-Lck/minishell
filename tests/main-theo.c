@@ -15,8 +15,11 @@ int	main(int argc, char *argv[], char *envp[])
 	minishell.current_dir = ft_calloc(sizeof(char), 100);
 	minishell.current_dir = getcwd(minishell.current_dir, 100);
 	minishell.env = NULL;
+
+
 	if (!fill_env(&minishell.env, envp))
 		return (1);
+	
 
 		minishell.input = readline("\e[0;36m\nMinihell > \e[0;33m");
 		tokenizer(minishell.input, &minishell);
@@ -30,6 +33,7 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		free_ast(minishell.ast);
 		free_token_list(&minishell.tokens_list);
+		free_minishell(&minishell);
 
 
 	// write (1, "\033[H\033[2J", 8);
@@ -50,6 +54,6 @@ int	main(int argc, char *argv[], char *envp[])
 	// 	free_ast(minishell.ast);
 	// 	free_token_list(&minishell.tokens_list);
 	// }
-	free_minishell(&minishell);
+	//(&minishell);
 	return (0);
 }

@@ -49,7 +49,7 @@ typedef struct s_minishell
 }	t_minishell;
 
 void	ast_descent(t_ast *node, t_minishell *data);
-int	node_preparation(t_ast *node, t_minishell *minishell);
+int	command_preparation(t_ast *node, t_minishell *minishell);
 char **wildcards_parser(char *pattern, t_minishell *minishell);
 char	*get_token_literal(char *token_literal, t_minishell *minishell);
 char *find_command(t_ast *node, int *status, char *envp[]);
@@ -58,8 +58,6 @@ char 	*find_command(t_ast *node, int *status, char **envp);
 void	exec_node(t_ast *node, t_minishell *data);
 void	exec_pipeline(t_ast *node, t_minishell *data);
 char	**tokens_to_args(t_list *token_list);
-
-//Parser/Tokenizer
 int	tokenizer(char *cmd_line, t_minishell *minishell);
 int	create_token(char *str, int type, int index, t_minishell *minishell);
 int	get_token_type(char *token);
@@ -69,14 +67,14 @@ char	*get_env_value(char *key, t_env *env);
 void	free_env2(t_env **head);
 int	syntax_checker(t_minishell *minishell);
 void	free_tab(char **tab);
-
-//Utils
+int	need_to_glob(char *token_literal);
+int	check_wspaces(char *str);
 int		is_wspace(int c);
 int		is_separator(char *str, int index);
 int		is_operator(char *str, int index);
 void	free_token_list(t_list **head);
+char	*string_cleaner(char *string);
 void	print_token(t_minishell *minishell);
-
-// exec
+t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell);
 void	exec_executable(t_ast *node, t_minishell *minishell);
 #endif
