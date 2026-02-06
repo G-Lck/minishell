@@ -62,6 +62,28 @@ int	get_tab_size(char *pattern, t_minishell *minishell)
 	return (count);
 }
 
+int	need_to_glob(char *token_literal)
+{
+	int	in_dquotes;
+	int	in_quotes;
+	int	index;
+
+	in_dquotes = 0;
+	in_quotes = 0;
+	index = 0;
+	while (token_literal[index])
+	{
+		if (token_literal[index] == '"' && in_quotes == 0)
+			in_dquotes = !in_dquotes;
+		if (token_literal[index] == 39 && in_dquotes == 0)
+			in_quotes = !in_quotes;
+		if (in_quotes == 0 && in_dquotes == 0 && token_literal[index] == '*')
+			return (1);
+		index ++;
+	}
+	return (0);
+}
+
 char **wildcards_parser(char *pattern, t_minishell *minishell)
 {
 	int		index;
@@ -72,6 +94,7 @@ char **wildcards_parser(char *pattern, t_minishell *minishell)
 
 	index = 0;
 	tab_size = get_tab_size(pattern, minishell);
+	
 	results = ft_calloc(sizeof(char *), get_tab_size(pattern, minishell) + 1);
 	if (tab_size == 0)
 	{

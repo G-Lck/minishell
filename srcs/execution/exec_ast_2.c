@@ -182,7 +182,7 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 	}
 	else
 	{
-		node_preparation(node, minishell);
+		command_preparation(node, minishell);
 		//debug_node(node);
 		args = tokens_to_args(node->exec_lst);
 		node->exec_token = args;

@@ -32,7 +32,6 @@ void	free_token_list(t_list **head)
 	}
 	*head = NULL;
 }
-
 /*Creer un nouveau token et l'ajoute a la liste de tokens.*/
 int	create_token(char *str, int type, int index, t_minishell *minishell)
 {
