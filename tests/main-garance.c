@@ -1,5 +1,15 @@
 #include "minishell.h"
 
+void	reinit_minishell(t_minishell *minishell, char **envp)
+{
+	minishell->tokens_list = NULL;
+	minishell->ast = NULL;
+	minishell->input = NULL;
+	minishell->current_dir = NULL;
+	minishell->exit_code = 0;
+	minishell->last_status = 0;
+}
+
 void	init_minishell(t_minishell *minishell, char **envp)
 {
 	minishell->tokens_list = NULL;
@@ -10,33 +20,34 @@ void	init_minishell(t_minishell *minishell, char **envp)
 	minishell->current_dir = NULL;
 	minishell->exit_code = 0;
 	minishell->last_status = 0;
-
-	if (!fill_env(&minishell->env, envp))
-	{
-		ft_printf("Error: failed to initialize environment\n");
-		exit(1);
-	}
 }
 
 void	cleanup_minishell(t_minishell *minishell)
 {
 	if (minishell->tokens_list)
 	{
-		free_token_list(&minishell->tokens_list);
+		ft_printf("la\n");
+		//free_token_list(&minishell->tokens_list);
+		ft_printf("coucou\n");
 		minishell->tokens_list = NULL;
 	}
 	if (minishell->ast)
 	{
+		ft_printf("la_ast\n");
 		free_ast(minishell->ast);
+		ft_printf("la3\n");
 		minishell->ast = NULL;
 	}
+	ft_printf("la3\n");
 	if (minishell->input)
 	{
+		ft_printf("la_input\n");
 		free(minishell->input);
 		minishell->input = NULL;
 	}
 	if (minishell->env)
 	{
+		ft_printf("la\n");
 		free_env2(&minishell->env);
 		minishell->env = NULL;
 	}
@@ -73,7 +84,6 @@ void	process_command(char *input, t_minishell *minishell)
 	print_ast_pretty(minishell->ast);
 	ft_printf("Execution:\n");
 	ast_descent(minishell->ast, minishell);
-	cleanup_minishell(minishell);
 }
 
 int	main(int argc, char*argv[], char *envp[])
@@ -85,9 +95,15 @@ int	main(int argc, char*argv[], char *envp[])
 	ft_printf("Enter commands to test tokenization -> AST -> execution\n");
 	ft_printf("Type 'q' to quit\n\n");
 
+	init_minishell(&minishell, envp);
+	if (!fill_env(&(&minishell)->env, envp))
+	{
+		ft_printf("Error: failed to initialize environment\n");
+		exit(1);
+	}
 	while (1)
 	{
-		init_minishell(&minishell, envp);
+		reinit_minishell(&minishell, envp);
 		input = readline("minishell> ");
 		if (ft_strncmp(input, "q", 1) == 0)
 		{
@@ -101,6 +117,7 @@ int	main(int argc, char*argv[], char *envp[])
 		}
 		minishell.input = ft_strdup(input);
 		process_command(input, &minishell);
+		reinit_minishell(&minishell, envp);
 		free(input);
 	}
 	cleanup_minishell(&minishell);

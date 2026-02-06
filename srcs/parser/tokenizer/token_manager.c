@@ -26,7 +26,10 @@ void	free_token_list(t_list **head)
 		tmp = *head;
 		token = tmp->content;
 		*head = (*head)->next;
-		free (token->literal);
+		ft_printf("la1\n");
+		if(token && token->literal)
+			free (token->literal);
+		ft_printf("la2\n");
 		free (token);
 		free (tmp);
 	}
