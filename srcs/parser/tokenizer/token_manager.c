@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_manager.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/09 14:43:07 by thbouver          #+#    #+#             */
-/*   Updated: 2025/12/11 17:07:48 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/02/07 12:18:26 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,8 @@ void	free_token_list(t_list **head)
 		tmp = *head;
 		token = tmp->content;
 		*head = (*head)->next;
-		ft_printf("la1\n");
 		if(token && token->literal)
 			free (token->literal);
-		ft_printf("la2\n");
 		free (token);
 		free (tmp);
 	}
@@ -76,7 +74,7 @@ void	reset_tokens_index(t_list *head)
 void	free_token(t_list *node)
 {
 	t_token	*token_node;
-	
+
 	token_node = node->content;
 	free (token_node->literal);
 	free (token_node);

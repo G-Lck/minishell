@@ -10,7 +10,7 @@ MAIN_SRCS = srcs/main.c
 
 OBJS = ${SRCS:.c=.o}
 MAIN_OBJS = ${MAIN_SRCS:.c=.o}
-CC = gcc
+CC = gcc -Wall -Wextra
 RM = rm -f
 CFLAGS = -Iheaders -g
 

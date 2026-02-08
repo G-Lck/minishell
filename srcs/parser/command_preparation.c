@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   node_preparation.c                                 :+:      :+:    :+:   */
+/*   command_preparation.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/29 19:36:24 by theo             ###   ########.fr       */
+/*   Updated: 2026/02/08 15:30:11 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	create_redir_node(char *target, t_token_type type, t_ast *node, t_minishell 
 	}
 	else
 	{
-		expanded_var = expand_variables(target, minishell->env);
+		expanded_var = expand_variables(target, minishell);
 		if (expanded_var != NULL && check_wspaces(expanded_var))
 			ft_printf("ambiguous redirection\n");
 		new_node = new_redir_node(expanded_var, type);

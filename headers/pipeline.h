@@ -21,7 +21,8 @@ void			execute_pipeline_recursive(t_ast *node, t_minishell *data, t_pipeline *pi
 void			execute_single_command(t_ast *node, t_minishell *data, t_pipeline *pipeline, int cmd_index);
 void			setup_pipe_redirections(int **pipes_tab, int cmd_index, int total_commands, t_ast *node);
 void			close_all_pipes(int **pipes_tab, int pipe_count);
-void			wait_for_pipeline_completion(t_pipeline *pipeline, t_ast *node);
+void			close_unused_pipes(int **pipes_tab, int pipe_count, int cmd_index);
+void			wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell);
 void			cleanup_pipeline_data(t_pipeline *pipeline);
 void			cleanup_pipes_tab(int **pipes_tab, int pipe_count);
 int				**create_pipes_tab(int pipe_count);

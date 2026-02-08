@@ -44,9 +44,11 @@ static char	*handle_normal_var(char *str)
 
 char	*get_var_name(char *str)
 {
-	if (ft_strlen(str) == 1 || !(ft_isalpha(str[1]) || str[1] == '_'))
-		return (ft_strdup("$"));
-	if (str[1] == '$' || str[1] == '?' || ft_isdigit(str[1]))
+	// Tester d'abord les cas spéciaux
+	if (ft_strlen(str) >= 2 && (str[1] == '$' || str[1] == '?' || ft_isdigit(str[1])))
 		return (handle_special_var(str[1]));
-	return (handle_normal_var(str));
+	else if (ft_strlen(str) == 1 || !(ft_isalpha(str[1]) || str[1] == '_'))
+		return (ft_strdup("$"));
+	else
+		return (handle_normal_var(str));
 }

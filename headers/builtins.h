@@ -10,7 +10,7 @@ typedef struct s_env t_env;
 // built_ins
 int		ft_exit(char **args, t_minishell *minishell);
 int		ft_echo(char **args, t_env *env);
-char	*expand_variables(char *str, t_env *env);
+char	*expand_variables(char *str, t_minishell *minishell);
 char	*get_var_name(char *str);
 int		ft_env(t_env *env);
 int		ft_pwd(void);
