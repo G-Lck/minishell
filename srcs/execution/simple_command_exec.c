@@ -41,9 +41,6 @@ void exec_node(t_ast *node, t_minishell *minishell)
 {
 	char **args;
 	int builtin_status;
-	int status;
-	char *cmd_path;
-	int i;
 
 	args = node->exec_token;
 	if (!node || !node->exec_token)
@@ -55,10 +52,10 @@ void exec_node(t_ast *node, t_minishell *minishell)
 	if (builtin_status != -1)
 	{
 		free_args(args);
-		node->exec_status = builtin_status;
+		minishell->last_status = builtin_status;
 		return ;
 	}
-	ft_printf("External command: %s\n", args[0]);
+	//ft_printf("External command: %s\n", args[0]);
 	exec_executable(node, minishell);
 	//print_token(node->lst_token);
 

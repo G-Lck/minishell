@@ -92,10 +92,10 @@ char *find_command(t_ast *node, int *status, char **envp)
 		return (*status = OK, node->exec_token[0]);
 	}
 	while (envp[index])
-	{		
+	{
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
 		{
-			ft_printf("index: %i\n", index);
+			//ft_printf("index: %i\n", index);
 			cmd_path = get_path(node->exec_token[0], envp[index]);
 			if (cmd_path)
 			{
@@ -106,7 +106,7 @@ char *find_command(t_ast *node, int *status, char **envp)
 			}
 			break;
 		}
-		
+
 		index++;
 	}
 	return (*status = COMMAND_NOT_FOUND, NULL);

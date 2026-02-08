@@ -16,9 +16,11 @@ void	exec_pipeline(t_ast *node, t_minishell *data)
 	}
 
 	execute_pipeline_commands(node, data, pipeline);
+
+	// Fermer les pipes dans le parent APRÈS avoir créé tous les enfants
 	close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
 
-	wait_for_pipeline_completion(pipeline, node);
+	wait_for_pipeline_completion(pipeline, data);
 	cleanup_pipeline_data(pipeline);
 }
 
@@ -245,11 +247,20 @@ void	execute_single_command(t_ast *node, t_minishell *minishell,
 	{
 		setup_pipe_redirections(pipeline->pipes_tab, cmd_index, pipeline->total_cmds, node);
 
+		// Fermer SEULEMENT les pipes non utilisés par ce processus
+		close_unused_pipes(pipeline->pipes_tab, pipeline->total_pipe, cmd_index);
+
+		// ✅ Préparer la commande AVANT tokens_to_args
+		command_preparation(node, minishell);
 		args = tokens_to_args(node->exec_lst);
 		node->exec_token = args;
-		close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
 		exec_node(node, minishell);
-		exit(node->exec_status);
+
+		// Dans un pipeline, le processus enfant DOIT exit
+		// Si c'était un builtin, exec_node a fait return après avoir mis à jour minishell->last_status
+		// Si c'était une commande externe, exec_executable a déjà fait exit() dans l'enfant
+		// Donc on arrive ici seulement pour les builtins :
+		exit(minishell->last_status);
 	}
 	else
 	{
@@ -319,15 +330,39 @@ void	close_all_pipes(int **pipes_tab, int pipe_count)
 	}
 }
 
-void	wait_for_pipeline_completion(t_pipeline *pipeline, t_ast *node)
+void	close_unused_pipes(int **pipes_tab, int pipe_count, int cmd_index)
+{
+	int	i;
+
+	i = 0;
+	while (i < pipe_count)
+	{
+		if (pipes_tab[i])
+		{
+			// Ne pas fermer le pipe d'entrée de ce processus
+			if (i != cmd_index - 1 || cmd_index == 0)
+				close(pipes_tab[i][0]);
+
+			// Ne pas fermer le pipe de sortie de ce processus
+			if (i != cmd_index)
+				close(pipes_tab[i][1]);
+		}
+		i++;
+	}
+}
+
+void	wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell)
 {
 	int	status;
 	int	i;
-	int	last_status;
+	pid_t	rightmost_pid;
+	int	rightmost_status;
 
-	last_status = 0;
+	// Le PID de la commande la plus à droite est le dernier dans le tableau
+	rightmost_pid = pipeline->pids[pipeline->total_cmds - 1];
+	rightmost_status = 0;
+
 	i = 0;
-
 	while (i < pipeline->total_cmds)
 	{
 		if (waitpid(pipeline->pids[i], &status, 0) == -1)
@@ -336,13 +371,18 @@ void	wait_for_pipeline_completion(t_pipeline *pipeline, t_ast *node)
 		}
 		else
 		{
-			if (WIFEXITED(status))
-				last_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				last_status = 128 + WTERMSIG(status);
+			// Si c'est la commande la plus à droite, capturer son code d'erreur
+			if (pipeline->pids[i] == rightmost_pid)
+			{
+				if (WIFEXITED(status))
+					rightmost_status = WEXITSTATUS(status);
+				else if (WIFSIGNALED(status))
+					rightmost_status = 128 + WTERMSIG(status);
+			}
 		}
 		i++;
 	}
 
-	node->exec_status = last_status;
+	// Le code d'erreur du pipeline est celui de la commande la plus à droite
+	minishell->last_status = rightmost_status;
 }

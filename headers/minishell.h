@@ -1,5 +1,5 @@
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef MINI_H
+# define MINI_H
 
 
 # include <stdio.h>
@@ -46,6 +46,7 @@ typedef struct s_minishell
 	char	*current_dir;
 	int		exit_code;
 	int		last_status;
+	int		previous_last_status;
 }	t_minishell;
 
 void	ast_descent(t_ast *node, t_minishell *data);
@@ -63,7 +64,7 @@ int	create_token(char *str, int type, int index, t_minishell *minishell);
 int	get_token_type(char *token);
 void	pop_token(int index, t_list **head);
 int	fill_env(t_env **env, char *envp[]);
-char	*get_env_value(char *key, t_env *env);
+char	*get_env_value(char *key, t_minishell *minishell);
 void	free_env2(t_env **head);
 int	syntax_checker(t_minishell *minishell);
 void	free_tab(char **tab);
@@ -77,4 +78,5 @@ char	*string_cleaner(char *string);
 void	print_token(t_minishell *minishell);
 t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell);
 void	exec_executable(t_ast *node, t_minishell *minishell);
+void	cleanup_minishell(t_minishell *minishell);
 #endif

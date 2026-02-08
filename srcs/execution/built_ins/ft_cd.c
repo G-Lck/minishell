@@ -62,10 +62,10 @@ int	ft_cd(char **args, t_env **env)
 		ft_fprintf(2, "minishell: cd: missing argument\n");
 		return (1);
 	}
-	if (args[1])
+	if (args[2])
 	{
 		ft_fprintf(2, "minishell: cd: too many arguments\n");
 		return (1);
 	}
-	return (cd_to_path(args[0], env));
+	return (cd_to_path(args[1], env));
 }

@@ -29,7 +29,7 @@ void	exec_executable(t_ast *node, t_minishell *minishell)
 	if (pid == -1)
 	{
 		perror("Fork failed");
-		node->exec_status = 1;
+		minishell->last_status = 1;
 		return ;
 	}
 
@@ -38,7 +38,7 @@ void	exec_executable(t_ast *node, t_minishell *minishell)
 		cmd_path = find_command(node, &status, minishell->envp);
 	if (status == OK)
 	{
-		ft_printf("Command found at: %s\n", cmd_path);
+		//ft_printf("Command found at: %s\n", cmd_path);
 		if (execve(cmd_path, args, minishell->envp) == -1)
 		{
 			perror(args[0]);
@@ -57,7 +57,6 @@ void	exec_executable(t_ast *node, t_minishell *minishell)
 		exit(EXIT_FAILURE);
 	}
 	free_args(args);
-	node->exec_status = EXIT_SUCCESS;
 	exit(EXIT_FAILURE);
 	}
 	else
@@ -65,14 +64,14 @@ void	exec_executable(t_ast *node, t_minishell *minishell)
 		if (waitpid(pid, &status, 0) == -1)
 		{
 			perror("waitpid failed");
-			node->exec_status = 1;
+			minishell->last_status = 1;
 		}
 		else
 		{
 			if (WIFEXITED(status))
-				node->exec_status = WEXITSTATUS(status);
+				minishell->last_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				node->exec_status = 128 + WTERMSIG(status);
+				minishell->last_status = 128 + WTERMSIG(status);
 		}
 	}
 }
@@ -153,32 +152,30 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 	{
 		ft_printf("and\n");
 		ast_descent (node->next_left, minishell);
-		ft_printf("exec_status: %i\n", node->next_left->exec_status);
-		if (node->next_left->exec_status == 0)
+		ft_printf("exec_status: %i\n", minishell->last_status);
+		if (minishell->last_status == 0)
 		{
 			ft_printf("valide\n");
 			ast_descent(node->next_right, minishell);
-			node->exec_status = node->next_right->exec_status;
+			// last_status est déjà à jour après next_right
 		}
-		else
-			node->exec_status = node->next_left->exec_status;
+		// sinon on garde le last_status de next_left
 	}
 	else if (node->node_type == OR_OP)
 	{
 		ast_descent(node->next_left, minishell);
-		if (node->next_left->exec_status != 0)
+		if (minishell->last_status != 0)
 		{
 			ast_descent(node->next_right, minishell);
-			node->exec_status = node->next_right->exec_status;
+			// last_status est déjà à jour après next_right
 		}
-		else
-			node->exec_status = node->next_left->exec_status;
+		// sinon on garde le last_status de next_left
 	}
 	else if (node->node_type == PIPE_OP)
 	{
-		ft_printf("la\n");
+		//ft_printf("la\n");
 		exec_pipeline(node, minishell);
-		node->exec_status = node->next_left->exec_status;
+		// exec_pipeline devrait déjà mettre à jour minishell->last_status
 	}
 	else
 	{
@@ -188,6 +185,8 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 		node->exec_token = args;
 
 		exec_node(node, minishell);
+		// Ne pas écraser last_status si c'était une expansion de $?
+		// Pour l'instant on met toujours à jour, mais c'est le vrai problème
 	}
 	return ;
 }

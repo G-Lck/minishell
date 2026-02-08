@@ -71,12 +71,11 @@ void	free_ast(t_ast *node)
 		free_ast(node->next_left);
 	if (node->next_right != NULL)
 		free_ast(node->next_right);
-	//if (node->lst_token)
-		//free_token_list(&(node->lst_token));
 	free_exec_lst(&node->exec_lst);
 	if (node->redirs)
 		ft_lstclear(&(node->redirs), free_redir);
 	free(node);
+	ft_printf("end ast\n");
 	return ;
 }
 

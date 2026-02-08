@@ -33,9 +33,8 @@ int	ft_exit(char **args, t_minishell *minishell)
 	if (!args[1])
 	{
 		minishell->exit_code = minishell->last_status;
-		return (EXIT_SHELL);
 	}
-	if (!ft_isnumber(args[1]))
+	else if (!ft_isnumber(args[1]))
 	{
 		ft_fprintf(2, "exit: numeric argument required\n");
 		minishell->exit_code = 255;
@@ -47,5 +46,8 @@ int	ft_exit(char **args, t_minishell *minishell)
 	}
 	else
 		minishell->exit_code = ft_atoi(args[1]) % 256;
+
+	cleanup_minishell(minishell);
+	exit(minishell->exit_code);
 	return (EXIT_SHELL);
 }

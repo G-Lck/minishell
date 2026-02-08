@@ -1,5 +1,17 @@
 #include "minishell.h"
 
+void	reinit_minishell(t_minishell *minishell)
+{
+	minishell->tokens_list = NULL;
+	minishell->ast = NULL;
+	minishell->input = NULL;
+	minishell->current_dir = NULL;
+	minishell->exit_code = 0;
+	// Sauvegarder le last_status comme previous_last_status
+	minishell->previous_last_status = minishell->last_status;
+	minishell->last_status = 0;
+}
+
 void	init_minishell(t_minishell *minishell, char **envp)
 {
 	minishell->tokens_list = NULL;
@@ -10,12 +22,7 @@ void	init_minishell(t_minishell *minishell, char **envp)
 	minishell->current_dir = NULL;
 	minishell->exit_code = 0;
 	minishell->last_status = 0;
-
-	if (!fill_env(&minishell->env, envp))
-	{
-		ft_printf("Error: failed to initialize environment\n");
-		exit(1);
-	}
+	minishell->previous_last_status = 0;
 }
 
 void	cleanup_minishell(t_minishell *minishell)
@@ -49,9 +56,9 @@ void	process_command(char *input, t_minishell *minishell)
 		ft_printf("Error: tokenization failed\n");
 		return;
 	}
-	ft_printf("Tokens: ");
-	print_token(minishell);
-	ft_printf("\n");
+	//ft_printf("Tokens: ");
+	//print_token(minishell);
+	//ft_printf("\n");
 
 	if (syntax_checker(minishell) == 0)
 	{
@@ -69,25 +76,34 @@ void	process_command(char *input, t_minishell *minishell)
 	}
 
 	create_ast(minishell->ast);
-	ft_printf("AST: ");
-	print_ast_pretty(minishell->ast);
-	ft_printf("Execution:\n");
+	//ft_printf("AST: ");
+	//print_ast_pretty(minishell->ast);
+	//ft_printf("Execution:\n");
+
 	ast_descent(minishell->ast, minishell);
-	cleanup_minishell(minishell);
+
+	// Plus besoin de copier exec_status car last_status est mis à jour directement !
 }
 
-int	main(int argc, char*argv[], char *envp[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	t_minishell	minishell;
 	char		*input;
 
 
-	ft_printf("Enter commands to test tokenization -> AST -> execution\n");
-	ft_printf("Type 'q' to quit\n\n");
+	if (argc != 1 || argv[1])
+		return (1);
+	//ft_printf("Enter commands to test tokenization -> AST -> execution\n");
+	//ft_printf("Type 'q' to quit\n\n");
 
+	init_minishell(&minishell, envp);
+	if (!fill_env(&(&minishell)->env, envp))
+	{
+		ft_printf("Error: failed to initialize environment\n");
+		exit(1);
+	}
 	while (1)
 	{
-		init_minishell(&minishell, envp);
 		input = readline("minishell> ");
 		if (ft_strncmp(input, "q", 1) == 0)
 		{
@@ -101,6 +117,7 @@ int	main(int argc, char*argv[], char *envp[])
 		}
 		minishell.input = ft_strdup(input);
 		process_command(input, &minishell);
+		reinit_minishell(&minishell);
 		free(input);
 	}
 	cleanup_minishell(&minishell);

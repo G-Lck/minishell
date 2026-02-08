@@ -81,7 +81,6 @@ void	print_and_free_array(char **sorted)
 	i = 0;
 	while (sorted[i])
 	{
-		ft_printf("declare -x %s\n", sorted[i]);
 		free(sorted[i]);
 		i++;
 	}

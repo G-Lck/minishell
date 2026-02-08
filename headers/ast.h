@@ -30,7 +30,6 @@ typedef struct s_ast
 	t_list			*exec_lst;
 	char			**exec_token;
 	int				lst_len;
-	int				exec_status;
 	bool			is_subshell;
 }  t_ast;
 

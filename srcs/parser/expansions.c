@@ -79,7 +79,7 @@ t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell
 	char	*expanded_token;
 
 	index = 0;
-	expanded_token = expand_variables(literal, minishell->env);
+	expanded_token = expand_variables(literal, minishell);
 	*token_count = token_counter(expanded_token);
 	token_tab = ft_calloc(sizeof(t_token), *token_count);
 	if (!token_tab)
