@@ -15,16 +15,43 @@ static void free_args(char **args)
 	free(args);
 }
 
-void	exec_executable(t_ast *node, t_minishell *minishell)
+void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 {
 	pid_t	pid;
 	int		status;
 	char *cmd_path;
 	char **args;
 
-
 	args = node->exec_token;
-	// Fork pour exécuter la commande
+
+	if (in_pipeline)
+	{
+		cmd_path = find_command(node, &status, minishell->envp);
+		if (status == OK)
+		{
+			if (execve(cmd_path, args, minishell->envp) == -1)
+			{
+				perror(args[0]);
+				free_args(args);
+				exit(126);
+			}
+		}
+		else
+		{
+			if (execve(args[0], args, minishell->envp) == -1)
+			{
+				ft_fprintf(STDERR_FILENO,
+					"minishell: %s: command not found\n", args[0]);
+				free_args(args);
+				exit(127);
+			}
+			exit(EXIT_FAILURE);
+		}
+		free_args(args);
+		exit(EXIT_FAILURE);
+	}
+
+	// Not in pipeline - do normal fork/exec
 	pid = fork();
 	if (pid == -1)
 	{
@@ -35,29 +62,30 @@ void	exec_executable(t_ast *node, t_minishell *minishell)
 
 	if (pid == 0)
 	{
+		apply_redirections(node);
 		cmd_path = find_command(node, &status, minishell->envp);
-	if (status == OK)
-	{
-		//ft_printf("Command found at: %s\n", cmd_path);
-		if (execve(cmd_path, args, minishell->envp) == -1)
+		if (status == OK)
 		{
-			perror(args[0]);
-			free_args(args);
-			exit(126);
+			if (execve(cmd_path, args, minishell->envp) == -1)
+			{
+				perror(args[0]);
+				free_args(args);
+				exit(126);
+			}
 		}
-	}
-	else
-	{
-		if (execve(args[0], args, minishell->envp) == -1)
+		else
 		{
-			ft_printf("minishell: %s: command not found\n", args[0]);
-			free_args(args);
-			exit(127);
+			if (execve(args[0], args, minishell->envp) == -1)
+			{
+				ft_fprintf(STDERR_FILENO,
+					"minishell: %s: command not found\n", args[0]);
+				free_args(args);
+				exit(127);
+			}
+			exit(EXIT_FAILURE);
 		}
+		free_args(args);
 		exit(EXIT_FAILURE);
-	}
-	free_args(args);
-	exit(EXIT_FAILURE);
 	}
 	else
 	{
@@ -150,12 +178,11 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 	char **args;
 	if (node->node_type == AND_OP)
 	{
-		ft_printf("and\n");
 		ast_descent (node->next_left, minishell);
-		ft_printf("exec_status: %i\n", minishell->last_status);
+		//ft_printf("exec_status: %i\n", minishell->last_status);
 		if (minishell->last_status == 0)
 		{
-			ft_printf("valide\n");
+			//ft_printf("valide\n");
 			ast_descent(node->next_right, minishell);
 			// last_status est déjà à jour après next_right
 		}
@@ -184,7 +211,7 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 		args = tokens_to_args(node->exec_lst);
 		node->exec_token = args;
 
-		exec_node(node, minishell);
+		exec_node_no_pipeline(node, minishell);
 		// Ne pas écraser last_status si c'était une expansion de $?
 		// Pour l'instant on met toujours à jour, mais c'est le vrai problème
 	}

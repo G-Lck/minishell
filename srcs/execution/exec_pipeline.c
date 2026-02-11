@@ -1,5 +1,6 @@
 #include "minishell.h"
 #include "pipeline.h"
+#include <unistd.h>
 
 void	exec_pipeline(t_ast *node, t_minishell *data)
 {
@@ -8,33 +9,30 @@ void	exec_pipeline(t_ast *node, t_minishell *data)
 	pipeline = init_pipeline_data(node);
 	if (!pipeline)
 		return ;
-
 	if (create_pipes(pipeline) == -1)
 	{
 		cleanup_pipeline_data(pipeline);
 		return ;
 	}
-
 	execute_pipeline_commands(node, data, pipeline);
-
-	// Fermer les pipes dans le parent APRÈS avoir créé tous les enfants
-	close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
-
 	wait_for_pipeline_completion(pipeline, data);
 	cleanup_pipeline_data(pipeline);
 }
 
 int	count_pipeline_commands(t_ast *node)
 {
-	int	count;
+	if (!node)
+		return (0);
 
-	count = 1;
-	while (node && node->node_type == PIPE_OP)
+	if (node->node_type == CMD)
+		return (1);
+
+	if (node->node_type == PIPE_OP)
 	{
-		count++;
-		node = node->next_right;
+		return (count_pipeline_commands(node->next_left) + count_pipeline_commands(node->next_right));
 	}
-	return (count);
+
+	return (0);
 }
 
 int	get_input_redirection(t_ast *node)
@@ -101,6 +99,74 @@ int	get_output_redirection(t_ast *node)
 		current = current->next;
 	}
 	return (-1);
+}
+
+void	apply_redirections(t_ast *node)
+{
+	int	fd;
+
+	fd = get_input_redirection(node);
+	if (fd != -1)
+	{
+		if (dup2(fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2 input redirection failed");
+			exit(EXIT_FAILURE);
+		}
+		close(fd);
+	}
+	fd = get_output_redirection(node);
+	if (fd != -1)
+	{
+		if (dup2(fd, STDOUT_FILENO) == -1)
+		{
+			perror("dup2 output redirection failed");
+			exit(EXIT_FAILURE);
+		}
+		close(fd);
+	}
+}
+
+int	apply_redirections_safe(t_ast *node)
+{
+	t_list	*current;
+	t_redir	*redir;
+	int		fd;
+
+	if (!node || !node->redirs)
+		return (0);
+	current = node->redirs;
+	while (current)
+	{
+		redir = (t_redir *)current->content;
+		fd = -1;
+		if (redir->redir_type == REDIR_IN)
+			fd = open(redir->target, O_RDONLY);
+		else if (redir->redir_type == REDIR_OUT)
+			fd = open(redir->target, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		else if (redir->redir_type == APPEND)
+			fd = open(redir->target, O_CREAT | O_WRONLY | O_APPEND, 0644);
+		if (fd == -1 && (redir->redir_type == REDIR_IN
+				|| redir->redir_type == REDIR_OUT
+				|| redir->redir_type == APPEND))
+		{
+			perror(redir->target);
+			return (-1);
+		}
+		if (redir->redir_type == REDIR_IN)
+		{
+			dup2(fd, STDIN_FILENO);
+			close(fd);
+		}
+		else if (redir->redir_type == REDIR_OUT
+			|| redir->redir_type == APPEND)
+		{
+			dup2(fd, STDOUT_FILENO);
+			close(fd);
+		}
+		current = current->next;
+	}
+	return (0);
 }
 
 int	**create_pipes_tab(int pipe_count)
@@ -211,18 +277,17 @@ void	execute_pipeline_commands(t_ast *node, t_minishell *data, t_pipeline *pipel
 	execute_pipeline_recursive(node, data, pipeline, &cmd_index);
 }
 
-void	execute_pipeline_recursive(t_ast *node, t_minishell *data, t_pipeline *pipeline, int *cmd_index)
+void	execute_pipeline_recursive(t_ast *node, t_minishell *data,
+	t_pipeline *pipeline, int *cmd_index)
 {
 	if (!node)
 		return ;
-
 	if (node->node_type == CMD)
 	{
 		execute_single_command(node, data, pipeline, *cmd_index);
 		(*cmd_index)++;
 		return ;
 	}
-
 	if (node->node_type == PIPE_OP)
 	{
 		execute_pipeline_recursive(node->next_left, data, pipeline, cmd_index);
@@ -233,7 +298,7 @@ void	execute_pipeline_recursive(t_ast *node, t_minishell *data, t_pipeline *pipe
 void	execute_single_command(t_ast *node, t_minishell *minishell,
 	t_pipeline *pipeline, int cmd_index)
 {
-	char **args;
+	char	**args;
 	pid_t	pid;
 
 	pid = fork();
@@ -242,28 +307,30 @@ void	execute_single_command(t_ast *node, t_minishell *minishell,
 		perror("Fork failed");
 		return ;
 	}
-
 	if (pid == 0)
 	{
-		setup_pipe_redirections(pipeline->pipes_tab, cmd_index, pipeline->total_cmds, node);
-
-		// Fermer SEULEMENT les pipes non utilisés par ce processus
-		close_unused_pipes(pipeline->pipes_tab, pipeline->total_pipe, cmd_index);
-
-		// ✅ Préparer la commande AVANT tokens_to_args
 		command_preparation(node, minishell);
+		setup_pipe_redirections(pipeline->pipes_tab, cmd_index,
+			pipeline->total_cmds, node);
+		close_unused_pipes(pipeline->pipes_tab, pipeline->total_pipe,
+			cmd_index, pipeline->total_cmds);
 		args = tokens_to_args(node->exec_lst);
 		node->exec_token = args;
 		exec_node(node, minishell);
-
-		// Dans un pipeline, le processus enfant DOIT exit
-		// Si c'était un builtin, exec_node a fait return après avoir mis à jour minishell->last_status
-		// Si c'était une commande externe, exec_executable a déjà fait exit() dans l'enfant
-		// Donc on arrive ici seulement pour les builtins :
 		exit(minishell->last_status);
 	}
 	else
 	{
+		if (cmd_index > 0)
+		{
+			close(pipeline->pipes_tab[cmd_index - 1][0]);
+			pipeline->pipes_tab[cmd_index - 1][0] = -1;
+		}
+		if (cmd_index < pipeline->total_cmds - 1)
+		{
+			close(pipeline->pipes_tab[cmd_index][1]);
+			pipeline->pipes_tab[cmd_index][1] = -1;
+		}
 		pipeline->pids[cmd_index] = pid;
 	}
 }
@@ -275,7 +342,6 @@ void	setup_pipe_redirections(int **pipes_tab, int cmd_index,
 	int	output_fd;
 
 	input_fd = get_input_redirection(node);
-
 	if (input_fd != -1)
 	{
 		if (dup2(input_fd, STDIN_FILENO) == -1)
@@ -292,8 +358,9 @@ void	setup_pipe_redirections(int **pipes_tab, int cmd_index,
 			perror("dup2 pipe input failed");
 			exit(EXIT_FAILURE);
 		}
+		close(pipes_tab[cmd_index - 1][0]);
+		pipes_tab[cmd_index - 1][0] = -1;
 	}
-
 	output_fd = get_output_redirection(node);
 	if (output_fd != -1)
 	{
@@ -311,6 +378,8 @@ void	setup_pipe_redirections(int **pipes_tab, int cmd_index,
 			perror("dup2 stdout pipe failed");
 			exit(EXIT_FAILURE);
 		}
+		close(pipes_tab[cmd_index][1]);
+		pipes_tab[cmd_index][1] = -1;
 	}
 }
 
@@ -323,32 +392,22 @@ void	close_all_pipes(int **pipes_tab, int pipe_count)
 	{
 		if (pipes_tab[i])
 		{
-			close(pipes_tab[i][0]);
-			close(pipes_tab[i][1]);
+			if (pipes_tab[i][0] != -1)
+				close(pipes_tab[i][0]);
+			if (pipes_tab[i][1] != -1)
+				close(pipes_tab[i][1]);
 		}
 		i++;
 	}
 }
 
-void	close_unused_pipes(int **pipes_tab, int pipe_count, int cmd_index)
+void	close_unused_pipes(int **pipes_tab, int pipe_count,
+	int cmd_index, int total_cmds)
 {
-	int	i;
-
-	i = 0;
-	while (i < pipe_count)
-	{
-		if (pipes_tab[i])
-		{
-			// Ne pas fermer le pipe d'entrée de ce processus
-			if (i != cmd_index - 1 || cmd_index == 0)
-				close(pipes_tab[i][0]);
-
-			// Ne pas fermer le pipe de sortie de ce processus
-			if (i != cmd_index)
-				close(pipes_tab[i][1]);
-		}
-		i++;
-	}
+	(void)pipes_tab;
+	(void)pipe_count;
+	(void)cmd_index;
+	(void)total_cmds;
 }
 
 void	wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell)
