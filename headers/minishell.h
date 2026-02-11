@@ -57,6 +57,8 @@ char *find_command(t_ast *node, int *status, char *envp[]);
 char	*ft_strcat(char *dest, char *src);
 char 	*find_command(t_ast *node, int *status, char **envp);
 void	exec_node(t_ast *node, t_minishell *data);
+void	exec_node_no_pipeline(t_ast *node, t_minishell *data);
+int		is_builtin(char **args);
 void	exec_pipeline(t_ast *node, t_minishell *data);
 char	**tokens_to_args(t_list *token_list);
 int	tokenizer(char *cmd_line, t_minishell *minishell);
@@ -77,6 +79,6 @@ void	free_token_list(t_list **head);
 char	*string_cleaner(char *string);
 void	print_token(t_minishell *minishell);
 t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell);
-void	exec_executable(t_ast *node, t_minishell *minishell);
+void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline);
 void	cleanup_minishell(t_minishell *minishell);
 #endif
