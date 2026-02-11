@@ -75,7 +75,7 @@ void	free_ast(t_ast *node)
 	if (node->redirs)
 		ft_lstclear(&(node->redirs), free_redir);
 	free(node);
-	ft_printf("end ast\n");
+	//ft_printf("end ast\n");
 	return ;
 }
 
