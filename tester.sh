@@ -7,18 +7,16 @@ Total_tests=0
 Passed_tests=0
 details=none # output, error, all, or none
 test=all # all for all
-leak=false # true to check for leaks
+leak=true # true to check for leaks
 TMP_DIR="/tmp/minishell_test_$$"
 mkdir -p "$TMP_DIR"
 
 
 # Colors
 
-YELLOW='\033[1;33m'
-PINK='\033[38;2;255;161;221m'
-BLUE='\033[1;94m'
-TURQUOISE='\033[38;2;138;255;164m'
-ORANGE='\033[38;2;255;146;146m'
+PINK='\033[38;2;242;131;209m'
+TURQUOISE='\033[38;2;81;213;215m'
+PURPLE='\033[38;2;182;127;208m'
 RESET='\033[0m'
 
 # Functions
@@ -74,18 +72,18 @@ test_command(){
 	fi
 
 	if [[ $test_passed == true && $error_passed == true ]]; then
-		echo -e "${TURQUOISE}OK${RESET}"
+		echo -e "${TURQUOISE}OK 🦄${RESET}"
 		Total_tests=${Total_tests}+1
 
 		# Leak check with valgrind
-		if [[ $leaks == true ]]; then
+		if [[ $leak == true ]]; then
 			printf "%s\nexit\n" "$cmd" | valgrind --leak-check=full --show-leak-kinds=all --suppressions=ignore_readline_leaks.supp --log-file="$TMP_DIR/valgrind.tmp" ${Minishell} > /dev/null 2>&1
 			if grep -q "definitely lost: [^0]" "$TMP_DIR/valgrind.tmp" || grep -q "indirectly lost: [^0]" "$TMP_DIR/valgrind.tmp"; then
-				echo -e "${ORANGE}!LEAKS!${RESET}"
+				echo -e "${PURPLE}!LEAKS!${RESET}"
 			fi
 		fi
 	else
-		echo -e "${PINK}KO${RESET}"
+		echo -e "${PINK}KO 💩${RESET}"
 	fi
 	rm -f *.tmp
 	rm -f "$TMP_DIR"/*.tmp
