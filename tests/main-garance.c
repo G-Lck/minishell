@@ -25,29 +25,6 @@ void	init_minishell(t_minishell *minishell, char **envp)
 	minishell->previous_last_status = 0;
 }
 
-void	cleanup_minishell(t_minishell *minishell)
-{
-	if (minishell->tokens_list)
-	{
-		free_token_list(&minishell->tokens_list);
-		minishell->tokens_list = NULL;
-	}
-	if (minishell->ast)
-	{
-		free_ast(minishell->ast);
-		minishell->ast = NULL;
-	}
-	if (minishell->input)
-	{
-		free(minishell->input);
-		minishell->input = NULL;
-	}
-	if (minishell->env)
-	{
-		free_env2(&minishell->env);
-		minishell->env = NULL;
-	}
-}
 
 void	process_command(char *input, t_minishell *minishell)
 {
@@ -118,6 +95,8 @@ int	main(int argc, char *argv[], char *envp[])
 		add_history(input);
 		minishell.input = ft_strdup(input);
 		process_command(input, &minishell);
+		free(minishell.ast);
+		free_token_list(&minishell.tokens_list);
 		reinit_minishell(&minishell);
 		free(input);
 	}

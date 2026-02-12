@@ -19,18 +19,19 @@ int	main(int argc, char *argv[], char *envp[])
 	if (!fill_env(&minishell.env, envp))
 		return (1);
 	write (1, "\033[H\033[2J", 8);
-	ft_printf("%s\n", minishell.current_dir);
+	//ft_printf("%s\n", minishell.current_dir);
 	while (1)
 	{
-		minishell.input = readline("\e[0;36m\nMinihell > \e[0;33m");
+		minishell.input = readline("\e[0;36mminishell> \e[0;33m");
 		tokenizer(minishell.input, &minishell);
 		if (syntax_checker(&minishell))
 		{
 			minishell.ast = ft_astnew(minishell.tokens_list, ft_lstsize(minishell.tokens_list));
 			create_ast(minishell.ast);
-			print_ast_pretty(minishell.ast);
+			//print_ast_pretty(minishell.ast);
 			//rl_reset_terminal(NULL);
 			ast_descent(minishell.ast, &minishell);
+			minishell.previous_last_status = minishell.last_status;
 		}
 		free_ast(minishell.ast);
 		free_token_list(&minishell.tokens_list);
