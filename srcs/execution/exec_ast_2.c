@@ -32,7 +32,7 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 			if (execve(cmd_path, args, minishell->envp) == -1)
 			{
 				perror(args[0]);
-				free_args(args);
+				//free_args(args);
 				exit(126);
 			}
 		}
@@ -42,12 +42,12 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 			{
 				ft_fprintf(STDERR_FILENO,
 					"minishell: %s: command not found\n", args[0]);
-				free_args(args);
+				//free_args(args);
 				exit(127);
 			}
 			exit(EXIT_FAILURE);
 		}
-		free_args(args);
+		//free_args(args);
 		exit(EXIT_FAILURE);
 	}
 
@@ -69,7 +69,7 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 			if (execve(cmd_path, args, minishell->envp) == -1)
 			{
 				perror(args[0]);
-				free_args(args);
+				//free_args(args);
 				exit(126);
 			}
 		}
@@ -79,12 +79,12 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 			{
 				ft_fprintf(STDERR_FILENO,
 					"minishell: %s: command not found\n", args[0]);
-				free_args(args);
+				//free_args(args);
 				exit(127);
 			}
 			exit(EXIT_FAILURE);
 		}
-		free_args(args);
+		//free_args(args);
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -175,7 +175,6 @@ char **tokens_to_args(t_list *token_list)
 
 void	ast_descent(t_ast *node, t_minishell *minishell)
 {
-	char **args;
 	if (node->node_type == AND_OP)
 	{
 		ast_descent (node->next_left, minishell);
@@ -208,8 +207,7 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 	{
 		command_preparation(node, minishell);
 		//debug_node(node);
-		args = tokens_to_args(node->exec_lst);
-		node->exec_token = args;
+		node->exec_token = tokens_to_args(node->exec_lst);
 
 		exec_node_no_pipeline(node, minishell);
 		// Ne pas écraser last_status si c'était une expansion de $?

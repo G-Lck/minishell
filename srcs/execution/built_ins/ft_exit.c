@@ -50,6 +50,11 @@ void	cleanup_minishell(t_minishell *minishell)
 		free_env2(&minishell->env);
 		minishell->env = NULL;
 	}
+	if (minishell->current_dir)
+	{
+		free(minishell->current_dir);
+		minishell->current_dir = NULL;
+	}
 }
 
 int	ft_exit(char **args, t_minishell *minishell)

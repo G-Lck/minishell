@@ -74,6 +74,9 @@ void	free_ast(t_ast *node)
 	free_exec_lst(&node->exec_lst);
 	if (node->redirs)
 		ft_lstclear(&(node->redirs), free_redir);
+	if (node && node->exec_token && node->exec_token[0])
+		free_tab(node->exec_token);
+	//ft_printf("exec_token is %s\n", node->exec_token[0]);
 	free(node);
 	//ft_printf("end ast\n");
 	return ;
