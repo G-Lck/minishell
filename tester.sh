@@ -40,7 +40,7 @@ test_debug(){
 	echo "mini_exit_code: " ${mini_exit_code}
 
 	echo "begin of mini_cleaned_output"
-	grep -v -a "minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+	grep -v -a "Minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
 	echo "end of mini_cleaned_output"
 	rm -f *.tmp
 	rm -f "$TMP_DIR"/*.tmp
@@ -61,7 +61,7 @@ test_command(){
 	mini_exit_code=$(grep -oP -a '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp" | tail -n 1)
 
 	# Enlève les lignes de prompt, marqueur, et message d'accueil
-	grep -v -a "minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+	grep -v -a "Minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
 
 	eval "$cmd" > "$TMP_DIR/bash_output.tmp" 2> "$TMP_DIR/bash_error.tmp"
 	bash_exit_code=$?
