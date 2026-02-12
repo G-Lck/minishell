@@ -26,7 +26,7 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 
 	if (in_pipeline)
 	{
-		cmd_path = find_command(node, &status, minishell->envp);
+		cmd_path = find_command(node, &status, minishell);
 		if (status == OK)
 		{
 			if (execve(cmd_path, args, minishell->envp) == -1)
@@ -63,7 +63,7 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 	if (pid == 0)
 	{
 		apply_redirections(node);
-		cmd_path = find_command(node, &status, minishell->envp);
+		cmd_path = find_command(node, &status, minishell);
 		if (status == OK)
 		{
 			if (execve(cmd_path, args, minishell->envp) == -1)

@@ -1,6 +1,6 @@
 #ifndef MINI_H
 # define MINI_H
-
+# define _POSIX_C_SOURCE 199309L
 
 # include <stdio.h>
 # include <unistd.h>
@@ -11,6 +11,7 @@
 # include <readline/readline.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <signal.h>
 # include <dirent.h>
 
 # include "../libft/libft.h"
@@ -19,6 +20,7 @@
 # include "ast.h"
 # include "builtins.h"
 # include "pipeline.h"
+
 
 
 typedef struct s_env
@@ -53,9 +55,8 @@ void	ast_descent(t_ast *node, t_minishell *data);
 int	command_preparation(t_ast *node, t_minishell *minishell);
 char **wildcards_parser(char *pattern, t_minishell *minishell);
 char	*get_token_literal(char *token_literal, t_minishell *minishell);
-char *find_command(t_ast *node, int *status, char *envp[]);
+char *find_command(t_ast *node, int *status, t_minishell *minishell);
 char	*ft_strcat(char *dest, char *src);
-char 	*find_command(t_ast *node, int *status, char **envp);
 void	exec_node(t_ast *node, t_minishell *data);
 void	exec_node_no_pipeline(t_ast *node, t_minishell *data);
 int		is_builtin(char **args);
@@ -81,4 +82,5 @@ void	print_token(t_minishell *minishell);
 t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell);
 void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline);
 void	cleanup_minishell(t_minishell *minishell);
+
 #endif

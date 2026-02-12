@@ -75,8 +75,9 @@ static char	*get_path(char *cmd, char *envp_path)
 	return (NULL);
 }
 
-char *find_command(t_ast *node, int *status, char **envp)
+char *find_command(t_ast *node, int *status, t_minishell *minishell)
 {
+	t_env *env;
 	char	*cmd_path;
 	int		index;
 
@@ -91,23 +92,16 @@ char *find_command(t_ast *node, int *status, char **envp)
 			return (*status = PERMISSION_DENIED, NULL);
 		return (*status = OK, node->exec_token[0]);
 	}
-	while (envp[index])
+	env = find_env_var(minishell->env, "PATH");
+	if (env == NULL)
+		return (*status = COMMAND_NOT_FOUND, NULL);
+	cmd_path = get_path(node->exec_token[0], env->value);
+	if (cmd_path)
 	{
-		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
-		{
-			//ft_printf("index: %i\n", index);
-			cmd_path = get_path(node->exec_token[0], envp[index]);
-			if (cmd_path)
-			{
-				if (access(cmd_path, X_OK) == -1)
-					return (free(cmd_path), *status = PERMISSION_DENIED, NULL);
-				else
-					return (*status = OK, cmd_path);
-			}
-			break;
-		}
-
-		index++;
+		if (access(cmd_path, X_OK) == -1)
+			return (free(cmd_path), *status = PERMISSION_DENIED, NULL);
+		else
+			return (*status = OK, cmd_path);
 	}
 	return (*status = COMMAND_NOT_FOUND, NULL);
 }
