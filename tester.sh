@@ -2,7 +2,7 @@
 
 # Configuration
 
-Minishell="./minishell-garance"
+Minishell="./minishell-theo"
 Total_tests=0
 Passed_tests=0
 details=none # output, error, all, or none
@@ -21,6 +21,31 @@ RESET='\033[0m'
 
 # Functions
 
+test_debug(){
+
+	local cmd="$1"
+	local description="$2"
+
+	local test_passed=false
+	local error_passed=false
+
+	# Exécute commande + echo $? + exit dans minishell
+	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_full_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+
+	echo "begin of mini_full_output"
+	cat $TMP_DIR/mini_full_output.tmp
+	echo "end of mini_full_output"
+
+	mini_exit_code=$(grep -oP -a '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp" | tail -n 1)
+	echo "mini_exit_code: " ${mini_exit_code}
+
+	echo "begin of mini_cleaned_output"
+	grep -v -a "minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+	echo "end of mini_cleaned_output"
+	rm -f *.tmp
+	rm -f "$TMP_DIR"/*.tmp
+}
+
 test_command(){
 
 	local cmd="$1"
@@ -33,10 +58,10 @@ test_command(){
 	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_full_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
 
 	# Récupère l'exit code depuis le marqueur
-	mini_exit_code=$(grep -oP '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp" | tail -n 1)
+	mini_exit_code=$(grep -oP -a '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp" | tail -n 1)
 
 	# Enlève les lignes de prompt, marqueur, et message d'accueil
-	grep -v "minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+	grep -v -a "minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
 
 	eval "$cmd" > "$TMP_DIR/bash_output.tmp" 2> "$TMP_DIR/bash_error.tmp"
 	bash_exit_code=$?

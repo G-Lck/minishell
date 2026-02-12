@@ -71,7 +71,7 @@ void exec_node(t_ast *node, t_minishell *minishell)
 	builtin_status = is_builtin_and_execute(args, minishell);
 	if (builtin_status != -1)
 	{
-		free_args(args);
+		//free_args(args);
 		minishell->last_status = builtin_status;
 		exit(builtin_status);
 	}
@@ -111,7 +111,7 @@ void exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdin);
 		close(saved_stdout);
-		free_args(args);
+		//free_args(args);
 		minishell->last_status = builtin_status;
 		return ;
 	}

@@ -314,8 +314,7 @@ void	execute_single_command(t_ast *node, t_minishell *minishell,
 			pipeline->total_cmds, node);
 		close_unused_pipes(pipeline->pipes_tab, pipeline->total_pipe,
 			cmd_index, pipeline->total_cmds);
-		args = tokens_to_args(node->exec_lst);
-		node->exec_token = args;
+		node->exec_token = tokens_to_args(node->exec_lst);
 		exec_node(node, minishell);
 		exit(minishell->last_status);
 	}
