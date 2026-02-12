@@ -30,9 +30,6 @@ int	ft_pwd(void)
 {
 	char	*cwd;
 
-	cwd = malloc(sizeof(char) * PATH_MAX);
-	if (!cwd)
-		return (0);
 	cwd = get_current_dir();
 	if (cwd == NULL)
 	{
