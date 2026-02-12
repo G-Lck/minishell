@@ -29,14 +29,14 @@ int	create_token_literal(t_token *token_tab, char *str, int *index)
 	return (1);
 }
 
-void	fill_token_tab(t_token *token_tab, char *expanded_token)
+void	fill_token_tab(t_token *token_tab, char *expanded_token, int token_count)
 {
 	int	index;
 	int	token_tab_index;
 
 	index = 0;
 	token_tab_index = 0;
-	while (expanded_token[index])
+	while (index < token_count)
 	{
 		if (expanded_token[index] == '"' || expanded_token[index] == '\''
 				|| expanded_token[index])
@@ -84,6 +84,16 @@ t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell
 	token_tab = ft_calloc(sizeof(t_token), *token_count);
 	if (!token_tab)
 		return (NULL);
-	fill_token_tab(token_tab, expanded_token);
+	if (*token_count == 1)
+	{
+		if (ft_strlen(expanded_token) > 0)
+			token_tab[0].literal = ft_strdup(expanded_token);
+		else
+			token_tab[0].literal = ft_strdup(literal);
+		free (expanded_token);
+		return (token_tab);
+	}
+	fill_token_tab(token_tab, expanded_token, *token_count);
+	free(expanded_token);
 	return (token_tab);
 }

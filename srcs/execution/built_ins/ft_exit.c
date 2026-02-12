@@ -28,6 +28,30 @@ int	ft_isnumber(char *str)
 	return (1);
 }
 
+void	cleanup_minishell(t_minishell *minishell)
+{
+	if (minishell->tokens_list)
+	{
+		free_token_list(&minishell->tokens_list);
+		minishell->tokens_list = NULL;
+	}
+	if (minishell->ast)
+	{
+		free_ast(minishell->ast);
+		minishell->ast = NULL;
+	}
+	if (minishell->input)
+	{
+		free(minishell->input);
+		minishell->input = NULL;
+	}
+	if (minishell->env)
+	{
+		free_env2(&minishell->env);
+		minishell->env = NULL;
+	}
+}
+
 int	ft_exit(char **args, t_minishell *minishell)
 {
 	if (!args[1])

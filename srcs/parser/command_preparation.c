@@ -79,6 +79,14 @@ int	create_command_node(t_token *token, t_ast *node, t_minishell *minishell)
 	if (ft_strchr(token->literal, '$') != NULL)
 	{
 		token_tab = split_expension(token->literal, &token_count, minishell);
+		if (token_count == 1)
+		{
+			new_node = new_exec_node(token_tab[0].literal, STRING);
+			ft_lstadd_back(&node->exec_lst, new_node);
+			free (token_tab[0].literal);
+			free (token_tab);
+			return (1);
+		}
 		while (index < token_count)
 		{
 			new_node = new_exec_node(token_tab[index].literal, STRING);
