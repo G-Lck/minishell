@@ -115,12 +115,14 @@ int	main(int argc, char *argv[], char *envp[])
 			free(input);
 			continue;
 		}
+		add_history(input);
 		minishell.input = ft_strdup(input);
 		process_command(input, &minishell);
 		reinit_minishell(&minishell);
 		free(input);
 	}
 	cleanup_minishell(&minishell);
+	rl_clear_history();
 	ft_printf("Force à toi\n");
 	return (0);
 }
