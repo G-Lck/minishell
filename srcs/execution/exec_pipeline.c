@@ -440,7 +440,7 @@ void	wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell)
 			minishell->last_status = 1;
 			return;
 		}
-					// Si c'est la commande la plus à droite, capturer son code d'erreur
+		// Si c'est la commande la plus à droite, capturer son code d'erreur
 		if (pipeline->pids[i] == rightmost_pid)
 		{
 			if (WIFEXITED(status))
