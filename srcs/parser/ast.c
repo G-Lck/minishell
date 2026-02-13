@@ -103,14 +103,11 @@ void	create_ast(t_ast *node)
 			new_node(node, lst_token, i, token->type);
 			return ;
 		}
-		if (token->type == OPEN_BRACKET)
-			p++;
-		if (token->type == CLOSE_BRACKET)
-			p--;
+		switch_p(token->type, p);
 		i--;
 	}
 	p = 0;
-	i = i = node->lst_len - 1;
+	i = node->lst_len - 1;
 	while (i > 0)
 	{
 		lst_token = lst_go_to(node->lst_token, i);

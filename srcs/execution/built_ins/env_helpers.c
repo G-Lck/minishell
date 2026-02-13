@@ -79,21 +79,7 @@ void	set_env_var(t_env **env, char *key, char *value)
 	add_env_var(env, key, value);
 }
 
-// void	free_env(t_env *env)
-// {
-// 	t_env	*tmp;
-
-// 	while (env)
-// 	{
-// 		tmp = env->next;
-// 		free(env->key);
-// 		free(env->value);
-// 		free(env);
-// 		env = tmp;
-// 	}
-// }
-
-void	free_env2(t_env **head)
+void	free_env(t_env **head)
 {
 	t_env	*tmp;
 
