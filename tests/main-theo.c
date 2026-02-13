@@ -5,7 +5,7 @@ sig_atomic_t g_sig;
 void	free_minishell(t_minishell *minishell)
 {
 	free(minishell->current_dir);
-	free_env2(&minishell->env);
+	free_env(&minishell->env);
 }
 
 void sigint_exec(int sig)
