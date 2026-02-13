@@ -83,6 +83,7 @@ int	main(int argc, char *argv[], char *envp[])
 		minishell.previous_last_status=minishell.last_status;
 		free_ast(minishell.ast);
 		free_token_list(&minishell.tokens_list);
+		//rl_on_new_line();
 	}
 	// tout ceci devrait etre dans une fonction clean pour avoir la meme dans exit
 	free_minishell(&minishell);
