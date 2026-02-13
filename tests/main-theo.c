@@ -71,6 +71,7 @@ int	main(int argc, char *argv[], char *envp[])
 		minishell.input = readline("\e[0;36mMinishell> \e[0;33m");
 		if (minishell.input == NULL || ft_strlen(minishell.input) == 0)
 			continue;
+		add_history(minishell.input);
 		tokenizer(minishell.input, &minishell);
 		if (syntax_checker(&minishell))
 		{
@@ -83,6 +84,8 @@ int	main(int argc, char *argv[], char *envp[])
 		free_ast(minishell.ast);
 		free_token_list(&minishell.tokens_list);
 	}
+	// tout ceci devrait etre dans une fonction clean pour avoir la meme dans exit
 	free_minishell(&minishell);
+	rl_clear_history();
 	return (0);
 }
