@@ -52,6 +52,9 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 	}
 
 	// Not in pipeline - do normal fork/exec
+	signal(SIGINT, sigint_exec);
+	signal(SIGQUIT, sigquit_exec);
+
 	pid = fork();
 	if (pid == -1)
 	{
@@ -62,6 +65,8 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		apply_redirections(node);
 		cmd_path = find_command(node, &status, minishell);
 		if (status == OK)
@@ -89,18 +94,23 @@ void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 	}
 	else
 	{
-		if (waitpid(pid, &status, 0) == -1)
+		while (waitpid(pid, &status, 0) == -1)
 		{
+			if (errno == EINTR)
+				continue;
+
 			perror("waitpid failed");
 			minishell->last_status = 1;
+			return;
 		}
-		else
-		{
-			if (WIFEXITED(status))
-				minishell->last_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				minishell->last_status = 128 + WTERMSIG(status);
-		}
+
+		if (WIFEXITED(status))
+			minishell->last_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			minishell->last_status = 128 + WTERMSIG(status);
+		
+		signal(SIGINT, sig_handler);
+		signal(SIGQUIT, sig_handler);
 	}
 }
 
