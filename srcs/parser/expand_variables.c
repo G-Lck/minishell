@@ -26,7 +26,7 @@ char	*get_env_value(char *key, t_minishell *minishell)
 	{
 		if (key[1] == '?' && key[2] == '\0')
 			return (ft_itoa(minishell->previous_last_status));
-		if (key[1] == '$' && key[2] == '\0')
+		if (key[1] == '$')
 			return (ft_itoa(getpid()));
 		// Pour $0, $1, $2, etc. - pas implémenté pour l'instant
 		if (ft_isdigit(key[1]))

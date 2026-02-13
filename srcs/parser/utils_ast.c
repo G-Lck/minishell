@@ -54,15 +54,16 @@ void	free_redir_lst(t_list **head)
 	*head = NULL;
 }
 
-
-void free_redir(void *content)
+void	free_redir(void *content)
 {
-    t_redir *redir = (t_redir *)content;
-    if (redir)
-    {
-        free(redir->target);  // si target est alloué
-        free(redir);
-    }
+	t_redir	*redir;
+
+	redir = (t_redir *)content;
+	if (redir)
+	{
+		free(redir->target);
+		free(redir);
+	}
 }
 
 void	free_ast(t_ast *node)
@@ -76,12 +77,11 @@ void	free_ast(t_ast *node)
 		ft_lstclear(&(node->redirs), free_redir);
 	if (node && node->exec_token && node->exec_token[0])
 		free_tab(node->exec_token);
-	//ft_printf("exec_token is %s\n", node->exec_token[0]);
 	free(node);
-	//ft_printf("end ast\n");
 	return ;
 }
 
+/*
 void	print_ast(t_ast *node)
 {
 	t_list	*lst_token;
@@ -140,7 +140,6 @@ static void	print_subtree(t_ast *node, char *prefix, int is_last)
 	ft_printf("%s%s", prefix, branch);
 	print_node_label(node);
 	ft_printf("\n");
-	/* build next prefix */
 	if (is_last)
 		next_prefix = ft_strjoin(prefix, "      ");
 	else
@@ -161,7 +160,6 @@ void	print_ast_pretty(t_ast *node)
 {
 	if (!node)
 		return ;
-	/* root label */
 	print_node_label(node);
 	ft_printf("\n");
 	if (node->next_left && node->next_right)
@@ -174,3 +172,4 @@ void	print_ast_pretty(t_ast *node)
 	else if (node->next_right)
 		print_subtree(node->next_right, "", 1);
 }
+*/

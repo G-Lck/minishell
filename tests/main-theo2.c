@@ -3,7 +3,7 @@
 void	free_minishell(t_minishell *minishell)
 {
 	free(minishell->current_dir);
-	free_env2(&minishell->env);
+	free_env(&minishell->env);
 }
 
 void	init_minishell(t_minishell *minishell, char **envp)

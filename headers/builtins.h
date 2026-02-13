@@ -23,7 +23,8 @@ void	add_env_var(t_env **head, char *key, char *value);
 void	set_env_var(t_env **env, char *key, char *value);
 t_env	*create_env_var(char *key, char *value);
 t_env	*find_env_var(t_env *env, char *key);
-void	free_env(t_env *env);
+void	free_env(t_env **head);
+
 
 // export_helpers.c
 int		count_env_vars(t_env *env);

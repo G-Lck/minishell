@@ -47,7 +47,7 @@ void	cleanup_minishell(t_minishell *minishell)
 	}
 	if (minishell->env)
 	{
-		free_env2(&minishell->env);
+		free_env(&minishell->env);
 		minishell->env = NULL;
 	}
 	if (minishell->current_dir)
@@ -75,7 +75,6 @@ int	ft_exit(char **args, t_minishell *minishell)
 	}
 	else
 		minishell->exit_code = ft_atoi(args[1]) % 256;
-
 	cleanup_minishell(minishell);
 	exit(minishell->exit_code);
 	return (EXIT_SHELL);

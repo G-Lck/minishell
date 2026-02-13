@@ -26,6 +26,7 @@ static char	*get_current_dir(void)
 	}
 	return (cwd);
 }
+
 int	ft_pwd(void)
 {
 	char	*cwd;
