@@ -301,6 +301,8 @@ void	execute_single_command(t_ast *node, t_minishell *minishell,
 	char	**args;
 	pid_t	pid;
 
+	signal(SIGINT, sigint_exec);
+	signal(SIGQUIT, sigquit_exec);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -309,6 +311,8 @@ void	execute_single_command(t_ast *node, t_minishell *minishell,
 	}
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		command_preparation(node, minishell);
 		setup_pipe_redirections(pipeline->pipes_tab, cmd_index,
 			pipeline->total_cmds, node);
@@ -423,23 +427,45 @@ void	wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell)
 	i = 0;
 	while (i < pipeline->total_cmds)
 	{
-		if (waitpid(pipeline->pids[i], &status, 0) == -1)
+		// if (waitpid(pipeline->pids[i], &status, 0) == -1)
+		// {
+		// 	perror("waitpid failed");
+		// }
+		while (waitpid(pipeline->pids[i], &status, 0) == -1)
 		{
+			if (errno == EINTR)
+				continue;
+
 			perror("waitpid failed");
+			minishell->last_status = 1;
+			return;
 		}
-		else
+		// Si c'est la commande la plus à droite, capturer son code d'erreur
+		if (pipeline->pids[i] == rightmost_pid)
 		{
-			// Si c'est la commande la plus à droite, capturer son code d'erreur
-			if (pipeline->pids[i] == rightmost_pid)
-			{
-				if (WIFEXITED(status))
-					rightmost_status = WEXITSTATUS(status);
-				else if (WIFSIGNALED(status))
-					rightmost_status = 128 + WTERMSIG(status);
-			}
+			if (WIFEXITED(status))
+				rightmost_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				rightmost_status = 128 + WTERMSIG(status);
 		}
+
+		// else
+		// {
+		// 	// Si c'est la commande la plus à droite, capturer son code d'erreur
+		// 	if (pipeline->pids[i] == rightmost_pid)
+		// 	{
+		// 		if (WIFEXITED(status))
+		// 			rightmost_status = WEXITSTATUS(status);
+		// 		else if (WIFSIGNALED(status))
+		// 			rightmost_status = 128 + WTERMSIG(status);
+
+		// 	}
+		// }
 		i++;
 	}
+
+	signal(SIGINT, sig_handler);
+	signal(SIGQUIT, sig_handler);
 
 	// Le code d'erreur du pipeline est celui de la commande la plus à droite
 	minishell->last_status = rightmost_status;

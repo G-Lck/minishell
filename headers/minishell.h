@@ -83,5 +83,8 @@ void	print_token(t_minishell *minishell);
 t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell);
 void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline);
 void	cleanup_minishell(t_minishell *minishell);
+void sig_handler(int sig);
+void sigint_exec(int sig);
+void sigquit_exec(int sig);
 
 #endif
