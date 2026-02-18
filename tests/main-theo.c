@@ -95,7 +95,7 @@ int	main(int argc, char *argv[], char *envp[])
 		free_token_list(&minishell.tokens_list);
 		//rl_on_new_line();
 	}
-	// tout ceci devrait etre dans une fonction clean pour avoir la meme dans exit
+	rl_clear_history();
 	free_minishell(&minishell);
 	rl_clear_history();
 	return (0);
