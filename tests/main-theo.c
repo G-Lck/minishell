@@ -5,7 +5,7 @@ sig_atomic_t g_sig;
 void	free_minishell(t_minishell *minishell)
 {
 	free(minishell->current_dir);
-	free_env2(&minishell->env);
+	free_env(&minishell->env);
 }
 
 
@@ -71,6 +71,7 @@ int	main(int argc, char *argv[], char *envp[])
 		minishell.input = readline("\e[0;36mMinishell> \e[0;33m");
 		if (minishell.input == NULL || ft_strlen(minishell.input) == 0)
 			continue;
+		add_history(minishell.input);
 		tokenizer(minishell.input, &minishell);
 		if (syntax_checker(&minishell))
 		{
@@ -83,6 +84,7 @@ int	main(int argc, char *argv[], char *envp[])
 		free_ast(minishell.ast);
 		free_token_list(&minishell.tokens_list);
 	}
+	rl_clear_history();
 	free_minishell(&minishell);
 	return (0);
 }
