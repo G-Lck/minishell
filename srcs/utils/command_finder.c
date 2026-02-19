@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	is_dir(char *path)
+static int	is_dir(char *path)
 {
 	char	buff[1];
 	int		fd;
@@ -13,7 +13,7 @@ int	is_dir(char *path)
 	return (close(fd), 0);
 }
 
-char	*ft_strcat(char *dest, char *src)
+static char	*ft_strcat(char *dest, char *src)
 {
 	char	*tmp;
 
@@ -33,18 +33,6 @@ char	*ft_strcat(char *dest, char *src)
 	return (dest);
 }
 
-void	free_tab(char **tab)
-{
-	int	index;
-
-	index = 0;
-	while (tab[index])
-	{
-		free (tab[index]);
-		index ++;
-	}
-	free(tab);
-}
 
 static char	*get_path(char *cmd, char *envp_path)
 {

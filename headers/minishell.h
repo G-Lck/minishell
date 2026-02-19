@@ -1,5 +1,5 @@
-#ifndef MINI_H
-# define MINI_H
+#ifndef MINISHELL_H
+# define MINISHELL_H
 # define _POSIX_C_SOURCE 199309L
 
 # include <stdio.h>
@@ -17,12 +17,14 @@
 
 # include "../libft/libft.h"
 
-# include "token.h"
-# include "ast.h"
-# include "builtins.h"
-# include "pipeline.h"
-
-
+# include "tokenizer.h"
+# include "create_ast.h"
+# include "expansion_and_wildcards.h"
+# include "execute_ast.h"
+# include "execute_cmd.h"
+# include "execute_pipeline.h"
+# include "clean.h"
+# include "utils.h"
 
 typedef struct s_env
 {
@@ -52,36 +54,7 @@ typedef struct s_minishell
 	int		previous_last_status;
 }	t_minishell;
 
-void	ast_descent(t_ast *node, t_minishell *data);
-int	command_preparation(t_ast *node, t_minishell *minishell);
-char **wildcards_parser(char *pattern, t_minishell *minishell);
-char	*get_token_literal(char *token_literal, t_minishell *minishell);
-char *find_command(t_ast *node, int *status, t_minishell *minishell);
-char	*ft_strcat(char *dest, char *src);
-void	exec_node(t_ast *node, t_minishell *data);
-void	exec_node_no_pipeline(t_ast *node, t_minishell *data);
-int		is_builtin(char **args);
-void	exec_pipeline(t_ast *node, t_minishell *data);
-char	**tokens_to_args(t_list *token_list);
-int	tokenizer(char *cmd_line, t_minishell *minishell);
-int	create_token(char *str, int type, int index, t_minishell *minishell);
-int	get_token_type(char *token);
-void	pop_token(int index, t_list **head);
-int	fill_env(t_env **env, char *envp[]);
-char	*get_env_value(char *key, t_minishell *minishell);
-int	syntax_checker(t_minishell *minishell);
-void	free_tab(char **tab);
-int	need_to_glob(char *token_literal);
-int	check_wspaces(char *str);
-int		is_wspace(int c);
-int		is_separator(char *str, int index);
-int		is_operator(char *str, int index);
-void	free_token_list(t_list **head);
-char	*string_cleaner(char *string);
-void	print_token(t_minishell *minishell);
-t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell);
-void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline);
-void	cleanup_minishell(t_minishell *minishell);
+
 void sig_handler(int sig);
 void sigint_exec(int sig);
 void sigquit_exec(int sig);

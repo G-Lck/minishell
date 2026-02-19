@@ -1,11 +1,11 @@
 #include "minishell.h"
 
-t_list	*lst_go_to(t_list *lst, int position)
+static t_list	*lst_go_to(t_list *lst, int position)
 {
 	int	i;
 
 	i = 0;
-	while (i < position)
+	while (i < position && lst->next)
 	{
 		lst = lst->next;
 		i++;
@@ -13,7 +13,7 @@ t_list	*lst_go_to(t_list *lst, int position)
 	return (lst);
 }
 
-int	switch_p(int type, int p)
+static int	switch_p(int type, int p)
 {
 	if (type == OPEN_BRACKET)
 		p++;
@@ -22,7 +22,7 @@ int	switch_p(int type, int p)
 	return (p);
 }
 
-void	remove_parenthesis(t_ast *node, int p)
+static void	remove_parenthesis(t_ast *node, int p)
 {
 	int		i;
 	t_list	*lst_token;
@@ -49,21 +49,21 @@ void	remove_parenthesis(t_ast *node, int p)
 	remove_parenthesis(node, 0);
 }
 
-int	is_op(t_token_type t)
+static int	is_op(t_token_type t)
 {
 	if (t == AND || t == OR)
 		return (1);
 	return (0);
 }
 
-int	is_pipe(t_token_type t)
+static int	is_pipe(t_token_type t)
 {
 	if (t == PIPE)
 		return (1);
 	return (0);
 }
 
-void	new_node(t_ast *node, t_list *lst_token, int i, enum e_token_type token_type)
+static void	new_node(t_ast *node, t_list *lst_token, int i, enum e_token_type token_type)
 {
 	t_ast	*node_left;
 	t_ast	*node_right;
