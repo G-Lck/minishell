@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   create_ast.h                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/19 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2026/02/19 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CREATE_AST_H
 # define CREATE_AST_H
 
 # include <stdbool.h>
 # include "tokenizer.h"
 
-typedef struct s_list t_list;
+typedef struct s_list	t_list;
 
 typedef enum e_node_type
 {
@@ -12,7 +24,7 @@ typedef enum e_node_type
 	OR_OP = 1,
 	PIPE_OP = 2,
 	CMD = 3
-} t_node_type;
+}	t_node_type;
 
 typedef struct s_redir
 {
@@ -31,7 +43,7 @@ typedef struct s_ast
 	char			**exec_token;
 	int				lst_len;
 	bool			is_subshell;
-}  t_ast;
+}	t_ast;
 
 t_ast	*ft_astnew(t_list *lst_token, int len);
 void	create_ast(t_ast *node);
@@ -39,4 +51,4 @@ void	print_ast(t_ast *node);
 void	print_ast_pretty(t_ast *node);
 void	free_ast(t_ast *node);
 
-# endif
+#endif

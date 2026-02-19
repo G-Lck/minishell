@@ -1,9 +1,21 @@
-#ifndef TOKEN_H
-# define TOKEN_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/19 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2026/02/19 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef TOKENIZER_H
+# define TOKENIZER_H
 
 # include "../libft/libft.h"
 
-typedef struct s_minishell t_minishell;
+typedef struct s_minishell	t_minishell;
 
 typedef enum e_token_type
 {
@@ -18,7 +30,7 @@ typedef enum e_token_type
 	REDIR_OUT = 8,
 	STRING = 9,
 	TOKEN_ERROR = 10
-} t_token_type;
+}	t_token_type;
 
 typedef struct s_token
 {
