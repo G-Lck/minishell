@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+/*
 static void free_args(char **args)
 {
 	int i = 0;
@@ -14,6 +15,7 @@ static void free_args(char **args)
 	}
 	free(args);
 }
+*/
 
 void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline)
 {
@@ -150,6 +152,7 @@ char **tokens_to_args(t_list *token_list)
 
 	return (args);
 }
+
 
 void	ast_descent(t_ast *node, t_minishell *minishell)
 {

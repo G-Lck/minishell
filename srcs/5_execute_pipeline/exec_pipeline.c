@@ -1,25 +1,6 @@
 #include "minishell.h"
-#include "pipeline.h"
-#include <unistd.h>
 
-void	exec_pipeline(t_ast *node, t_minishell *data)
-{
-	t_pipeline	*pipeline;
-
-	pipeline = init_pipeline_data(node);
-	if (!pipeline)
-		return ;
-	if (create_pipes(pipeline) == -1)
-	{
-		cleanup_pipeline_data(pipeline);
-		return ;
-	}
-	execute_pipeline_commands(node, data, pipeline);
-	wait_for_pipeline_completion(pipeline, data);
-	cleanup_pipeline_data(pipeline);
-}
-
-int	count_pipeline_commands(t_ast *node)
+static int	count_pipeline_commands(t_ast *node)
 {
 	if (!node)
 		return (0);
@@ -35,7 +16,38 @@ int	count_pipeline_commands(t_ast *node)
 	return (0);
 }
 
-int	get_input_redirection(t_ast *node)
+static t_pipeline	*init_pipeline_data(t_ast *node)
+{
+	t_pipeline	*pipeline;
+
+	pipeline = malloc(sizeof(t_pipeline));
+	if (!pipeline)
+	{
+		perror("Failed to allocate pipeline data");
+		return (NULL);
+	}
+
+	pipeline->total_cmds = count_pipeline_commands(node);
+	pipeline->total_pipe = pipeline->total_cmds - 1;
+	pipeline->pipes_tab = NULL;
+	pipeline->pids = NULL;
+
+	if (pipeline->total_cmds > 0)
+	{
+		pipeline->pids = malloc(sizeof(pid_t) * pipeline->total_cmds);
+		if (!pipeline->pids)
+		{
+			perror("Failed to allocate PIDs array");
+			free(pipeline);
+			return (NULL);
+		}
+	}
+
+	return (pipeline);
+}
+
+
+static int	get_input_redirection(t_ast *node)
 {
 	t_list	*current;
 	t_redir	*redir;
@@ -63,7 +75,7 @@ int	get_input_redirection(t_ast *node)
 	return (-1);
 }
 
-int	get_output_redirection(t_ast *node)
+static int	get_output_redirection(t_ast *node)
 {
 	t_list	*current;
 	t_redir	*redir;
@@ -168,8 +180,24 @@ int	apply_redirections_safe(t_ast *node)
 	}
 	return (0);
 }
+static void	cleanup_pipes_tab(int **pipes_tab, int pipe_count)
+{
+	int	i;
 
-int	**create_pipes_tab(int pipe_count)
+	if (!pipes_tab)
+		return ;
+
+	i = 0;
+	while (i < pipe_count)
+	{
+		if (pipes_tab[i])
+			free(pipes_tab[i]);
+		i++;
+	}
+	free(pipes_tab);
+}
+
+static int	**create_pipes_tab(int pipe_count)
 {
 	int	**pipes_tab;
 	int	i;
@@ -196,54 +224,9 @@ int	**create_pipes_tab(int pipe_count)
 	return (pipes_tab);
 }
 
-void	cleanup_pipes_tab(int **pipes_tab, int pipe_count)
-{
-	int	i;
 
-	if (!pipes_tab)
-		return ;
 
-	i = 0;
-	while (i < pipe_count)
-	{
-		if (pipes_tab[i])
-			free(pipes_tab[i]);
-		i++;
-	}
-	free(pipes_tab);
-}
-
-t_pipeline	*init_pipeline_data(t_ast *node)
-{
-	t_pipeline	*pipeline;
-
-	pipeline = malloc(sizeof(t_pipeline));
-	if (!pipeline)
-	{
-		perror("Failed to allocate pipeline data");
-		return (NULL);
-	}
-
-	pipeline->total_cmds = count_pipeline_commands(node);
-	pipeline->total_pipe = pipeline->total_cmds - 1;
-	pipeline->pipes_tab = NULL;
-	pipeline->pids = NULL;
-
-	if (pipeline->total_cmds > 0)
-	{
-		pipeline->pids = malloc(sizeof(pid_t) * pipeline->total_cmds);
-		if (!pipeline->pids)
-		{
-			perror("Failed to allocate PIDs array");
-			free(pipeline);
-			return (NULL);
-		}
-	}
-
-	return (pipeline);
-}
-
-int	create_pipes(t_pipeline *pipeline)
+static int	create_pipes(t_pipeline *pipeline)
 {
 	if (pipeline->total_pipe <= 0)
 		return (0);
@@ -255,7 +238,7 @@ int	create_pipes(t_pipeline *pipeline)
 	return (0);
 }
 
-void	cleanup_pipeline_data(t_pipeline *pipeline)
+static void	cleanup_pipeline_data(t_pipeline *pipeline)
 {
 	if (!pipeline)
 		return ;
@@ -269,76 +252,7 @@ void	cleanup_pipeline_data(t_pipeline *pipeline)
 	free(pipeline);
 }
 
-void	execute_pipeline_commands(t_ast *node, t_minishell *data, t_pipeline *pipeline)
-{
-	int	cmd_index;
-
-	cmd_index = 0;
-	execute_pipeline_recursive(node, data, pipeline, &cmd_index);
-}
-
-void	execute_pipeline_recursive(t_ast *node, t_minishell *data,
-	t_pipeline *pipeline, int *cmd_index)
-{
-	if (!node)
-		return ;
-	if (node->node_type == CMD)
-	{
-		execute_single_command(node, data, pipeline, *cmd_index);
-		(*cmd_index)++;
-		return ;
-	}
-	if (node->node_type == PIPE_OP)
-	{
-		execute_pipeline_recursive(node->next_left, data, pipeline, cmd_index);
-		execute_pipeline_recursive(node->next_right, data, pipeline, cmd_index);
-	}
-}
-
-void	execute_single_command(t_ast *node, t_minishell *minishell,
-	t_pipeline *pipeline, int cmd_index)
-{
-	char	**args;
-	pid_t	pid;
-
-	signal(SIGINT, sigint_exec);
-	signal(SIGQUIT, sigquit_exec);
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("Fork failed");
-		return ;
-	}
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		command_preparation(node, minishell);
-		setup_pipe_redirections(pipeline->pipes_tab, cmd_index,
-			pipeline->total_cmds, node);
-		close_unused_pipes(pipeline->pipes_tab, pipeline->total_pipe,
-			cmd_index, pipeline->total_cmds);
-		node->exec_token = tokens_to_args(node->exec_lst);
-		exec_node(node, minishell);
-		exit(minishell->last_status);
-	}
-	else
-	{
-		if (cmd_index > 0)
-		{
-			close(pipeline->pipes_tab[cmd_index - 1][0]);
-			pipeline->pipes_tab[cmd_index - 1][0] = -1;
-		}
-		if (cmd_index < pipeline->total_cmds - 1)
-		{
-			close(pipeline->pipes_tab[cmd_index][1]);
-			pipeline->pipes_tab[cmd_index][1] = -1;
-		}
-		pipeline->pids[cmd_index] = pid;
-	}
-}
-
-void	setup_pipe_redirections(int **pipes_tab, int cmd_index,
+static void	setup_pipe_redirections(int **pipes_tab, int cmd_index,
 	int total_commands, t_ast *node)
 {
 	int	input_fd;
@@ -386,7 +300,89 @@ void	setup_pipe_redirections(int **pipes_tab, int cmd_index,
 	}
 }
 
-void	close_all_pipes(int **pipes_tab, int pipe_count)
+static void	close_unused_pipes(int **pipes_tab, int pipe_count,
+	int cmd_index, int total_cmds)
+{
+	(void)pipes_tab;
+	(void)pipe_count;
+	(void)cmd_index;
+	(void)total_cmds;
+}
+
+static void	execute_single_command(t_ast *node, t_minishell *minishell,
+	t_pipeline *pipeline, int cmd_index)
+{
+	pid_t	pid;
+
+	signal(SIGINT, sigint_exec);
+	signal(SIGQUIT, sigquit_exec);
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("Fork failed");
+		return ;
+	}
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		command_preparation(node, minishell);
+		setup_pipe_redirections(pipeline->pipes_tab, cmd_index,
+			pipeline->total_cmds, node);
+		close_unused_pipes(pipeline->pipes_tab, pipeline->total_pipe,
+			cmd_index, pipeline->total_cmds);
+		node->exec_token = tokens_to_args(node->exec_lst);
+		exec_node(node, minishell);
+		exit(minishell->last_status);
+	}
+	else
+	{
+		if (cmd_index > 0)
+		{
+			close(pipeline->pipes_tab[cmd_index - 1][0]);
+			pipeline->pipes_tab[cmd_index - 1][0] = -1;
+		}
+		if (cmd_index < pipeline->total_cmds - 1)
+		{
+			close(pipeline->pipes_tab[cmd_index][1]);
+			pipeline->pipes_tab[cmd_index][1] = -1;
+		}
+		pipeline->pids[cmd_index] = pid;
+	}
+}
+
+static void	execute_pipeline_recursive(t_ast *node, t_minishell *data,
+	t_pipeline *pipeline, int *cmd_index)
+{
+	if (!node)
+		return ;
+	if (node->node_type == CMD)
+	{
+		execute_single_command(node, data, pipeline, *cmd_index);
+		(*cmd_index)++;
+		return ;
+	}
+	if (node->node_type == PIPE_OP)
+	{
+		execute_pipeline_recursive(node->next_left, data, pipeline, cmd_index);
+		execute_pipeline_recursive(node->next_right, data, pipeline, cmd_index);
+	}
+}
+
+static void	execute_pipeline_commands(t_ast *node, t_minishell *data, t_pipeline *pipeline)
+{
+	int	cmd_index;
+
+	cmd_index = 0;
+	execute_pipeline_recursive(node, data, pipeline, &cmd_index);
+}
+
+
+
+
+/*
+
+static void	close_all_pipes(int **pipes_tab, int pipe_count)
 {
 	int	i;
 
@@ -403,17 +399,11 @@ void	close_all_pipes(int **pipes_tab, int pipe_count)
 		i++;
 	}
 }
+*/
 
-void	close_unused_pipes(int **pipes_tab, int pipe_count,
-	int cmd_index, int total_cmds)
-{
-	(void)pipes_tab;
-	(void)pipe_count;
-	(void)cmd_index;
-	(void)total_cmds;
-}
 
-void	wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell)
+
+static void	wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell)
 {
 	int	status;
 	int	i;
@@ -469,4 +459,21 @@ void	wait_for_pipeline_completion(t_pipeline *pipeline, t_minishell *minishell)
 
 	// Le code d'erreur du pipeline est celui de la commande la plus à droite
 	minishell->last_status = rightmost_status;
+}
+
+void	exec_pipeline(t_ast *node, t_minishell *data)
+{
+	t_pipeline	*pipeline;
+
+	pipeline = init_pipeline_data(node);
+	if (!pipeline)
+		return ;
+	if (create_pipes(pipeline) == -1)
+	{
+		cleanup_pipeline_data(pipeline);
+		return ;
+	}
+	execute_pipeline_commands(node, data, pipeline);
+	wait_for_pipeline_completion(pipeline, data);
+	cleanup_pipeline_data(pipeline);
 }

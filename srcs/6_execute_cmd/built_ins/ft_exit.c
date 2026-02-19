@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../headers/minishell.h"
+#include "minishell.h"
 
-int	ft_isnumber(char *str)
+static int	ft_isnumber(char *str)
 {
 	int	i;
 
@@ -28,34 +28,6 @@ int	ft_isnumber(char *str)
 	return (1);
 }
 
-void	cleanup_minishell(t_minishell *minishell)
-{
-	if (minishell->tokens_list)
-	{
-		free_token_list(&minishell->tokens_list);
-		minishell->tokens_list = NULL;
-	}
-	if (minishell->ast)
-	{
-		free_ast(minishell->ast);
-		minishell->ast = NULL;
-	}
-	if (minishell->input)
-	{
-		free(minishell->input);
-		minishell->input = NULL;
-	}
-	if (minishell->env)
-	{
-		free_env(&minishell->env);
-		minishell->env = NULL;
-	}
-	if (minishell->current_dir)
-	{
-		free(minishell->current_dir);
-		minishell->current_dir = NULL;
-	}
-}
 
 int	ft_exit(char **args, t_minishell *minishell)
 {

@@ -1,11 +1,8 @@
 NAME = minishell
 
-SRCS =	$(wildcard srcs/utils/*.c) \
-		$(wildcard srcs/parser/**/*.c) \
-		$(wildcard srcs/parser/*.c) \
-		$(wildcard srcs/execution/*.c) \
-		$(wildcard srcs/execution/**/*.c) \
-		$(wildcard srcs/execution/**/**/*.c)
+SRCS =	$(wildcard srcs/*.c) \
+		$(wildcard srcs/**/*.c) \
+		$(wildcard srcs/**/**/*.c)
 MAIN_SRCS = srcs/main.c
 
 OBJS = ${SRCS:.c=.o}

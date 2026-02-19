@@ -1,8 +1,8 @@
-#ifndef AST_H
-# define AST_H
+#ifndef CREATE_AST_H
+# define CREATE_AST_H
 
 # include <stdbool.h>
-# include "token.h"
+# include "tokenizer.h"
 
 typedef struct s_list t_list;
 

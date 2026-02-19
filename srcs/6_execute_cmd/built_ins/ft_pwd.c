@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../headers/minishell.h"
+#include "minishell.h"
 
 static char	*get_current_dir(void)
 {
