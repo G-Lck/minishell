@@ -1,4 +1,3 @@
-#include "minishell.h"
 
 static void free_args(char **args)
 {
