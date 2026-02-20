@@ -1,14 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_ast.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/19 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2026/02/19 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef EXECUTE_AST_H
 # define EXECUTE_AST_H
 
 # include "../libft/libft.h"
 
-typedef struct s_ast t_ast;
-typedef struct s_minishell t_minishell;
+typedef struct s_ast		t_ast;
+typedef struct s_minishell	t_minishell;
 
-void	exec_executable(t_ast *node, t_minishell *minishell, bool in_pipeline);
-int	ft_lstlen(t_list *lst);
-char **tokens_to_args(t_list *token_list);
+void	exec_in_pipeline(t_ast *node, t_minishell *minishell);
+void	exec_no_pipeline(t_ast *node, t_minishell *minishell);
 void	ast_descent(t_ast *node, t_minishell *minishell);
 
 #endif

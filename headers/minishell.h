@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/19 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2026/02/19 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # define _POSIX_C_SOURCE 199309L
@@ -31,7 +43,7 @@ typedef struct s_env
 	char			*key;
 	char			*value;
 	struct s_env	*next;
-}   t_env;
+}	t_env;
 
 typedef enum e_cmd_status
 {
@@ -39,7 +51,7 @@ typedef enum e_cmd_status
 	IS_DIRECTORY = -1,
 	COMMAND_NOT_FOUND = -2,
 	OK = 1
-} t_cmd_status;
+}	t_cmd_status;
 
 typedef struct s_minishell
 {
@@ -54,9 +66,8 @@ typedef struct s_minishell
 	int		previous_last_status;
 }	t_minishell;
 
-
-void sig_handler(int sig);
-void sigint_exec(int sig);
-void sigquit_exec(int sig);
+void	sig_handler(int sig);
+void	sigint_exec(int sig);
+void	sigquit_exec(int sig);
 
 #endif

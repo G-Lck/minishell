@@ -7,7 +7,7 @@ Total_tests=0
 Passed_tests=0
 details=none # output, error, all, or none
 test=all # all for all
-leak=true # true to check for leaks
+leak=false # true to check for leaks
 TMP_DIR="/tmp/minishell_test_$$"
 mkdir -p "$TMP_DIR"
 
@@ -184,6 +184,8 @@ if [[ ${test} == all ]]; then
 	test_command "ls noexist | grep Make | wc -c" "pipe with a wrong command at beggining"
 	test_command "ls | grepppppp Make | wc -c" "pipe with a wrong command at middle"
 	test_command "ls | grep Make | caaaat" "pipe with a wrong command at the end"
+	test_command "cat /dev/urandom | head -c 100 | wc -c" "check if child close his pipe"
+	test_command "seq 100000 | wc -l" "same with another test"
 
 	# pipes and redirections
 

@@ -1,0 +1,10 @@
+Makefile
+README.md
+headers
+ignore_readline_leaks.supp
+libft
+minishell-theo
+outfile
+srcs
+tester.sh
+tests

@@ -84,43 +84,40 @@ static void	new_node(t_ast *node, t_list *lst_token, int i, enum e_token_type to
 	create_ast(node_right);
 }
 
+static int	find_operator(t_ast *node, int (*check)(t_token_type))
+{
+	int		i;
+	int		p;
+	t_list	*lst_token;
+	t_token	*token;
+
+	p = 0;
+	i = node->lst_len - 1;
+	while (i > 0)
+	{
+		lst_token = lst_go_to(node->lst_token, i);
+		token = lst_token->content;
+		if (check(token->type) && p == 0)
+			return (i);
+		p = switch_p(token->type, p);
+		i--;
+	}
+	return (-1);
+}
+
 void	create_ast(t_ast *node)
 {
 	int		i;
 	t_list	*lst_token;
 	t_token	*token;
-	int		p;
 
 	remove_parenthesis(node, 0);
-	p = 0;
-	i = node->lst_len - 1;
-	while (i > 0)
-	{
-		lst_token = lst_go_to(node->lst_token, i);
-		token = lst_token->content;
-		if (is_op(token->type) && p == 0)
-		{
-			new_node(node, lst_token, i, token->type);
-			return ;
-		}
-		switch_p(token->type, p);
-		i--;
-	}
-	p = 0;
-	i = node->lst_len - 1;
-	while (i > 0)
-	{
-		lst_token = lst_go_to(node->lst_token, i);
-		token = lst_token->content;
-		if (is_pipe(token->type) && p == 0)
-		{
-			new_node(node, lst_token, i, token->type);
-			return ;
-		}
-		if (token->type == OPEN_BRACKET)
-			p++;
-		if (token->type == CLOSE_BRACKET)
-			p--;
-		i--;
-	}
+	i = find_operator(node, is_op);
+	if (i == -1)
+		i = find_operator(node, is_pipe);
+	if (i == -1)
+		return ;
+	lst_token = lst_go_to(node->lst_token, i);
+	token = lst_token->content;
+	new_node(node, lst_token, i, token->type);
 }

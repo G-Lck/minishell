@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_node.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/19 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2026/02/19 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void free_args(char **args)
@@ -32,7 +44,7 @@ void exec_node(t_ast *node, t_minishell *minishell)
 		minishell->last_status = builtin_status;
 		exit(builtin_status);
 	}
-	exec_executable(node, minishell, true);
+	exec_in_pipeline(node, minishell);
 	return ;
 }
 
@@ -72,6 +84,6 @@ void exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
 		minishell->last_status = builtin_status;
 		return ;
 	}
-	exec_executable(node, minishell, false);
+	exec_no_pipeline(node, minishell);
 	return ;
 }
