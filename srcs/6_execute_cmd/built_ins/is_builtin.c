@@ -12,7 +12,7 @@
 
 #include <minishell.h>
 
-int is_builtin(char **args)
+int	is_builtin(char **args)
 {
 	if (!args || !args[0])
 		return (0);
@@ -33,7 +33,7 @@ int is_builtin(char **args)
 	return (0);
 }
 
-int is_builtin_and_execute(char **args, t_minishell *minishell)
+int	is_builtin_and_execute(char **args, t_minishell *minishell)
 {
 	if (!args || !args[0])
 		return (-1);

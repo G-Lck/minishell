@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_ast.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#              */
+/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr        */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_ast	*ft_astnew(t_list *lst_token, int len)
@@ -110,7 +122,8 @@ static void	print_node_label(t_ast *node)
 		return ;
 	lst = node->lst_token;
 	tok = lst->content;
-	if (node->lst_len == 1 && (tok->type == AND || tok->type == OR || tok->type == PIPE))
+	if (node->lst_len == 1 && (tok->type == AND
+		|| tok->type == OR || tok->type == PIPE))
 		ft_printf("\"%s\"", tok->literal);
 	else
 	{

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*    command_finder.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
+/*   Updated: 2026/01/19 11:49:38 by thbouver         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	is_dir(char *path)
@@ -33,7 +45,6 @@ static char	*ft_strcat(char *dest, char *src)
 	return (dest);
 }
 
-
 static char	*get_path(char *cmd, char *envp_path)
 {
 	char	**splited_path;
@@ -63,23 +74,27 @@ static char	*get_path(char *cmd, char *envp_path)
 	return (NULL);
 }
 
-char *find_command(t_ast *node, int *status, t_minishell *minishell)
+static char	*get_local_executable(t_ast *node, int *status)
 {
-	t_env *env;
+	if (is_dir(node->exec_token[0]) == 1
+		&& node->exec_token[0][0] == '.' && node->exec_token[0][0] == '/')
+		return (*status = IS_DIRECTORY, NULL);
+	if (is_dir(node->exec_token[0]) == 1)
+		return (*status = IS_DIRECTORY, NULL);
+	if (access(node->exec_token[0], X_OK) == -1)
+		return (*status = PERMISSION_DENIED, NULL);
+	return (*status = OK, node->exec_token[0]);
+}
+
+char	*find_command(t_ast *node, int *status, t_minishell *minishell)
+{
+	t_env	*env;
 	char	*cmd_path;
 	int		index;
 
 	index = 0;
 	if (access(node->exec_token[0], F_OK) == 0)
-	{
-		if (is_dir(node->exec_token[0]) == 1 && node->exec_token[0][0] == '.' && node->exec_token[0][0] == '/')
-			return (*status = IS_DIRECTORY, NULL);
-		if (is_dir(node->exec_token[0]) == 1)
-			return (*status = IS_DIRECTORY, NULL);
-		if (access(node->exec_token[0], X_OK) == -1)
-			return (*status = PERMISSION_DENIED, NULL);
-		return (*status = OK, node->exec_token[0]);
-	}
+		return (get_local_executable(node, status));
 	env = find_env_var(minishell->env, "PATH");
 	if (env == NULL)
 		return (*status = COMMAND_NOT_FOUND, NULL);

@@ -50,5 +50,10 @@ void	create_ast(t_ast *node);
 void	print_ast(t_ast *node);
 void	print_ast_pretty(t_ast *node);
 void	free_ast(t_ast *node);
+int		is_pipe(t_token_type t);
+int		is_op(t_token_type t);
+void	remove_parenthesis(t_ast *node, int p);
+int		switch_p(int type, int p);
+t_list	*lst_go_to(t_list *lst, int position);
 
 #endif

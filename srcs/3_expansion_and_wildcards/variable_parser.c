@@ -42,9 +42,9 @@ static char	*handle_normal_var(char *str)
 	return (name);
 }
 
+// Tester d'abord les cas spéciaux
 char	*get_var_name(char *str)
 {
-	// Tester d'abord les cas spéciaux
 	if (ft_strlen(str) >= 2 && (str[1] == '$' || str[1] == '?'))
 		return (handle_special_var(str[1]));
 	else if (ft_strlen(str) == 1 || !(ft_isalpha(str[1]) || str[1] == '_'))
