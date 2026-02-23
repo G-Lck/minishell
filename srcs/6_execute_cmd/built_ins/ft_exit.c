@@ -28,7 +28,6 @@ static int	ft_isnumber(char *str)
 	return (1);
 }
 
-
 int	ft_exit(char **args, t_minishell *minishell)
 {
 	if (!args[1])

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcards_parser.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
+/*   Updated: 2026/01/19 11:49:38 by thbouver         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_only_wildcards(char *pat)
@@ -20,7 +32,6 @@ int	pattern_checker(char *ref, char *pat, int n, int m)
 
 	if (m == 0)
 		return (n == 0);
-
 	index = 0;
 	if (n == 0)
 	{
@@ -33,7 +44,7 @@ int	pattern_checker(char *ref, char *pat, int n, int m)
 		return (1);
 	}
 	if (ref[n - 1] == pat[m - 1])
-		return pattern_checker(ref, pat, n - 1, m - 1);
+		return (pattern_checker(ref, pat, n - 1, m - 1));
 	if (pat[m - 1] == '*')
 		return (pattern_checker(ref, pat, n, m - 1)
 			|| pattern_checker(ref, pat, n - 1, m));
@@ -42,19 +53,21 @@ int	pattern_checker(char *ref, char *pat, int n, int m)
 
 int	get_tab_size(char *pattern, t_minishell *minishell)
 {
-	int		count;
+	struct dirent	*dent;
+	int				count;
+	char			**results;
+	DIR				*dir;
 
 	count = 0;
-	char	**results;
-	DIR		*dir = opendir(minishell->current_dir);
-
-	struct dirent	*dent;
+	dir = opendir(minishell->current_dir);
 	dent = readdir(dir);
 	while (dent != NULL)
 	{
 		if (is_only_wildcards(pattern))
 			count ++;
-		else if (dent->d_name[0] != '.' && pattern_checker(dent->d_name, pattern, ft_strlen(dent->d_name), ft_strlen(pattern)))
+		else if (dent->d_name[0] != '.'
+			&& pattern_checker(dent->d_name, pattern,
+				ft_strlen(dent->d_name), ft_strlen(pattern)))
 			count ++;
 		dent = readdir(dir);
 	}
@@ -84,30 +97,28 @@ int	need_to_glob(char *token_literal)
 	return (0);
 }
 
-char **wildcards_parser(char *pattern, t_minishell *minishell)
+char	**wildcards_parser(char *pattern, t_minishell *minishell)
 {
-	int		index;
-	int		tab_size;
-	char	**results;
-	DIR		*dir;
 	struct dirent	*dent;
+	int				index;
+	int				tab_size;
+	char			**results;
+	DIR				*dir;
 
 	index = 0;
 	tab_size = get_tab_size(pattern, minishell);
-	
 	results = ft_calloc(sizeof(char *), get_tab_size(pattern, minishell) + 1);
 	if (tab_size == 0)
-	{
-		results[0] = ft_strdup(pattern);
-		return (results);
-	}
+		return (results[0] = ft_strdup(pattern), results);
 	dir = opendir(minishell->current_dir);
 	dent = readdir(dir);
 	while (dent != NULL)
 	{
 		if (is_only_wildcards(pattern))
 			results[index ++] = ft_strdup(dent->d_name);
-		else if (dent->d_name[0] != '.' && pattern_checker(dent->d_name, pattern, ft_strlen(dent->d_name), ft_strlen(pattern)))
+		else if (dent->d_name[0] != '.'
+			&& pattern_checker(dent->d_name, pattern,
+				ft_strlen(dent->d_name), ft_strlen(pattern)))
 			results[index ++] = ft_strdup(dent->d_name);
 		dent = readdir(dir);
 	}
