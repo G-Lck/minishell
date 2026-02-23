@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansions.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
+/*   Updated: 2026/01/19 11:49:38 by thbouver         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	create_token_literal(t_token *token_tab, char *str, int *index)
@@ -29,57 +41,57 @@ int	create_token_literal(t_token *token_tab, char *str, int *index)
 	return (1);
 }
 
-void	fill_token_tab(t_token *token_tab, char *expanded_token, int token_count)
+void	fill_token_tab(t_token *t_tab, char *expanded_token, int token_count)
 {
-	int	index;
+	int	i;
 	int	token_tab_index;
 
-	index = 0;
+	i = 0;
 	token_tab_index = 0;
-	while (index < token_count)
+	while (i < token_count)
 	{
-		if (expanded_token[index] == '"' || expanded_token[index] == '\''
-				|| expanded_token[index])
+		if (expanded_token[i] == '"' || expanded_token[i] == '\''
+			|| expanded_token[i])
 		{
-			create_token_literal(&token_tab[token_tab_index], expanded_token, &index);
+			create_token_literal(&t_tab[token_tab_index], expanded_token, &i);
 			token_tab_index ++;
 		}
-		index ++;
+		i ++;
 	}
 }
 
 int	token_counter(char *expanded_token)
 {
 	int	count;
-	int	index;
+	int	i;
 	int	in_quote;
 	int	in_dquote;
 
 	count = 1;
-	index = 0;
+	i = 0;
 	in_quote = 0;
 	in_dquote = 0;
-	while (expanded_token[index])
+	while (expanded_token[i])
 	{
-		if (expanded_token[index] == '"' && in_quote == 0)
+		if (expanded_token[i] == '"' && in_quote == 0)
 			in_dquote = !in_dquote;
-		if (expanded_token[index] == 39 && in_dquote == 0)
+		if (expanded_token[i] == 39 && in_dquote == 0)
 			in_quote = !in_quote;
-		if ((in_quote != 1 || in_dquote != 1) && is_wspace(expanded_token[index]))
+		if ((in_quote != 1 || in_dquote != 1) && is_wspace(expanded_token[i]))
 			count ++;
-		index ++;
+		i ++;
 	}
 	return (count);
 }
 
-t_token	*split_expension(char *literal, int *token_count, t_minishell *minishell)
+t_token	*split_expension(char *literal, int *token_count, t_minishell *mini)
 {
 	t_token	*token_tab;
 	int		index;
 	char	*expanded_token;
 
 	index = 0;
-	expanded_token = expand_variables(literal, minishell);
+	expanded_token = expand_variables(literal, mini);
 	*token_count = token_counter(expanded_token);
 	token_tab = ft_calloc(sizeof(t_token), *token_count);
 	if (!token_tab)
