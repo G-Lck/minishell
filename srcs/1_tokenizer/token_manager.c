@@ -18,21 +18,22 @@ content ainsi que la node.
 */
 void	free_token_list(t_list **head)
 {
-	t_list *tmp;
-	t_token *token;
+	t_list	*tmp;
+	t_token	*token;
 
 	while (*head)
 	{
 		tmp = *head;
 		token = tmp->content;
 		*head = (*head)->next;
-		if(token && token->literal)
+		if (token && token->literal)
 			free (token->literal);
 		free (token);
 		free (tmp);
 	}
 	*head = NULL;
 }
+
 /*Creer un nouveau token et l'ajoute a la liste de tokens.*/
 int	create_token(char *str, int type, int index, t_minishell *minishell)
 {
@@ -79,35 +80,4 @@ void	free_token(t_list *node)
 	free (token_node->literal);
 	free (token_node);
 	free (node);
-}
-
-/*Supprime un token via son index*/
-void	pop_token(int index, t_list **head)
-{
-	t_list	*tmp;
-	t_list	*tmp1;
-	t_token	*node_content;
-
-	tmp = *head;
-	if (index == 0)
-	{
-		tmp = (*head);
-		*head = (*head)->next;
-		node_content = tmp->content;
-		reset_tokens_index(*head);
-		return (free_token(tmp));
-	}
-	while (tmp->next != NULL)
-	{
-		node_content = tmp->next->content;
-		if (node_content->index == index)
-		{
-			tmp1 = tmp->next;
-			tmp->next = tmp->next->next;
-			free_token(tmp1);
-			reset_tokens_index(*head);
-			return ;
-		}
-		tmp = tmp->next;
-	}
 }
