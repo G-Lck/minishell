@@ -34,7 +34,7 @@ int		ft_env(t_env *env);
 int		ft_pwd(void);
 int		ft_export(char **args, t_env **env);
 int		ft_unset(char **args, t_env **env);
-int		ft_cd(char **args, t_env **env);
+int		ft_cd(char **args, t_env **env, t_minishell *minishell);
 
 // env_helpers.c
 void	add_env_var(t_env **head, char *key, char *value);
