@@ -40,7 +40,7 @@ int	is_builtin_and_execute(char **args, t_minishell *minishell)
 	if (ft_strncmp(args[0], "echo", 4) == 0 && ft_strlen(args[0]) == 4)
 		return (ft_echo(args, minishell->env));
 	if (ft_strncmp(args[0], "cd", 2) == 0 && ft_strlen(args[0]) == 2)
-		return (ft_cd(args, &minishell->env));
+		return (ft_cd(args, &minishell->env, minishell));
 	if (ft_strncmp(args[0], "pwd", 3) == 0 && ft_strlen(args[0]) == 3)
 		return (ft_pwd());
 	if (ft_strncmp(args[0], "export", 6) == 0 && ft_strlen(args[0]) == 6)

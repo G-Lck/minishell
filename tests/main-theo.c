@@ -75,28 +75,28 @@ int	main(int argc, char *argv[], char *envp[])
 	if (!fill_env(&minishell.env, envp))
 		return (1);
 	write (1, "\033[H\033[2J", 8);
-	while (1)
-	{
+	// while (1)
+	// {
 		init_signals();
 		minishell.input = readline("\e[0;36mMinishell> \e[0;33m");
 		if (minishell.input == NULL || ft_strlen(minishell.input) == 0)
-			continue;
+			return;
 		add_history(minishell.input);
 		tokenizer(minishell.input, &minishell);
 		if (syntax_checker(&minishell))
 		{
 			minishell.ast = ft_astnew(minishell.tokens_list, ft_lstsize(minishell.tokens_list));
 			create_ast(minishell.ast);
-			//rl_reset_terminal(NULL);
+			rl_reset_terminal(NULL);
 			ast_descent(minishell.ast, &minishell);
 		}
 		minishell.previous_last_status=minishell.last_status;
 		free_ast(minishell.ast);
-		free_token_list(&minishell.tokens_list);
-		//rl_on_new_line();
-	}
-	rl_clear_history();
-	free_minishell(&minishell);
-	rl_clear_history();
+		//free_token_list(&minishell.tokens_list);
+		// rl_on_new_line();
+	// }
+	//rl_clear_history();
+	// free_minishell(&minishell);
+	// rl_clear_history();
 	return (0);
 }
