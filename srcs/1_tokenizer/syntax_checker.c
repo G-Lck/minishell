@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_checker.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/19 11:49:38 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/02/25 12:10:45 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,30 @@
 /*check si le token suivant un operator est bien un token de type string
 ou une parenthese ouverte
 Renvoie une erreur sinon*/
+static int	check_between_parenthesis(t_minishell *minishell)
+{
+	t_token			*token_content;
+	t_list			*token_lst;
+	t_token_type	token_type;
+
+	token_lst = minishell->tokens_list;
+	while (token_lst)
+	{
+		token_content = token_lst->content;
+		token_type = token_content->type;
+		if (token_type == OPEN_BRACKET)
+		{
+			if (!token_lst->next)
+				return (0);
+			token_content = token_lst->next->content;
+			if (token_content->type == CLOSE_BRACKET)
+				return (0);
+		}
+		token_lst = token_lst->next;
+	}
+	return (1);
+}
+
 static int	check_after_operator(t_minishell *minishell)
 {
 	t_token			*token_content;
@@ -48,7 +72,7 @@ subshell, si le token n'est egalement pas une parenthèse fermée*/
 static int	check_first_token(t_minishell *minishell)
 {
 	t_list		*token_lst;
-	t_token		*token_content;	
+	t_token		*token_content;
 
 	token_lst = minishell->tokens_list;
 	while (token_lst)
@@ -135,7 +159,7 @@ int	check_quotes(char *token_literal)
 /*Point d'entrée du check syntaxique de la liste de tokens*/
 int	syntax_checker(t_minishell *minishell)
 {
-	if (!check_after_operator(minishell) || !check_first_token(minishell))
+	if (!check_after_operator(minishell) || !check_first_token(minishell) || !check_between_parenthesis(minishell))
 	{
 		ft_printf("operators must be followed by a command\n");
 		return (0);
