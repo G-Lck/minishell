@@ -52,6 +52,7 @@ int		ft_strncmp(const char *first, const char *second, size_t lenght);
 int		ft_memcmp(const void *pointer1, const void *pointer2, size_t size);
 size_t	ft_strlen(const char *string);
 size_t	ft_strlcat(char *destination, const char *source, size_t size);
+int		ft_strcmp(const char *first, const char *second);
 size_t	ft_strlcpy(char *dest, char *src, size_t size);
 char	*ft_strchr(const char *string, int searchChar);
 char	*ft_strrchr(const char *string, int searchChar);

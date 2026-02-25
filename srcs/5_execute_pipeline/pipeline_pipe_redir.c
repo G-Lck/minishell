@@ -12,10 +12,47 @@
 
 #include "minishell.h"
 
+static t_redir	*find_heredoc(t_ast *node)
+{
+	t_list	*cur;
+	t_redir	*redir;
+
+	if (!node || !node->redirs)
+		return (NULL);
+	cur = node->redirs;
+	while (cur)
+	{
+		redir = (t_redir *)cur->content;
+		if (redir->redir_type == HERE_DOC)
+			return (redir);
+		cur = cur->next;
+	}
+	return (NULL);
+}
+
+static int	apply_heredoc_input(t_ast *node)
+{
+	int		pipefd[2];
+	t_redir	*heredoc;
+
+	heredoc = find_heredoc(node);
+	if (!heredoc)
+		return (0);
+	if (pipe(pipefd) == -1)
+		exit(EXIT_FAILURE);
+	write(pipefd[1], heredoc->target, ft_strlen(heredoc->target));
+	close(pipefd[1]);
+	dup2(pipefd[0], STDIN_FILENO);
+	close(pipefd[0]);
+	return (1);
+}
+
 static void	setup_pipe_input(int **pipes, int idx, t_ast *node)
 {
 	int	fd;
 
+	if (apply_heredoc_input(node))
+		return ;
 	fd = open_redir_fd(node, REDIR_IN);
 	if (fd == -2)
 		exit(EXIT_FAILURE);
@@ -31,6 +68,7 @@ static void	setup_pipe_input(int **pipes, int idx, t_ast *node)
 		pipes[idx - 1][0] = -1;
 	}
 }
+
 
 static void	setup_pipe_output(int **pipes, int idx, int total, t_ast *node)
 {
