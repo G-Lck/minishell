@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*   ft_strcmp.c           .                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/30 22:41:51 by marvin            #+#    #+#             */
-/*   Updated: 2025/07/30 22:41:51 by marvin           ###   ########.fr       */
+/*   Created: 2025/07/31 22:36:17 by marvin            #+#    #+#             */
+/*   Updated: 2025/07/31 22:36:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_bzero(void *pointer, size_t n)
+int	ft_strcmp(const char *first, const char *second)
 {
 	size_t	index;
 
 	index = 0;
-	while (index < n)
-		((unsigned char *)pointer)[index ++] = '\0';
-	return ;
+	while (first[index] && second[index])
+	{
+		if (first[index] != second[index])
+			break ;
+		index ++;
+	}
+	return ((unsigned char)first[index] - (unsigned char)second[index]);
 }

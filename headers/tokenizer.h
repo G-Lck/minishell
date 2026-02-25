@@ -57,4 +57,8 @@ t_list	*new_exec_node(char *token_literal, t_token_type type);
 
 t_list	*new_redir_node(char *target, t_token_type type);
 
+char	*read_heredoc_line(char *eof);
+char	*read_heredoc(char *eof);
+int	convert_all_heredoc(t_minishell *minishell);
+
 #endif
