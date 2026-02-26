@@ -43,8 +43,6 @@ char	*read_heredoc(char *eof)
 	return (content);
 }
 
-// ...existing code... (read_heredoc_line et read_heredoc)
-
 int	convert_all_heredoc(t_minishell *minishell)
 {
 	t_list	*current;
