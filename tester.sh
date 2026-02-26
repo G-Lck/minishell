@@ -5,7 +5,7 @@
 Minishell="./minishell-theo"
 Total_tests=0
 Passed_tests=0
-details=none # output, error, all, or none
+details=all # output, error, all, or none
 test=all # all for all
 leak=false # true to check for leaks
 TMP_DIR="/tmp/minishell_test_$$"
@@ -58,10 +58,12 @@ test_command(){
 	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_full_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
 
 	# Récupère l'exit code depuis le marqueur
-	mini_exit_code=$(grep -oP -a '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp" | tail -n 1)
+	mini_exit_code=$(grep -oP -a '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp")
 
 	# Enlève les lignes de prompt, marqueur, et message d'accueil
-	grep -v -a "Minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+	#grep -v "Minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+
+	grep -v -a "EXIT_MARKER" "$TMP_DIR/mini_full_output.tmp" > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
 
 	eval "$cmd" > "$TMP_DIR/bash_output.tmp" 2> "$TMP_DIR/bash_error.tmp"
 	bash_exit_code=$?
@@ -224,7 +226,7 @@ if [[ ${test} == all ]]; then
 	#test_command 'echo "Processing files in directory:" && ls -la /usr/bin | head -20 | tail -10 | grep -v "total" | awk "{print \$9}" | sort | uniq | wc -l > count.tmp && cat count.tmp && echo "Files with permissions:" && find /usr/bin -type f -executable 2>/dev/null | head -5 | xargs ls -l | cut -d" " -f1,9 && echo "Current user info:" && whoami && echo "Current directory:" && pwd && echo "Date and time:" && date "+%Y-%m-%d %H:%M:%S" && echo "System info:" && uname -a | cut -d" " -f1-3 && echo "Memory usage:" && free -h 2>/dev/null | grep "Mem:" | awk "{print \$3\"/\"\$2}" && echo "PATH directories count:" && echo $PATH | tr ":" "\n" | wc -l && echo "Home directory contents:" && ls -1 $HOME | head -10 && echo "Process count:" && ps aux 2>/dev/null | wc -l && echo "Disk usage of current dir:" && du -sh . 2>/dev/null && echo "File types in current dir:" && file * 2>/dev/null | head -5 && echo "Environment variables count:" && env | wc -l && echo "Shell level:" && echo $SHLVL && echo "Terminal type:" && echo $TERM && echo "Language setting:" && echo $LANG && echo "Completed complex command execution"' "super complex long command with multiple pipes and redirections"
 
 else
-	test_command "/bin/ls" "test with absolute path"
+	test_command "echo *" "only *"
 fi
 
 rm -rf "$TMP_DIR"
