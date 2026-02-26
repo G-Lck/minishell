@@ -84,28 +84,33 @@ int	token_counter(char *expanded_token)
 	return (count);
 }
 
-t_token	*split_expension(char *literal, int *token_count, t_minishell *mini)
+char	**split_expension(char *literal, int *token_count, t_minishell *mini)
 {
-	t_token	*token_tab;
 	int		index;
+	char	**tmp;
 	char	*expanded_token;
 
 	index = 0;
 	expanded_token = expand_variables(literal, mini);
-	*token_count = token_counter(expanded_token);
-	token_tab = ft_calloc(sizeof(t_token), *token_count);
-	if (!token_tab)
-		return (NULL);
-	if (*token_count == 1)
-	{
-		if (ft_strlen(expanded_token) > 0)
-			token_tab[0].literal = ft_strdup(expanded_token);
-		else
-			token_tab[0].literal = ft_strdup(literal);
-		free (expanded_token);
-		return (token_tab);
-	}
-	fill_token_tab(token_tab, expanded_token, *token_count);
-	free(expanded_token);
-	return (token_tab);
+	tmp = ft_split(expanded_token, "\t\n\v\f\r ");
+	return (tmp);
+
+
+
+	// *token_count = token_counter(expanded_token);
+	// token_tab = ft_calloc(sizeof(t_token), *token_count);
+	// if (!token_tab)
+	// 	return (NULL);
+	// if (*token_count == 1)
+	// {
+	// 	if (ft_strlen(expanded_token) > 0)
+	// 		token_tab[0].literal = ft_strdup(expanded_token);
+	// 	else
+	// 		token_tab[0].literal = ft_strdup(literal);
+	// 	free (expanded_token);
+	// 	return (token_tab);
+	// }
+	// fill_token_tab(token_tab, expanded_token, *token_count);
+	// free(expanded_token);
+	// return (token_tab);
 }
