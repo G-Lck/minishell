@@ -42,6 +42,7 @@ static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
 	t_list	*new_node;
 	t_token	*token_tab;
 
+	index = 0;
 	token_tab = split_expension(t->literal, &token_count, m);
 	if (token_count == 1)
 	{
