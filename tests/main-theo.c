@@ -76,6 +76,7 @@ int	main(int argc, char *argv[], char *envp[])
 
 	if (!fill_env(&minishell.env, envp))
 		return (1);
+	write (1, "\033[H\033[2J", 8);
 
 	while (1)
 	{
