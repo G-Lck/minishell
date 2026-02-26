@@ -100,4 +100,4 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 		node->exec_token = tokens_to_args(node->exec_lst);
 		exec_node_no_pipeline(node, minishell);
 	}
-}
+ }
