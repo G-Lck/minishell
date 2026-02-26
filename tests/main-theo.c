@@ -1,11 +1,24 @@
 #include "minishell.h"
 
-sig_atomic_t g_sig;
+volatile sig_atomic_t g_sig = 0;
 
 void	free_minishell(t_minishell *minishell)
 {
 	free(minishell->current_dir);
 	free_env(&minishell->env);
+}
+
+
+void sigint_heredoc(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_sig = 1;
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
 
 void sigint_exec(int sig)

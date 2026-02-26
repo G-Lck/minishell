@@ -23,10 +23,13 @@ char	*read_heredoc(char *eof)
 	char	*content;
 	char	*tmp;
 
+	signal(SIGINT, sigint_heredoc);
 	content = ft_strdup("");
-	while (1)
+	while (1 && g_sig == 0)
 	{
 		line = read_heredoc_line(eof);
+		if (g_sig == 1)
+			break;
 		if (!line || !ft_strcmp(line, eof))
 		{
 			free(line);
@@ -40,6 +43,8 @@ char	*read_heredoc(char *eof)
 		free(tmp);
 		free(line);
 	}
+	g_sig = 0;
+	signal(SIGINT, sigint_exec);
 	return (content);
 }
 
