@@ -40,29 +40,21 @@ static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
 	int		index;
 	int		token_count;
 	t_list	*new_node;
-	t_token	*token_tab;
+	char	**token_tab;
+	char	*expanded_token;
 
+	// token_tab = split_expension(t->literal, &token_count, m);
 	index = 0;
-	token_tab = split_expension(t->literal, &token_count, m);
-	if (token_count == 1)
+	expanded_token = expand_variables(t->literal, m);
+	token_tab = ft_split(expanded_token, "\t\n\v\f\r ");
+	while (token_tab[index])
 	{
-		new_node = new_exec_node(token_tab[0].literal, STRING);
-		ft_lstadd_back(&n->exec_lst, new_node);
-		return (token_tab[0].literal, token_tab, 1);
-	}
-	while (index < token_count)
-	{
-		new_node = new_exec_node(token_tab[index].literal, STRING);
+		new_node = new_exec_node(token_tab[index], STRING);
 		ft_lstadd_back(&n->exec_lst, new_node);
 		index ++;
 	}
-	index = 0;
-	while (index < token_count)
-	{
-		free(token_tab[index].literal);
-		index ++;
-	}
-	free (token_tab);
+	free(expanded_token);
+	free_tab(token_tab);
 }
 
 static void	create_wildcards_node(t_token *token, t_ast *node, t_minishell *m)
