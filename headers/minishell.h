@@ -66,8 +66,12 @@ typedef struct s_minishell
 	int		previous_last_status;
 }	t_minishell;
 
+extern volatile sig_atomic_t g_sig;
+
 void	sig_handler(int sig);
 void	sigint_exec(int sig);
 void	sigquit_exec(int sig);
+void	sigint_heredoc(int sig);
+	void init_signals(void);
 
 #endif

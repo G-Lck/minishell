@@ -43,6 +43,7 @@ typedef struct s_ast
 	char			**exec_token;
 	int				lst_len;
 	bool			is_subshell;
+	bool			skip;
 }	t_ast;
 
 t_ast	*ft_astnew(t_list *lst_token, int len);

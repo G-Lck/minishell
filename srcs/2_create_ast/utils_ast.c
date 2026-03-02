@@ -28,6 +28,7 @@ t_ast	*ft_astnew(t_list *lst_token, int len)
 	node->node_type = 3;
 	node->next_left = NULL;
 	node->next_right = NULL;
+	node->skip = false;
 	return (node);
 }
 

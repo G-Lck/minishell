@@ -33,6 +33,11 @@ void exec_node(t_ast *node, t_minishell *minishell)
 	int		builtin_status;
 
 	args = node->exec_token;
+	if (node->skip == true)
+	{
+		minishell->last_status = 1;
+		return;
+	}
 	if (!node || !node->exec_token)
 		exit(EXIT_FAILURE);
 	if (!args)
@@ -56,6 +61,11 @@ void exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
 	int		saved_stdout;
 
 	args = node->exec_token;
+	if (node->skip == true)
+	{
+		minishell->last_status = 1;
+		return;
+	}
 	if (!node || !node->exec_token)
 		exit(EXIT_FAILURE);
 	if (!args)

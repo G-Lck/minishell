@@ -26,11 +26,27 @@ static int	create_redirs(char *f, t_token_type type, t_ast *n, t_minishell *m)
 	}
 	else
 	{
+		if (ft_strlen(f) == 1)
+		{
+			new_node = new_redir_node("$", type);
+			ft_lstadd_back(&n->redirs, new_node);
+			return (1);
+		}
+
 		expanded_var = expand_variables(f, m);
-		if (expanded_var != NULL && check_wspaces(expanded_var))
+		if (ft_strlen(expanded_var) == 0)
+		{
 			ft_printf("ambiguous redirection\n");
+			n->skip = true;
+		}
+		if (expanded_var != NULL && check_wspaces(expanded_var))
+		{
+			ft_printf("ambiguous redirection\n");
+			n->skip = true;
+		}
 		new_node = new_redir_node(expanded_var, type);
 		ft_lstadd_back(&n->redirs, new_node);
+		free (expanded_var);
 	}
 	return (1);
 }
