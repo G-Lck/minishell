@@ -17,19 +17,42 @@ char	*read_heredoc_line(char *eof)
 	return (line);
 }
 
+void here_doc_handler(int sig)
+{
+	(void)sig;
+	g_sig = 1;
+	write(1, "\n", 1);
+	rl_replace_line("", 0);
+	rl_done = 1;
+}
+
+void init_heredoc_signals(void)
+{
+	struct sigaction sig;
+	sig.sa_handler = here_doc_handler;
+	sigemptyset(&sig.sa_mask);
+	sig.sa_flags = 0;
+	sigaction(SIGINT, &sig, NULL);
+}
+
 char	*read_heredoc(char *eof)
 {
 	char	*line;
 	char	*content;
 	char	*tmp;
 
-	signal(SIGINT, sigint_heredoc);
+	init_heredoc_signals();
 	content = ft_strdup("");
-	while (1 && g_sig == 0)
+	while (1)
 	{
 		line = read_heredoc_line(eof);
-		if (g_sig == 1)
+		if (g_sig)
+		{
+			free(line);
+			free(content);
+			content = NULL;
 			break;
+		}
 		if (!line || !ft_strcmp(line, eof))
 		{
 			free(line);
@@ -44,7 +67,7 @@ char	*read_heredoc(char *eof)
 		free(line);
 	}
 	g_sig = 0;
-	signal(SIGINT, sigint_exec);
+	init_signals();
 	return (content);
 }
 
