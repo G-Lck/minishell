@@ -25,6 +25,7 @@ static void	new_node(t_ast *node, t_list *l_token, int i, enum e_token_type typ)
 	node->exec_token = NULL;
 	node->exec_lst = NULL;
 	node->redirs = NULL;
+	node->skip = false;
 	node->lst_len = 1;
 	node->node_type = typ;
 	node->next_left = node_left;
