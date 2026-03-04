@@ -62,7 +62,6 @@ static int	apply_one_redir(t_redir *redir)
 		close(pipefd[0]);
 		return (0);
 	}
-
 	fd = open_redir_type(redir->redir_type, redir->target);
 	if (fd == -1)
 		return (perror(redir->target), -1);

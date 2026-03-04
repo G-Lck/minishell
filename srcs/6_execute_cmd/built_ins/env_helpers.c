@@ -6,7 +6,7 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/02/03 11:31:05 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/04 17:01:00 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,22 +77,6 @@ void	set_env_var(t_env **env, char *key, char *value)
 		return ;
 	}
 	add_env_var(env, key, value);
-}
-
-void	free_env(t_env **head)
-{
-	t_env	*tmp;
-
-	while (*head)
-	{
-		tmp = *head;
-		*head = (*head)->next;
-		free (tmp->key);
-		free (tmp->value);
-		free (tmp);
-		tmp = NULL;
-	}
-	*head = NULL;
 }
 
 int	fill_env(t_env **env, char *envp[])

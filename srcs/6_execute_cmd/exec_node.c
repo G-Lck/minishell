@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-static void free_args(char **args)
+static void	free_args(char **args)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (!args)
-		return;
-
+		return ;
 	while (args[i])
 	{
 		free(args[i]);
@@ -27,7 +27,7 @@ static void free_args(char **args)
 	free(args);
 }
 
-void exec_node(t_ast *node, t_minishell *minishell)
+void	exec_node(t_ast *node, t_minishell *minishell)
 {
 	char	**args;
 	int		builtin_status;
@@ -36,7 +36,7 @@ void exec_node(t_ast *node, t_minishell *minishell)
 	if (node->skip == true)
 	{
 		minishell->last_status = 1;
-		return;
+		return ;
 	}
 	if (!node || !node->exec_token)
 		exit(EXIT_FAILURE);
@@ -45,7 +45,6 @@ void exec_node(t_ast *node, t_minishell *minishell)
 	builtin_status = is_builtin_and_execute(args, minishell);
 	if (builtin_status != -1)
 	{
-		//free_args(args);
 		minishell->last_status = builtin_status;
 		exit(builtin_status);
 	}
@@ -53,47 +52,52 @@ void exec_node(t_ast *node, t_minishell *minishell)
 	return ;
 }
 
-void exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
+static void	restore_fds(int saved_stdin, int saved_stdout)
 {
-	char	**args;
-	int		builtin_status;
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+}
+
+static void	exec_builtin_redir(t_ast *node, t_minishell *minishell)
+{
 	int		saved_stdin;
 	int		saved_stdout;
+	int		builtin_status;
+
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	if (apply_redirections_safe(node) == -1)
+	{
+		restore_fds(saved_stdin, saved_stdout);
+		free_args(node->exec_token);
+		minishell->last_status = 1;
+		return ;
+	}
+	builtin_status = is_builtin_and_execute(node->exec_token, minishell);
+	restore_fds(saved_stdin, saved_stdout);
+	minishell->last_status = builtin_status;
+}
+
+void	exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
+{
+	char	**args;
 
 	args = node->exec_token;
 	if (node->skip == true)
 	{
 		minishell->last_status = 1;
-		return;
+		return ;
 	}
 	if (!node || !node->exec_token)
 		exit(EXIT_FAILURE);
 	if (!args)
 		exit(EXIT_FAILURE);
-	builtin_status = is_builtin(args);
-	if (builtin_status == 1)
+	if (is_builtin(args) == 1)
 	{
-		saved_stdin = dup(STDIN_FILENO);
-		saved_stdout = dup(STDOUT_FILENO);
-		if (apply_redirections_safe(node) == -1)
-		{
-			dup2(saved_stdin, STDIN_FILENO);
-			dup2(saved_stdout, STDOUT_FILENO);
-			close(saved_stdin);
-			close(saved_stdout);
-			free_args(args);
-			minishell->last_status = 1;
-			return ;
-		}
-		builtin_status = is_builtin_and_execute(args, minishell);
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
-		close(saved_stdout);
-		//free_args(args);
-		minishell->last_status = builtin_status;
+		exec_builtin_redir(node, minishell);
 		return ;
 	}
 	exec_no_pipeline(node, minishell);
-	return ;
 }

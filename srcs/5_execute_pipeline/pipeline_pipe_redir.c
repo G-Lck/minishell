@@ -69,7 +69,6 @@ static void	setup_pipe_input(int **pipes, int idx, t_ast *node)
 	}
 }
 
-
 static void	setup_pipe_output(int **pipes, int idx, int total, t_ast *node)
 {
 	int	fd;

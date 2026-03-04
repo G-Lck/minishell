@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/02/25 11:40:12 by theo             ###   ########.fr       */
+/*   Updated: 2026/03/04 17:53:51 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	free_redir(void *content)
 void	free_ast(t_ast *node)
 {
 	if (!node)
-		return;
+		return ;
 	if (node->next_left != NULL)
 		free_ast(node->next_left);
 	if (node->next_right != NULL)

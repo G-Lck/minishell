@@ -59,6 +59,7 @@ t_list	*new_redir_node(char *target, t_token_type type);
 
 char	*read_heredoc_line(char *eof);
 char	*read_heredoc(char *eof);
-int	convert_all_heredoc(t_minishell *minishell);
+void	init_heredoc_signals(void);
+int		convert_all_heredoc(t_minishell *minishell);
 
 #endif

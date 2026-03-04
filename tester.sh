@@ -5,7 +5,7 @@
 Minishell="./minishell-theo"
 Total_tests=0
 Passed_tests=0
-details=all # output, error, all, or none
+details=none # output, error, all, or none
 test=all # all for all
 leak=false # true to check for leaks
 TMP_DIR="/tmp/minishell_test_$$"
@@ -30,7 +30,10 @@ test_debug(){
 	local error_passed=false
 
 	# Exécute commande + echo $? + exit dans minishell
-	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_full_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_raw_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+
+	# Strip ANSI escape sequences and null bytes
+	sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' "$TMP_DIR/mini_raw_output.tmp" | tr -d '\0' > "$TMP_DIR/mini_full_output.tmp"
 
 	echo "begin of mini_full_output"
 	cat $TMP_DIR/mini_full_output.tmp
@@ -55,21 +58,22 @@ test_command(){
 	local error_passed=false
 
 	# Exécute commande + echo $? + exit dans minishell
-	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_full_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_raw_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+
+	# Strip ANSI escape sequences and null bytes
+	sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' "$TMP_DIR/mini_raw_output.tmp" | tr -d '\0' > "$TMP_DIR/mini_full_output.tmp"
 
 	# Récupère l'exit code depuis le marqueur
 	mini_exit_code=$(grep -oP -a '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp")
 
-	# Enlève les lignes de prompt, marqueur, et message d'accueil
-	#grep -v "Minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
-
-	grep -v -a "EXIT_MARKER" "$TMP_DIR/mini_full_output.tmp" > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+	# Enlève les lignes avec EXIT_MARKER
+	grep -v -a 'EXIT_MARKER' "$TMP_DIR/mini_full_output.tmp" > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
 
 	eval "$cmd" > "$TMP_DIR/bash_output.tmp" 2> "$TMP_DIR/bash_error.tmp"
 	bash_exit_code=$?
 
-	# Normalise les messages d'erreur pour comparaison
-    sed 's/^[^:]*: //' "$TMP_DIR/mini_error.tmp" > "$TMP_DIR/normalized_mini_error.tmp"
+	# Strip ANSI sequences and control chars from error output, then normalize
+    sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' "$TMP_DIR/mini_error.tmp" | tr -d '\0\007' | sed 's/^[^:]*: //' > "$TMP_DIR/normalized_mini_error.tmp"
     sed 's/^.*line [0-9]*: //' "$TMP_DIR/bash_error.tmp" > "$TMP_DIR/normalized_bash_error.tmp"
 
 	if diff -q "$TMP_DIR/cleaned_mini_output.tmp" "$TMP_DIR/bash_output.tmp" > /dev/null; then
@@ -100,7 +104,8 @@ test_command(){
 
 	if [[ $test_passed == true && $error_passed == true ]]; then
 		echo -e "${TURQUOISE}OK 🦄${RESET}"
-		Total_tests=${Total_tests}+1
+		((Total_tests++))
+		((Passed_tests++))
 
 		# Leak check with valgrind
 		if [[ $leak == true ]]; then
@@ -129,12 +134,14 @@ if [[ ${test} == all ]]; then
 	test_command "echo" "echo with nothing"
 	test_command "echo a" "simple echo"
 	test_command "echo -n a" "simple echo with option -n"
+	echo but it is ok
 	test_command "echo $LANG and $HOME" "echo with variables"
 
 	# ls and errors
 	test_command "/bin/ls srcs" "ls with absolute path with one arg"
 	test_command "/bin/ls srcs libft" "ls with absolute path with two args"
 	test_command "/bin/ls notafile" "ls with absolute path with file doesn't exist"
+	echo but it is ok
 	test_command "expr $?+$?" 'test with expr $?+$?'
 
 	# ls, echo and quotes
@@ -159,14 +166,15 @@ if [[ ${test} == all ]]; then
 	test_command "pwd with args"
 
 	# others external commands
-	test_command " wc -l ./minishell-garance" "wc with args"
+	test_command " wc -l ./minishell-theo" "wc with args"
 	test_command "awk -F: '{ print $1 }' /etc/passwd" "awk with stuff"
 
 	# PATH
-	echo -e ${PINK}"unset PATH && ls" "unset PATH and do a command, it shouldnt work but its working"${RESET}
+	echo -e ${PINK}"unset PATH && ls" "unset PATH and do a command, error coe ok but not same message"${RESET}
 
 	#redirections
 	test_command "ls < test.tmp" "input redirection <"
+	echo but it is ok, test with a ok file too
 	test_command "echo a > test.tmp" "output redirection >"
 	test_command "echo a >> test.tmp" "output redirection append >>"
 	##test_command "echo a << test.x" "heredoc <<"
@@ -184,6 +192,7 @@ if [[ ${test} == all ]]; then
 	test_command "echo Unicorn | cat" "simple pipe"
 	test_command "cat Makefile | grep make | wc -c" "pipe with multiples external commands"
 	test_command "ls noexist | grep Make | wc -c" "pipe with a wrong command at beggining"
+	echo but it is ok
 	test_command "ls | grepppppp Make | wc -c" "pipe with a wrong command at middle"
 	test_command "ls | grep Make | caaaat" "pipe with a wrong command at the end"
 	test_command "cat /dev/urandom | head -c 100 | wc -c" "check if child close his pipe"

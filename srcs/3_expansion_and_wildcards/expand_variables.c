@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#              */
-/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr        */
+/*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
+/*   Updated: 2026/03/04 17:16:37 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*get_env_value(char *key, t_minishell *minishell)
 
 	if (!key)
 		return (NULL);
-	if (key[0] == '\0')
+	if (key[1] == '\0')
 		return (ft_strdup("$"));
 
 	// Variables spéciales qui commencent par $
