@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/19 11:49:38 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/03/04 17:15:23 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,23 +94,4 @@ char	**split_expension(char *literal, int *token_count, t_minishell *mini)
 	expanded_token = expand_variables(literal, mini);
 	tmp = ft_split(expanded_token, "\t\n\v\f\r ");
 	return (tmp);
-
-
-
-	// *token_count = token_counter(expanded_token);
-	// token_tab = ft_calloc(sizeof(t_token), *token_count);
-	// if (!token_tab)
-	// 	return (NULL);
-	// if (*token_count == 1)
-	// {
-	// 	if (ft_strlen(expanded_token) > 0)
-	// 		token_tab[0].literal = ft_strdup(expanded_token);
-	// 	else
-	// 		token_tab[0].literal = ft_strdup(literal);
-	// 	free (expanded_token);
-	// 	return (token_tab);
-	// }
-	// fill_token_tab(token_tab, expanded_token, *token_count);
-	// free(expanded_token);
-	// return (token_tab);
 }

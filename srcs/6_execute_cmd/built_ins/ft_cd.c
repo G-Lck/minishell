@@ -45,11 +45,8 @@ static int	cd_to_path(char *path, t_env **env, t_minishell *minishell)
 		free(old_pwd);
 		return (1);
 	}
-	if (old_pwd)
-	{
-		set_env_var(env, "OLDPWD", old_pwd);
-		free(old_pwd);
-	}
+	set_env_var(env, "OLDPWD", old_pwd);
+	free(old_pwd);
 	set_env_var(env, "PWD", new_pwd);
 	free(minishell->current_dir);
 	minishell->current_dir = ft_strdup(new_pwd);
@@ -60,24 +57,19 @@ static int	cd_to_path(char *path, t_env **env, t_minishell *minishell)
 int	ft_cd(char **args, t_env **env, t_minishell *minishell)
 {
 	char	*path;
-    t_env	*home;
+	t_env	*home;
+
 	if (!args)
 		return (1);
 	else if (args[0] && !args[1])
 	{
 		home = find_env_var(*env, "HOME");
-        if (!home)
-        {
-            ft_fprintf(2, "minishell: cd: HOME not set\n");
-            return (1);
-        }
-        path = home->value;
+		if (!home)
+			return (ft_fprintf(2, "minishell: cd: HOME not set\n"), 1);
+		path = home->value;
 	}
 	else if (args[2])
-	{
-		ft_fprintf(2, "minishell: cd: too many arguments\n");
-		return (1);
-	}
+		return (ft_fprintf(2, "minishell: cd: too many arguments\n"), 1);
 	else
 		path = args[1];
 	return (cd_to_path(path, env, minishell));

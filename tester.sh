@@ -134,12 +134,14 @@ if [[ ${test} == all ]]; then
 	test_command "echo" "echo with nothing"
 	test_command "echo a" "simple echo"
 	test_command "echo -n a" "simple echo with option -n"
+	echo but it is ok
 	test_command "echo $LANG and $HOME" "echo with variables"
 
 	# ls and errors
 	test_command "/bin/ls srcs" "ls with absolute path with one arg"
 	test_command "/bin/ls srcs libft" "ls with absolute path with two args"
 	test_command "/bin/ls notafile" "ls with absolute path with file doesn't exist"
+	echo but it is ok
 	test_command "expr $?+$?" 'test with expr $?+$?'
 
 	# ls, echo and quotes
@@ -168,10 +170,11 @@ if [[ ${test} == all ]]; then
 	test_command "awk -F: '{ print $1 }' /etc/passwd" "awk with stuff"
 
 	# PATH
-	echo -e ${PINK}"unset PATH && ls" "unset PATH and do a command, it shouldnt work but its working"${RESET}
+	echo -e ${PINK}"unset PATH && ls" "unset PATH and do a command, error coe ok but not same message"${RESET}
 
 	#redirections
 	test_command "ls < test.tmp" "input redirection <"
+	echo but it is ok, test with a ok file too
 	test_command "echo a > test.tmp" "output redirection >"
 	test_command "echo a >> test.tmp" "output redirection append >>"
 	##test_command "echo a << test.x" "heredoc <<"
@@ -189,6 +192,7 @@ if [[ ${test} == all ]]; then
 	test_command "echo Unicorn | cat" "simple pipe"
 	test_command "cat Makefile | grep make | wc -c" "pipe with multiples external commands"
 	test_command "ls noexist | grep Make | wc -c" "pipe with a wrong command at beggining"
+	echo but it is ok
 	test_command "ls | grepppppp Make | wc -c" "pipe with a wrong command at middle"
 	test_command "ls | grep Make | caaaat" "pipe with a wrong command at the end"
 	test_command "cat /dev/urandom | head -c 100 | wc -c" "check if child close his pipe"

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*read_heredoc_line(char *eof)
@@ -8,90 +20,72 @@ char	*read_heredoc_line(char *eof)
 		line = readline("> ");
 	else
 		line = readline(NULL);
-	if (!line)
+	if (!line && !g_sig)
 	{
-		ft_putstr_fd("minishell: warning: here-document delimited by EOF (wanted '", 2);
+		ft_putstr_fd("minishell: warning: ", 2);
+		ft_putstr_fd("here-document delimited by EOF (wanted '", 2);
 		ft_putstr_fd(eof, 2);
 		ft_putstr_fd("')\n", 2);
 	}
 	return (line);
 }
 
-void here_doc_handler(int sig)
+static int	heredoc_event_hook(void)
 {
-	(void)sig;
-	g_sig = 1;
-	write(1, "\n", 1);
-	rl_replace_line("", 0);
-	rl_done = 1;
+	if (g_sig)
+	{
+		rl_done = 1;
+		return (1);
+	}
+	return (0);
 }
 
-void init_heredoc_signals(void)
+static char	*append_heredoc_line(char *content, char *line)
 {
-	struct sigaction sig;
-	sig.sa_handler = here_doc_handler;
-	sigemptyset(&sig.sa_mask);
-	sig.sa_flags = 0;
-	sigaction(SIGINT, &sig, NULL);
+	char	*tmp;
+
+	tmp = content;
+	content = ft_strjoin(content, line);
+	free(tmp);
+	tmp = content;
+	content = ft_strjoin(content, "\n");
+	free(tmp);
+	return (content);
+}
+
+static int	process_heredoc_line(char **content, char *eof)
+{
+	char	*line;
+
+	line = read_heredoc_line(eof);
+	if (g_sig)
+	{
+		free(line);
+		free(*content);
+		*content = NULL;
+		return (0);
+	}
+	if (!line || !ft_strcmp(line, eof))
+	{
+		free(line);
+		return (0);
+	}
+	*content = append_heredoc_line(*content, line);
+	free(line);
+	return (1);
 }
 
 char	*read_heredoc(char *eof)
 {
-	char	*line;
 	char	*content;
-	char	*tmp;
 
 	init_heredoc_signals();
+	rl_event_hook = heredoc_event_hook;
 	content = ft_strdup("");
-	while (1)
-	{
-		line = read_heredoc_line(eof);
-		if (g_sig)
-		{
-			free(line);
-			free(content);
-			content = NULL;
-			break;
-		}
-		if (!line || !ft_strcmp(line, eof))
-		{
-			free(line);
-			break ;
-		}
-		tmp = content;
-		content = ft_strjoin(content, line);
-		free(tmp);
-		tmp = content;
-		content = ft_strjoin(content, "\n");
-		free(tmp);
-		free(line);
-	}
+	while (process_heredoc_line(&content, eof))
+		;
+	rl_event_hook = NULL;
 	g_sig = 0;
 	init_signals();
 	return (content);
-}
-
-int	convert_all_heredoc(t_minishell *minishell)
-{
-	t_list	*current;
-	t_token	*token;
-	t_token	*next_token;
-	char	*content;
-
-	current = minishell->tokens_list;
-	while (current)
-	{
-		token = (t_token *)current->content;
-		if (token->type == HERE_DOC && current->next)
-		{
-			next_token = (t_token *)current->next->content;
-			content = read_heredoc(next_token->literal);
-			if (!content)
-				return (0);
-			free(next_token->literal);
-			next_token->literal = content;
-		}
-		current = current->next;
-	}
-	return (1);
 }
