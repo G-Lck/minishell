@@ -5,7 +5,7 @@
 Minishell="./minishell-theo"
 Total_tests=0
 Passed_tests=0
-details=all # output, error, all, or none
+details=none # output, error, all, or none
 test=all # all for all
 leak=false # true to check for leaks
 TMP_DIR="/tmp/minishell_test_$$"
@@ -30,7 +30,10 @@ test_debug(){
 	local error_passed=false
 
 	# Exécute commande + echo $? + exit dans minishell
-	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_full_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_raw_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+
+	# Strip ANSI escape sequences and null bytes
+	sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' "$TMP_DIR/mini_raw_output.tmp" | tr -d '\0' > "$TMP_DIR/mini_full_output.tmp"
 
 	echo "begin of mini_full_output"
 	cat $TMP_DIR/mini_full_output.tmp
@@ -55,21 +58,22 @@ test_command(){
 	local error_passed=false
 
 	# Exécute commande + echo $? + exit dans minishell
-	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_full_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+	printf "%s\necho EXIT_MARKER:\$?\nexit\n" "$cmd" | ${Minishell} > "$TMP_DIR/mini_raw_output.tmp" 2> "$TMP_DIR/mini_error.tmp"
+
+	# Strip ANSI escape sequences and null bytes
+	sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' "$TMP_DIR/mini_raw_output.tmp" | tr -d '\0' > "$TMP_DIR/mini_full_output.tmp"
 
 	# Récupère l'exit code depuis le marqueur
 	mini_exit_code=$(grep -oP -a '(?<=EXIT_MARKER:)[0-9]+' "$TMP_DIR/mini_full_output.tmp")
 
-	# Enlève les lignes de prompt, marqueur, et message d'accueil
-	#grep -v "Minishell>" "$TMP_DIR/mini_full_output.tmp" | grep -v "Force à toi" | grep -v 'EXIT_MARKER:' > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
-
-	grep -v -a "EXIT_MARKER" "$TMP_DIR/mini_full_output.tmp" > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
+	# Enlève les lignes avec EXIT_MARKER
+	grep -v -a 'EXIT_MARKER' "$TMP_DIR/mini_full_output.tmp" > "$TMP_DIR/cleaned_mini_output.tmp" 2>/dev/null || touch "$TMP_DIR/cleaned_mini_output.tmp"
 
 	eval "$cmd" > "$TMP_DIR/bash_output.tmp" 2> "$TMP_DIR/bash_error.tmp"
 	bash_exit_code=$?
 
-	# Normalise les messages d'erreur pour comparaison
-    sed 's/^[^:]*: //' "$TMP_DIR/mini_error.tmp" > "$TMP_DIR/normalized_mini_error.tmp"
+	# Strip ANSI sequences and control chars from error output, then normalize
+    sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' "$TMP_DIR/mini_error.tmp" | tr -d '\0\007' | sed 's/^[^:]*: //' > "$TMP_DIR/normalized_mini_error.tmp"
     sed 's/^.*line [0-9]*: //' "$TMP_DIR/bash_error.tmp" > "$TMP_DIR/normalized_bash_error.tmp"
 
 	if diff -q "$TMP_DIR/cleaned_mini_output.tmp" "$TMP_DIR/bash_output.tmp" > /dev/null; then
@@ -100,7 +104,8 @@ test_command(){
 
 	if [[ $test_passed == true && $error_passed == true ]]; then
 		echo -e "${TURQUOISE}OK 🦄${RESET}"
-		Total_tests=${Total_tests}+1
+		((Total_tests++))
+		((Passed_tests++))
 
 		# Leak check with valgrind
 		if [[ $leak == true ]]; then
@@ -159,7 +164,7 @@ if [[ ${test} == all ]]; then
 	test_command "pwd with args"
 
 	# others external commands
-	test_command " wc -l ./minishell-garance" "wc with args"
+	test_command " wc -l ./minishell-theo" "wc with args"
 	test_command "awk -F: '{ print $1 }' /etc/passwd" "awk with stuff"
 
 	# PATH
