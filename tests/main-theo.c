@@ -33,7 +33,7 @@
 
 	void sig_handler(int sig)
 	{
-		(void) sig;
+		g_sig = sig;
 		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -89,6 +89,7 @@
 		if (!fill_env(&minishell.env, envp))
 			return (1);
 		write (1, "\033[H\033[2J", 8);
+		g_sig = 0;
 		init_signals();
 		while (1)
 		{
@@ -105,7 +106,10 @@
 			if (minishell.input == NULL)
 				break ;
 			if (ft_strlen(minishell.input) == 0)
-				continue ;
+			{
+				free (minishell.input);
+				continue;
+			}
 			if (isatty(STDIN_FILENO))
 				add_history(minishell.input);
 			tokenizer(minishell.input, &minishell);
@@ -121,10 +125,11 @@
 				create_ast(minishell.ast);
 				rl_reset_terminal(NULL);
 				ast_descent(minishell.ast, &minishell);
+				free_ast(minishell.ast);
 			}
 			minishell.previous_last_status=minishell.last_status;
-			free_ast(minishell.ast);
 			free_token_list(&minishell.tokens_list);
+			free(minishell.input);
 			//rl_on_new_line();
 		}
 		rl_clear_history();
