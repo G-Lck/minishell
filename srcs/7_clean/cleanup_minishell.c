@@ -12,6 +12,12 @@
 
 #include "minishell.h"
 
+void	free_minishell(t_minishell *minishell)
+{
+	free(minishell->current_dir);
+	free_env(&minishell->env);
+}
+
 void	free_tab(char **tab)
 {
 	int	index;

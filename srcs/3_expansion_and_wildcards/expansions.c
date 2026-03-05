@@ -6,7 +6,7 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
-/*   Updated: 2026/03/04 17:15:23 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:17:55 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ int	token_counter(char *expanded_token)
 	return (count);
 }
 
-char	**split_expension(char *literal, int *token_count, t_minishell *mini)
+/*
+char	**split_expension(char *literal, t_minishell *mini)
 {
-	int		index;
 	char	**tmp;
 	char	*expanded_token;
 
@@ -95,3 +95,4 @@ char	**split_expension(char *literal, int *token_count, t_minishell *mini)
 	tmp = ft_split(expanded_token, "\t\n\v\f\r ");
 	return (tmp);
 }
+*/

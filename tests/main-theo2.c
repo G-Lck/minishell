@@ -15,8 +15,8 @@ void	init_minishell(t_minishell *minishell, char **envp)
 	minishell->env = NULL;
 	minishell->current_dir = NULL;
 	minishell->exit_code = 0;
-	minishell->last_status = 0;
-	minishell->previous_last_status = 0;
+	minishell->status = 0;
+	minishell->previous_status = 0;
 }
 
 int    main(int argc, char *argv[], char *envp[])
@@ -45,7 +45,7 @@ int    main(int argc, char *argv[], char *envp[])
             //rl_reset_terminal(NULL);
             ast_descent(minishell.ast, &minishell);
         }
-		minishell.previous_last_status=minishell.last_status;
+		minishell.previous_status=minishell.status;
         free_ast(minishell.ast);
         free_token_list(&minishell.tokens_list);
     }

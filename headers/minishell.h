@@ -29,6 +29,7 @@
 
 # include "../libft/libft.h"
 
+# include "initialisation.h"
 # include "tokenizer.h"
 # include "create_ast.h"
 # include "expansion_and_wildcards.h"
@@ -36,6 +37,7 @@
 # include "execute_cmd.h"
 # include "execute_pipeline.h"
 # include "clean.h"
+# include "signals.h"
 # include "utils.h"
 
 typedef struct s_env
@@ -62,16 +64,16 @@ typedef struct s_minishell
 	char	**envp;
 	char	*current_dir;
 	int		exit_code;
-	int		last_status;
-	int		previous_last_status;
+	int		status;
+	int		previous_status;
 }	t_minishell;
 
-extern volatile sig_atomic_t g_sig;
+extern volatile sig_atomic_t	g_sig;
 
 void	sig_handler(int sig);
 void	sigint_exec(int sig);
 void	sigquit_exec(int sig);
 void	sigint_heredoc(int sig);
-	void init_signals(void);
+void	init_signals(void);
 
 #endif

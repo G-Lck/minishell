@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_checker.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
-/*   Updated: 2026/02/25 12:10:45 by theo             ###   ########.fr       */
+/*   Updated: 2026/03/05 23:22:59 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,19 +164,19 @@ int	syntax_checker(t_minishell *minishell)
 	if (!check_after_operator(minishell) || !check_first_token(minishell) || !check_between_parenthesis(minishell))
 	{
 		ft_printf("operators must be followed by a command\n");
-		minishell->last_status = 2;
+		minishell->status = 2;
 		return (0);
 	}
 	if (!check_string(minishell))
 	{
 		ft_printf("quotes must be closed\n");
-		minishell->last_status = 2;
+		minishell->status = 2;
 		return (0);
 	}
 	if (!bracket_checker(minishell))
 	{
 		ft_printf("parentheses must be closed\n");
-		minishell->last_status = 2;
+		minishell->status = 2;
 		return (0);
 	}
 	return (1);

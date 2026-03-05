@@ -6,7 +6,7 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/03/04 17:16:37 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:22:38 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char	*get_env_value(char *key, t_minishell *minishell)
 	if (key[0] == '$')
 	{
 		if (key[1] == '?' && key[2] == '\0')
-			return (ft_itoa(minishell->previous_last_status));
+			return (ft_itoa(minishell->previous_status));
 		if (key[1] == '$')
 			return (ft_itoa(getpid()));
 		if (ft_isdigit(key[1]))

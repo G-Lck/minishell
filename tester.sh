@@ -2,7 +2,7 @@
 
 # Configuration
 
-Minishell="./minishell-theo"
+Minishell="./minishell"
 Total_tests=0
 Passed_tests=0
 details=none # output, error, all, or none

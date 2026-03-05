@@ -27,7 +27,7 @@ void	exec_node_no_pipeline(t_ast *node, t_minishell *minishell);
 int		is_builtin(char **args);
 int		is_builtin_and_execute(char **args, t_minishell *minishell);
 int		ft_exit(char **args, t_minishell *minishell);
-int		ft_echo(char **args, t_env *env);
+int		ft_echo(char **args);
 char	*expand_variables(char *str, t_minishell *minishell);
 char	*get_var_name(char *str);
 int		ft_env(t_env *env);
@@ -42,6 +42,7 @@ void	set_env_var(t_env **env, char *key, char *value);
 t_env	*create_env_var(char *key, char *value);
 t_env	*find_env_var(t_env *env, char *key);
 void	free_env(t_env **head);
+int		fill_env(t_env **env, char *envp[]);
 
 // export_helpers.c
 int		count_env_vars(t_env *env);

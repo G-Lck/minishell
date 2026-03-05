@@ -70,15 +70,15 @@ void	wait_pipeline(t_pipeline *pipeline, t_minishell *minishell)
 			if (errno == EINTR)
 				continue ;
 			perror("waitpid failed");
-			minishell->last_status = 1;
+			minishell->status = 1;
 			return ;
 		}
 		if (i == pipeline->total_cmds - 1)
 		{
 			if (WIFEXITED(status))
-				minishell->last_status = WEXITSTATUS(status);
+				minishell->status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				minishell->last_status = 128 + WTERMSIG(status);
+				minishell->status = 128 + WTERMSIG(status);
 		}
 	}
 	signal(SIGINT, sig_handler);

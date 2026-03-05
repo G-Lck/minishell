@@ -42,8 +42,6 @@ int		create_token_literal(t_token *token_tab, char *str, int *index);
 void	fill_token_tab(t_token *token_tab, char *expanded_token,
 			int token_count);
 int		token_counter(char *expanded_token);
-char 	**split_expension(char *literal, int *token_count,
-			t_minishell *minishell);
 
 // variables_parser
 char	*get_var_name(char *str);
