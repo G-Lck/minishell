@@ -12,20 +12,6 @@
 
 #include "minishell.h"
 
-static void	free_args(char **args)
-{
-	int	i;
-
-	i = 0;
-	if (!args)
-		return ;
-	while (args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
-}
 
 void	exec_node(t_ast *node, t_minishell *minishell)
 {
@@ -35,7 +21,7 @@ void	exec_node(t_ast *node, t_minishell *minishell)
 	args = node->exec_token;
 	if (node->skip == true)
 	{
-		minishell->last_status = 1;
+		minishell->status = 1;
 		return ;
 	}
 	if (!node || !node->exec_token)
@@ -45,7 +31,7 @@ void	exec_node(t_ast *node, t_minishell *minishell)
 	builtin_status = is_builtin_and_execute(args, minishell);
 	if (builtin_status != -1)
 	{
-		minishell->last_status = builtin_status;
+		minishell->status = builtin_status;
 		exit(builtin_status);
 	}
 	exec_in_pipeline(node, minishell);
@@ -71,12 +57,12 @@ static void	exec_builtin_redir(t_ast *node, t_minishell *minishell)
 	if (apply_redirections_safe(node) == -1)
 	{
 		restore_fds(saved_stdin, saved_stdout);
-		minishell->last_status = 1;
+		minishell->status = 1;
 		return ;
 	}
 	builtin_status = is_builtin_and_execute(node->exec_token, minishell);
 	restore_fds(saved_stdin, saved_stdout);
-	minishell->last_status = builtin_status;
+	minishell->status = builtin_status;
 }
 
 void	exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
@@ -86,7 +72,7 @@ void	exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
 	args = node->exec_token;
 	if (node->skip == true)
 	{
-		minishell->last_status = 1;
+		minishell->status = 1;
 		return ;
 	}
 	if (!node || !node->exec_token)

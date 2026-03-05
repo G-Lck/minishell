@@ -6,7 +6,7 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/02/08 15:30:11 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:16:14 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ static int	create_redirs(char *f, t_token_type type, t_ast *n, t_minishell *m)
 static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
 {
 	int		index;
-	int		token_count;
 	t_list	*new_node;
 	char	**token_tab;
 	char	*expanded_token;

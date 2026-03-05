@@ -32,7 +32,7 @@ int	ft_exit(char **args, t_minishell *minishell)
 {
 	if (!args[1])
 	{
-		minishell->exit_code = minishell->last_status;
+		minishell->exit_code = minishell->status;
 	}
 	else if (!ft_isnumber(args[1]))
 	{

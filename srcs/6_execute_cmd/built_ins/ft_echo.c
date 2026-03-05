@@ -28,7 +28,7 @@ int	is_option_n(char *arg)
 	return (1);
 }
 
-int	ft_echo(char **args, t_env *env)
+int	ft_echo(char **args)
 {
 	int	i;
 	int	newline;

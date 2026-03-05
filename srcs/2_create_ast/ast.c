@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#              */
-/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr        */
+/*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
+/*   Updated: 2026/03/05 23:15:34 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void	new_node(t_ast *node, t_list *l_token, int i, enum e_token_type typ)
 	node->redirs = NULL;
 	node->skip = false;
 	node->lst_len = 1;
-	node->node_type = typ;
+	node->node_type = (t_node_type)typ;
 	node->next_left = node_left;
 	node->next_right = node_right;
 	create_ast(node_left);

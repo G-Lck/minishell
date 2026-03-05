@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards_parser.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/19 11:49:38 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:18:37 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int	get_tab_size(char *pattern, t_minishell *minishell)
 {
 	struct dirent	*dent;
 	int				count;
-	char			**results;
 	DIR				*dir;
 
 	count = 0;

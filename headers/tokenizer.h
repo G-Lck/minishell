@@ -50,8 +50,8 @@ int		is_separator(char *str, int index);
 int		is_operator(char *str, int index);
 int		get_token_type(char *token);
 void	print_token(t_minishell *minishell);
-int	check_string(t_minishell *minishell);
-int	check_quotes(char *token_literal);
+int		check_string(t_minishell *minishell);
+int		check_quotes(char *token_literal);
 int		tokenizer(char *cmd_line, t_minishell *minishell);
 t_list	*new_exec_node(char *token_literal, t_token_type type);
 

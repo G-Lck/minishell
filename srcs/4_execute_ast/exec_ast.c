@@ -44,13 +44,13 @@ static void	wait_child(pid_t pid, t_minishell *minishell)
 	if (waitpid(pid, &status, 0) == -1)
 	{
 		perror("waitpid failed");
-		minishell->last_status = 1;
+		minishell->status = 1;
 		return ;
 	}
 	if (WIFEXITED(status))
-		minishell->last_status = WEXITSTATUS(status);
+		minishell->status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		minishell->last_status = 128 + WTERMSIG(status);
+		minishell->status = 128 + WTERMSIG(status);
 }
 
 void	exec_in_pipeline(t_ast *node, t_minishell *minishell)
@@ -66,7 +66,7 @@ void	exec_no_pipeline(t_ast *node, t_minishell *minishell)
 	if (pid == -1)
 	{
 		perror("Fork failed");
-		minishell->last_status = 1;
+		minishell->status = 1;
 		return ;
 	}
 	if (pid == 0)
@@ -83,13 +83,13 @@ void	ast_descent(t_ast *node, t_minishell *minishell)
 	if (node->node_type == AND_OP)
 	{
 		ast_descent(node->next_left, minishell);
-		if (minishell->last_status == 0)
+		if (minishell->status == 0)
 			ast_descent(node->next_right, minishell);
 	}
 	else if (node->node_type == OR_OP)
 	{
 		ast_descent(node->next_left, minishell);
-		if (minishell->last_status != 0)
+		if (minishell->status != 0)
 			ast_descent(node->next_right, minishell);
 	}
 	else if (node->node_type == PIPE_OP)

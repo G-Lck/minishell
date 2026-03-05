@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.h                                          :+:      :+:    :+:   */
+/*   initalisation.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/02/19 09:00:00 by garance          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:10:38 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 
 typedef struct s_minishell	t_minishell;
 
+void	safe_readline(char **input);
 void	init_minishell(t_minishell *minishell, char *envp[]);
+int		process_ast(t_minishell *minishell);
+int		process_input(t_minishell *minishell);
 
 #endif

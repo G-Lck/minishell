@@ -1,61 +1,86 @@
 # Minishell 42
-*This project has been created as part of the 42 curriculum by Thbouver and Glucken*
-## Description
+*A project created as part of the 42 curriculum by Thbouver and Glucken*
 
-### Architecture
+> ### *"If a thing is worth doing, it is worth doing badly."*
+> ### — G. K. Chesterton
+
+## Description
 ```mermaid
 graph TD
-    A(0_Initialize) --> B(1_tokenizer)
-    B --> C(2_create_ast)
-    C --> D(3_expansion_and_wildcards)
-    D --> E(4_execute_ast)
-    E --> F(5_execute_pipeline)
-    F --> G(6_execute_cmd)
-    G --> H(7_clean)
-
+    A(0_Initialize) --> B(1_Tokenizer)
+    B --> C(2_Create AST)
+    C --> D(3_Expansion & Wildcards)
+    D --> E(4_Execute AST)
+    E --> F(5_Execute Pipeline)
+    F --> G(6_Execute Cmd)
+    G --> H(7_Clean)
 ```
+
 <details>
-<summary> Intialisation</summary>
-init_minishell()
-copy envp
-setup_signal???
-read one line with read_line()
-process the line with process_command()
-<details>
-<summary>1_tokenizer</summary>
-All the command line is split into tokens separate by space and operators (&&, ||, |) and parenthesis.
-here we check if the parenthesis, quotes or double quotes are well closed.
-<summary>2_create_ast</summary>
-the ast is created respecting the priorities, such as | is prioritise on || and &&. a node is wether an opreator or a link list of strings.
-<summary>3_expansion and  wildcards</summary>
-We detect all variables with the $ and expand them to the value knonw in the environnement. $? is expand as the error status.
-We detect all * and find all files matching the pattern.
-<summary>4_execute_ast</summary>
-We going through the ast recursively, it will begin from left bottom and execute por not the next node depending on the status of the other one. For each node, if it's a simple command it will separate into buitls ins commands or not and fork for a executable commande.
-Is we encounter a pipeline we will call the execution of a pipeline.
-<summary>5_execute pipeline</summary>
-when we encounter a pipe we begin a pipeline, with parenthesis a commande inside a piepeline can be another ast, and exec_ast we will be called. If not the commande is executed inside the forks inhrentlz to the pipeline.
-<summary>6_execute_cmd</summary>
-Here we have all the built-ins mandatory. When we have redirections we have to carrefully change the stdin and out for the command.
-<summary>7_clean</summary>
-Thank's to the big minishell struct, when we go to new command, we have to clean all value from the last command. When we exit minishell have to clean all the minishell structure.
+<summary>0 — Initialisation</summary>
 
-
-
-
+- `init_minishell()`: copy envp, setup signals
+- Read a line with `readline()`
+- Process the line with `process_input()`
 </details>
 
-````
+<details>
+<summary>1 — Tokenizer</summary>
 
-## Instruction
+The command line is split into tokens separated by spaces and operators (`&&`, `||`, `|`) and parentheses.
+We also check that parentheses, quotes and double quotes are properly closed.
+</details>
 
-minishelle has to be execute without arguments. It manage only what ask in the subject with bonuses. A forbidden command should return the command line properly without crahsing or memory leak, execpt for the ones caused by the readline.
+<details>
+<summary>2 — Create AST</summary>
 
+The AST is built respecting operator priorities (`|` has higher priority than `||` and `&&`).
+A node is either an operator or a linked list of strings.
+</details>
+
+<details>
+<summary>3 — Expansion & Wildcards</summary>
+
+We detect all variables prefixed with `$` and expand them to their value from the environment. `$?` expands to the last exit status.
+We detect all `*` patterns and match them against existing files.
+</details>
+
+<details>
+<summary>4 — Execute AST</summary>
+
+We traverse the AST recursively, starting from the bottom-left. Each node is executed (or not) depending on the status of the previous one.
+For each node, if it's a simple command, we check if it's a built-in; otherwise we fork and execute the binary.
+If we encounter a pipeline node, we call the pipeline execution.
+</details>
+
+<details>
+<summary>5 — Execute Pipeline</summary>
+
+When we encounter a pipe, we start a pipeline. With parentheses, a command inside the pipeline can be another AST, so `exec_ast` is called again.
+Otherwise the command is executed inside the forks inherent to the pipeline.
+</details>
+
+<details>
+<summary>6 — Execute Cmd</summary>
+
+All mandatory built-ins are handled here. When there are redirections, we carefully swap stdin/stdout for the command.
+</details>
+
+<details>
+<summary>7 — Clean</summary>
+
+Thanks to the central `t_minishell` struct, after each command we clean up values from the previous one. On exit, the entire structure is freed.
+</details>
+
+## Usage
+
+Minishell must be launched without arguments. It handles everything required by the subject, including bonuses.
+An invalid command will return properly without crashing or leaking memory (except for leaks caused by `readline` itself).
 
 ## Resources
-One of the biggest help com from "Classic Shell Scripting", a lecture of the introduction and the chapter 7 is very helpful to go to the good direction.
-Some good youtube chanel like Oceano.
-Mediums article ar vague and not very helpful.
-The biggest help came form other advices of other students,  little bit or really more advandec, it has been really helpful.
-IA has been used to grasp new concept, advices, internet searching and desesparate case.
- 
+
+- **"Classic Shell Scripting"** — reading the introduction and chapter 7 was very helpful to get started in the right direction.
+- **YouTube channels** like Oceano.
+- Medium articles were vague and not very useful.
+- The biggest help came from **other 42 students**, whether slightly or way more advanced, their advice was invaluable.
+- AI was used to understand new concepts, get advice, search the internet, and for desperate debugging sessions.

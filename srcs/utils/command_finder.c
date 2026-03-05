@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*    command_finder.c                                  :+:      :+:    :+:   */
+/*   command_finder.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thbouver <thbouver@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 15:12:07 by theo              #+#    #+#             */
-/*   Updated: 2026/01/19 11:49:38 by thbouver         ###   ########.fr       */
+/*   Updated: 2026/03/05 23:19:44 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,7 @@ char	*find_command(t_ast *node, int *status, t_minishell *minishell)
 {
 	t_env	*env;
 	char	*cmd_path;
-	int		index;
 
-	index = 0;
 	if (access(node->exec_token[0], F_OK) == 0)
 		return (get_local_executable(node, status));
 	env = find_env_var(minishell->env, "PATH");
