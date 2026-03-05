@@ -42,6 +42,7 @@ void	set_env_var(t_env **env, char *key, char *value);
 t_env	*create_env_var(char *key, char *value);
 t_env	*find_env_var(t_env *env, char *key);
 void	free_env(t_env **head);
+int		fill_env(t_env **env, char *envp[]);
 
 // export_helpers.c
 int		count_env_vars(t_env *env);

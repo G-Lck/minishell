@@ -29,6 +29,7 @@
 
 # include "../libft/libft.h"
 
+# include "initalisation.h"
 # include "tokenizer.h"
 # include "create_ast.h"
 # include "expansion_and_wildcards.h"
@@ -36,6 +37,7 @@
 # include "execute_cmd.h"
 # include "execute_pipeline.h"
 # include "clean.h"
+# include "signals.h"
 # include "utils.h"
 
 typedef struct s_env

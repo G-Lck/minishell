@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clean.h                                            :+:      :+:    :+:   */
+/*   init_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: garance <garance@student.42lausanne.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/19 09:00:00 by garance          #+#    #+#             */
-/*   Updated: 2026/02/19 09:00:00 by garance         ###   ########.fr       */
+/*   Created: 2025/01/13 09:00:00 by garance          #+#    #+#             */
+/*   Updated: 2025/01/13 09:00:00 by garance         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLEAN_H
-# define CLEAN_H
+#include "minishell.h"
+ 
 
-typedef struct s_minishell	t_minishell;
-
-void	free_tab(char **tab);
-void	cleanup_minishell(t_minishell *minishell);
-void	free_minishell(t_minishell *minishell);
-
-#endif
+void	init_minishell(t_minishell *minishell, char *envp[])
+{
+	minishell->tokens_list = NULL;
+	minishell->ast = NULL;
+	minishell->input = NULL;
+	minishell->envp = envp;
+	minishell->env = NULL;
+	minishell->current_dir = ft_calloc(sizeof(char), 100);
+	minishell->exit_code = 0;
+	minishell->last_status = 0;
+	getcwd(minishell->current_dir, 100);
+	minishell->previous_last_status = 0;
+}

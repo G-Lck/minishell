@@ -71,7 +71,6 @@ static void	exec_builtin_redir(t_ast *node, t_minishell *minishell)
 	if (apply_redirections_safe(node) == -1)
 	{
 		restore_fds(saved_stdin, saved_stdout);
-		free_args(node->exec_token);
 		minishell->last_status = 1;
 		return ;
 	}
