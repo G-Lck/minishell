@@ -93,6 +93,7 @@ void	free_ast(t_ast *node)
 	if (node && node->exec_token && node->exec_token[0])
 		free_tab(node->exec_token);
 	free(node);
+	node = NULL;
 	return ;
 }
 

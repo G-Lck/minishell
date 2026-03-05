@@ -162,16 +162,19 @@ int	syntax_checker(t_minishell *minishell)
 	if (!check_after_operator(minishell) || !check_first_token(minishell) || !check_between_parenthesis(minishell))
 	{
 		ft_printf("operators must be followed by a command\n");
+		minishell->last_status = 2;
 		return (0);
 	}
 	if (!check_string(minishell))
 	{
 		ft_printf("quotes must be closed\n");
+		minishell->last_status = 2;
 		return (0);
 	}
 	if (!bracket_checker(minishell))
 	{
 		ft_printf("parentheses must be closed\n");
+		minishell->last_status = 2;
 		return (0);
 	}
 	return (1);

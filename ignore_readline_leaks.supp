@@ -10,3 +10,10 @@
 	...
 	fun:add_history
 }
+{
+	readline
+	Memcheck:Leak
+	match-leak-kinds: reachable
+	...
+	obj:*/libreadline.so*
+}
