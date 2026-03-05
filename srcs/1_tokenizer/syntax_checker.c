@@ -57,8 +57,8 @@ static int	check_after_operator(t_minishell *minishell)
 			if (!token_lst->next)
 				return (0);
 			token_content = token_lst->next->content;
-			if (token_content->type != STRING
-				&& token_content->type != OPEN_BRACKET)
+			if (token_content->type == CLOSE_BRACKET
+				|| token_content->type == AND || token_content->type == OR)
 				return (0);
 		}
 		token_lst = token_lst->next;
@@ -80,9 +80,11 @@ static int	check_first_token(t_minishell *minishell)
 		token_content = token_lst->content;
 		if (token_content->index == 0)
 		{
-			if (token_content->type != STRING
-				&& token_content->type != OPEN_BRACKET
-				&& token_content->type != CLOSE_BRACKET)
+			// if (token_content->type != STRING
+			// 	&& token_content->type != OPEN_BRACKET
+			// 	&& token_content->type != CLOSE_BRACKET)
+			// 	return (0);
+			if (token_content->type == AND || token_content->type == OR)
 				return (0);
 		}
 		if (token_content->type == OPEN_BRACKET && token_lst->next)
