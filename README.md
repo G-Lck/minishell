@@ -5,16 +5,14 @@
 ### Architecture
 ```mermaid
 graph TD
-    A[Initialise] --> B{Split}
-    B --> C[A]
-    B --> D[B]
-    B --> E[C]
-    C --> F[EOF]
-    D --> F
-    E --> F
+    A(0_Initialize) --> B(1_tokenizer)
+    B --> C(2_create_ast)
+    C --> D(3_expansion_and_wildcards)
+    D --> E(4_execute_ast)
+    E --> F(5_execute_pipeline)
+    F --> G(6_execute_cmd)
+    G --> H(7_clean)
 
-style A,B fill:#bbdefb
-style C fill:#c8e6c9
 ```
 <details>
 <summary> Intialisation</summary>
@@ -24,7 +22,14 @@ setup_signal???
 read one line with read_line()
 process the line with process_command()
 <details>
-<summary>Read and go to process</summary>
+<summary>1_tokenizer</summary>
+All the command line is split into tokens separate by space and operators (&&, ||, |) and parenthesis.
+here we check if the parenthesis, quotes or double quotes are well closed.
+<summary>2_create_ast</summary>
+the ast is created respecting the priorities, such as | is prioritise on || and &&. a node is wether an opreator or a link list of strings.
+<summary>3_expansion and  wildcards</summary>
+We detect all variables with the $ and expand them to the value knonw in the environnement.
+
 
 
 </details>
