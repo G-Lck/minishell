@@ -20,26 +20,19 @@ char	*get_env_value(char *key, t_minishell *minishell)
 		return (NULL);
 	if (key[1] == '\0')
 		return (ft_strdup("$"));
-
-	// Variables spéciales qui commencent par $
 	if (key[0] == '$')
 	{
 		if (key[1] == '?' && key[2] == '\0')
 			return (ft_itoa(minishell->previous_last_status));
 		if (key[1] == '$')
 			return (ft_itoa(getpid()));
-		// Pour $0, $1, $2, etc. - pas implémenté pour l'instant
 		if (ft_isdigit(key[1]))
 			return (ft_strdup(""));
-
-		// Variable normale - enlever le $ et chercher dans l'environnement
 		var = find_env_var(minishell->env, &key[1]);
 		if (var)
 			return (var->value);
 		return (NULL);
 	}
-
-	// Si pas de $, chercher directement (ne devrait pas arriver normalement)
 	var = find_env_var(minishell->env, key);
 	if (var)
 		return (var->value);
@@ -75,7 +68,8 @@ static int	get_len_variables(char *str, t_minishell *minishell)
 	return (len + 1);
 }
 
-static int	substitute_variable(char *result, int *j, char *str, t_minishell *minishell)
+static int	substitute_variable(char *result, int *j, char *str,
+				t_minishell *minishell)
 {
 	char	*var_name;
 	char	*var_value;
@@ -84,12 +78,10 @@ static int	substitute_variable(char *result, int *j, char *str, t_minishell *min
 
 	var_name = get_var_name(str);
 	var_value = get_env_value(var_name, minishell);
-
-	// Déterminer si var_value doit être libérée (variables spéciales comme $?, $$)
 	need_free_value = 0;
-	if (var_name && var_name[0] == '$' && (var_name[1] == '?' || var_name[1] == '$'))
+	if (var_name && var_name[0] == '$' && (var_name[1] == '?'
+			|| var_name[1] == '$'))
 		need_free_value = 1;
-
 	if (var_value)
 	{
 		ft_strlcpy(&result[*j], var_value, ft_strlen(var_value) + 1);
@@ -128,6 +120,5 @@ char	*expand_variables(char *str, t_minishell *minishell)
 		else
 			result[j++] = str[i++];
 	}
-	result[j] = '\0';
-	return (result);
+	return (result[j] = '\0', result);
 }
