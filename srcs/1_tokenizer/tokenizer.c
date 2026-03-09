@@ -12,21 +12,6 @@
 
 #include "minishell.h"
 
-/*
-Fonction inutile pour le moment.
-Permet de supprimer les doubles quotes et singles quotes de delimation tout
-en preservant ceux a afficher
-*/
-
-/*
-String_Tokenizer s'occupe de creer les tokens sur les chaines de characteres.
-Une chaine de characetre est delimitee par un operateur logique, un whitespace
-ou une parenthese.
-La fonction n'enleve pas les doubles quotes et les singles quotes delimitant
-les chaines.
-Elle ajoute une nouvelle node a la liste t_list *tokens_list et lui donne
-t_token *node en contenu.
-*/
 static int	string_tokenizer(char *cmd, int *i, t_minishell *mini, int c_index)
 {
 	char	*tmp;
@@ -51,19 +36,11 @@ static int	string_tokenizer(char *cmd, int *i, t_minishell *mini, int c_index)
 		*i += 1;
 	}
 	tmp = ft_substr(cmd, current, (*i - current));
-	if (!tmp)
-		return (0);
 	if (!create_token(tmp, STRING, c_index, mini))
 		return (free(tmp), 0);
 	return (free(tmp), 1);
 }
 
-/*
-Operator_Tokenizer s'occupe de creer les tokens sur les operateurs logique ainsi
-que sur les parentheses.
-Elle ajoute une nouvelle node a la liste t_list *tokens_list et lui donne
-t_token *node en contenu.
-*/
 static int	operator_tokenizer(char *cmd, int *i, t_minishell *mini, int tindex)
 {
 	char	*tmp;
@@ -88,13 +65,6 @@ static int	operator_tokenizer(char *cmd, int *i, t_minishell *mini, int tindex)
 	return (free(tmp), 1);
 }
 
-/*
-Fonction d'entree du tokenizer
-La fonction lit l'input du shell et creer des tokens en fonction des operateurs,
-des whites space ainsi que des chaines de characteres.
-L'index est directement modifier par les fonctions qui creer les tokens.
-Les fonctions renvoies 0 en cas d'erreurs d'allocations.
-*/
 int	tokenizer(char *cmd_line, t_minishell *mini)
 {
 	int	current_t_index;

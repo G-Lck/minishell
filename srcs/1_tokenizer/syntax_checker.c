@@ -66,9 +66,6 @@ static int	check_after_operator(t_minishell *minishell)
 	return (1);
 }
 
-/*check le premier token de chaque debut de subshell, renvoie une erreur si
-ce n'est pas un token de type string, ou parenthese ou dans le cas d'un
-subshell, si le token n'est egalement pas une parenthèse fermée*/
 static int	check_first_token(t_minishell *minishell)
 {
 	t_list		*token_lst;
@@ -80,10 +77,6 @@ static int	check_first_token(t_minishell *minishell)
 		token_content = token_lst->content;
 		if (token_content->index == 0)
 		{
-			// if (token_content->type != STRING
-			// 	&& token_content->type != OPEN_BRACKET
-			// 	&& token_content->type != CLOSE_BRACKET)
-			// 	return (0);
 			if (token_content->type == AND || token_content->type == OR)
 				return (0);
 		}
@@ -100,7 +93,6 @@ static int	check_first_token(t_minishell *minishell)
 	return (1);
 }
 
-/*check si les parentheses sont bien ouverte et fermee*/
 static int	bracket_checker(t_minishell *minishell)
 {
 	t_list	*token_lst;
@@ -125,43 +117,10 @@ static int	bracket_checker(t_minishell *minishell)
 	return (1);
 }
 
-/*check si les quotes et doubles quotes sont fermee*/
-int	check_quotes(char *token_literal)
-{
-	int	index;
-	int	in_quotes;
-	int	in_dquotes;
-	int	quotes_counter;
-	int	dquotes_counter;
-
-	index = 0;
-	in_quotes = 0;
-	in_dquotes = 0;
-	quotes_counter = 0;
-	dquotes_counter = 0;
-	while (token_literal[index])
-	{
-		if (token_literal[index] == '"' && in_quotes == 0)
-		{
-			in_dquotes = !in_dquotes;
-			dquotes_counter ++;
-		}
-		else if (token_literal[index] == '\'' && in_dquotes == 0)
-		{
-			in_quotes = !in_quotes;
-			quotes_counter ++;
-		}
-		index ++;
-	}
-	if (quotes_counter % 2 == 1 || dquotes_counter % 2 == 1)
-		return (0);
-	return (1);
-}
-
-/*Point d'entrée du check syntaxique de la liste de tokens*/
 int	syntax_checker(t_minishell *minishell)
 {
-	if (!check_after_operator(minishell) || !check_first_token(minishell) || !check_between_parenthesis(minishell))
+	if (!check_after_operator(minishell) || !check_first_token(minishell)
+		|| !check_between_parenthesis(minishell))
 	{
 		ft_printf("operators must be followed by a command\n");
 		minishell->status = 2;

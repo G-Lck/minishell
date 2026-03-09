@@ -15,40 +15,30 @@
 static int	create_redirs(char *f, t_token_type type, t_ast *n, t_minishell *m)
 {
 	t_list	*new_node;
-	char	*expanded_var;
+	char	*expvar;
 
 	if (f[0] != '$')
 	{
 		new_node = new_redir_node(f, type);
 		if (!new_node)
 			return (0);
-		ft_lstadd_back(&n->redirs, new_node);
 	}
 	else
 	{
 		if (ft_strlen(f) == 1)
 		{
 			new_node = new_redir_node("$", type);
-			ft_lstadd_back(&n->redirs, new_node);
-			return (1);
+			return (ft_lstadd_back(&n->redirs, new_node), 1);
 		}
-
-		expanded_var = expand_variables(f, m);
-		if (ft_strlen(expanded_var) == 0)
-		{
-			ft_printf("ambiguous redirection\n");
+		expvar = expand_variables(f, m);
+		if (ft_strlen(expvar) == 0 || (expvar != NULL && check_wspaces(expvar)))
 			n->skip = true;
-		}
-		if (expanded_var != NULL && check_wspaces(expanded_var))
-		{
-			ft_printf("ambiguous redirection\n");
-			n->skip = true;
-		}
-		new_node = new_redir_node(expanded_var, type);
-		ft_lstadd_back(&n->redirs, new_node);
-		free (expanded_var);
+		new_node = new_redir_node(expvar, type);
 	}
-	return (1);
+	ft_lstadd_back(&n->redirs, new_node);
+	if (n->skip == true)
+		ft_printf("ambiguous redirection\n");
+	return (free (expvar), 1);
 }
 
 static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
@@ -58,7 +48,6 @@ static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
 	char	**token_tab;
 	char	*expanded_token;
 
-	// token_tab = split_expension(t->literal, &token_count, m);
 	index = 0;
 	expanded_token = expand_variables(t->literal, m);
 	token_tab = ft_split(expanded_token, "\t\n\v\f\r ");
