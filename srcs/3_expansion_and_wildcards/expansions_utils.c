@@ -44,36 +44,42 @@ t_list	*new_exec_node(char *token_literal, t_token_type type)
 	return (new_node);
 }
 
-char	*string_cleaner(char *string)
+static void	string_cleaner_while(char *str, char *cleaned_string)
 {
-	int		index;
-	int		index_2;
-	int		in_dquote;
-	int		in_quote;
-	char	*cleaned_string;
+	int	index;
+	int	index_2;
+	int	in_quote;
+	int	in_dquote;
 
 	index = 0;
-	index_2 = 0;
-	in_dquote = 0;
 	in_quote = 0;
-	cleaned_string = ft_calloc(sizeof(char), ft_strlen(string) + 1);
-	if (!cleaned_string)
-		return (0);
-	while (string[index])
+	in_dquote = 0;
+	index_2 = 0;
+	while (str[index])
 	{
-		if (string[index] == '"' && in_quote == 0)
+		if (str[index] == '"' && in_quote == 0)
 		{
 			in_dquote = !in_dquote;
 			index ++;
 		}
-		else if (string[index] == '\'' && in_dquote == 0)
+		else if (str[index] == '\'' && in_dquote == 0)
 		{
 			in_quote = !in_quote;
 			index ++;
 		}
 		else
-			cleaned_string[index_2 ++] = string[index ++];
+			cleaned_string[index_2 ++] = str[index ++];
 	}
+}
+
+char	*string_cleaner(char *string)
+{
+	char	*cleaned_string;
+
+	cleaned_string = ft_calloc(sizeof(char), ft_strlen(string) + 1);
+	if (!cleaned_string)
+		return (0);
+	string_cleaner_while(string, cleaned_string);
 	free(string);
 	return (cleaned_string);
 }

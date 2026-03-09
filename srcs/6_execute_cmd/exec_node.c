@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 void	exec_node(t_ast *node, t_minishell *minishell)
 {
 	char	**args;
@@ -58,7 +57,7 @@ static void	exec_builtin_redir(t_ast *node, t_minishell *minishell)
 	{
 		restore_fds(saved_stdin, saved_stdout);
 		minishell->status = 1;
-    return ;
+		return ;
 	}
 	builtin_status = is_builtin_and_execute(node->exec_token, minishell);
 	restore_fds(saved_stdin, saved_stdout);

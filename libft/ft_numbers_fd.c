@@ -12,17 +12,17 @@
 
 #include "libft.h"
 
-void	ft_print_hex_fd(int fd, unsigned long number, size_t *readed_char, char *base)
+void	ft_print_hex_fd(int fd, unsigned long number, size_t *rc, char *base)
 {
 	if (number >= 16)
 	{
-		ft_print_hex_fd(fd, number / 16, readed_char, base);
-		ft_print_hex_fd(fd, number % 16, readed_char, base);
+		ft_print_hex_fd(fd, number / 16, rc, base);
+		ft_print_hex_fd(fd, number % 16, rc, base);
 	}
 	if (number < 16)
 	{
 		ft_putchar_fd(fd, base[number]);
-		(*readed_char)++;
+		(*rc)++;
 	}
 }
 

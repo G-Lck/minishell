@@ -54,10 +54,9 @@ int		check_string(t_minishell *minishell);
 int		check_quotes(char *token_literal);
 int		input_is_empty(char *str);
 int		tokenizer(char *cmd_line, t_minishell *minishell);
+int		check_quotes(char *token_literal);
 t_list	*new_exec_node(char *token_literal, t_token_type type);
-
 t_list	*new_redir_node(char *target, t_token_type type);
-
 char	*read_heredoc_line(char *eof);
 char	*read_heredoc(char *eof);
 void	init_heredoc_signals(void);

@@ -44,3 +44,41 @@ int	input_is_empty(char *str)
 	}
 	return (1);
 }
+
+void	check_quotes_while(char *str, int *quotes_c, int *dequotes_c)
+{
+	int	index;
+	int	in_quotes;
+	int	in_dquotes;
+
+	index = 0;
+	in_quotes = 0;
+	in_dquotes = 0;
+	while (str[index])
+	{
+		if (str[index] == '"' && in_quotes == 0)
+		{
+			in_dquotes = !in_dquotes;
+			(*dequotes_c)++;
+		}
+		else if (str[index] == '\'' && in_dquotes == 0)
+		{
+			in_quotes = !in_quotes;
+			(*quotes_c)++;
+		}
+		index ++;
+	}
+}
+
+int	check_quotes(char *token_literal)
+{
+	int	quotes_counter;
+	int	dquotes_counter;
+
+	quotes_counter = 0;
+	dquotes_counter = 0;
+	check_quotes_while(token_literal, &quotes_counter, &dquotes_counter);
+	if (quotes_counter % 2 == 1 || dquotes_counter % 2 == 1)
+		return (0);
+	return (1);
+}
