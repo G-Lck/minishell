@@ -45,6 +45,8 @@ int	process_input(t_minishell *minishell)
 {
 	if (minishell->input == NULL)
 		return (0);
+	if (input_is_empty(minishell->input))
+		return (free(minishell->input), 1);
 	if (ft_strlen(minishell->input) == 0)
 		return (free(minishell->input), 1);
 	if (isatty(STDIN_FILENO))

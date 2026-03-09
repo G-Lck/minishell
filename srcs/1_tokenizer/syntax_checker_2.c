@@ -30,3 +30,17 @@ int	check_string(t_minishell *minishell)
 	}
 	return (1);
 }
+
+int	input_is_empty(char *str)
+{
+	int	index;
+
+	index = 0;
+	while (str[index])
+	{
+		if (!is_wspace(str[index]))
+			return (0);
+		index ++;
+	}
+	return (1);
+}

@@ -52,6 +52,7 @@ int		get_token_type(char *token);
 void	print_token(t_minishell *minishell);
 int		check_string(t_minishell *minishell);
 int		check_quotes(char *token_literal);
+int		input_is_empty(char *str);
 int		tokenizer(char *cmd_line, t_minishell *minishell);
 t_list	*new_exec_node(char *token_literal, t_token_type type);
 
