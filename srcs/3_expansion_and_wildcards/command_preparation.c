@@ -46,6 +46,7 @@ static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
 	int		index;
 	t_list	*new_node;
 	char	**token_tab;
+	char	*cleaned_string;
 	char	*expanded_token;
 
 	index = 0;
@@ -53,7 +54,12 @@ static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
 	token_tab = ft_split(expanded_token, "\t\n\v\f\r ");
 	while (token_tab[index])
 	{
-		new_node = new_exec_node(token_tab[index], STRING);
+		cleaned_string = ft_strdup(token_tab[index]);
+		if (!cleaned_string)
+			return ;
+		cleaned_string = string_cleaner(cleaned_string);
+		new_node = new_exec_node(cleaned_string, STRING);
+		free (cleaned_string);
 		ft_lstadd_back(&n->exec_lst, new_node);
 		index ++;
 	}

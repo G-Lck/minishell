@@ -83,16 +83,3 @@ int	token_counter(char *expanded_token)
 	}
 	return (count);
 }
-
-/*
-char	**split_expension(char *literal, t_minishell *mini)
-{
-	char	**tmp;
-	char	*expanded_token;
-
-	index = 0;
-	expanded_token = expand_variables(literal, mini);
-	tmp = ft_split(expanded_token, "\t\n\v\f\r ");
-	return (tmp);
-}
-*/
