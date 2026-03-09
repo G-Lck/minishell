@@ -16,22 +16,26 @@ static void	try_execve(t_ast *node, t_minishell *minishell)
 {
 	int		status;
 	char	*cmd_path;
-	char	**args;
+	char	**arg;
 
-	args = node->exec_token;
+	arg = node->exec_token;
 	cmd_path = find_command(node, &status, minishell);
+	if (status == PERMISSION_DENIED)
+	{
+		ft_fprintf(STDERR_FILENO, "minishell: %s: permission denied\n", arg[0]);
+		exit(126);
+	}
 	if (status == OK)
 	{
-		if (execve(cmd_path, args, minishell->envp) == -1)
+		if (execve(cmd_path, arg, minishell->envp) == -1)
 		{
-			perror(args[0]);
+			perror(arg[0]);
 			exit(126);
 		}
 	}
-	if (execve(args[0], args, minishell->envp) == -1)
+	if (execve(arg[0], arg, minishell->envp) == -1)
 	{
-		ft_fprintf(STDERR_FILENO,
-			"minishell: %s: command not found\n", args[0]);
+		ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n", arg[0]);
 		exit(127);
 	}
 	exit(EXIT_FAILURE);

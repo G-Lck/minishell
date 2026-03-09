@@ -77,7 +77,7 @@ static char	*get_path(char *cmd, char *envp_path)
 static char	*get_local_executable(t_ast *node, int *status)
 {
 	if (is_dir(node->exec_token[0]) == 1
-		&& node->exec_token[0][0] == '.' && node->exec_token[0][0] == '/')
+		&& node->exec_token[0][0] == '.' && node->exec_token[0][1] == '/')
 		return (*status = IS_DIRECTORY, NULL);
 	if (is_dir(node->exec_token[0]) == 1)
 		return (*status = IS_DIRECTORY, NULL);
@@ -91,6 +91,8 @@ char	*find_command(t_ast *node, int *status, t_minishell *minishell)
 	t_env	*env;
 	char	*cmd_path;
 
+	if (ft_strlen(node->exec_token[0]) == 0)
+		return (*status = COMMAND_NOT_FOUND, NULL);
 	if (access(node->exec_token[0], F_OK) == 0)
 		return (get_local_executable(node, status));
 	env = find_env_var(minishell->env, "PATH");
