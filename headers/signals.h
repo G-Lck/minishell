@@ -6,7 +6,7 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/03/05 23:13:40 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/10 22:24:26 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 typedef struct s_minishell	t_minishell;
 
-void	sigint_heredoc(int sig);
 void	sigint_exec(int sig);
 void	sigquit_exec(int sig);
 void	sig_handler(int sig);

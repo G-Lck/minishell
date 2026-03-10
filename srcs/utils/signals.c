@@ -3,25 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:08:35 by theo              #+#    #+#             */
-/*   Updated: 2026/01/29 18:14:48 by theo             ###   ########.fr       */
+/*   Updated: 2026/03/10 22:24:17 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t	g_sig = 0;
-
-void	sigint_heredoc(int sig)
-{
-	(void)sig;
-	g_sig = 1;
-	write(1, "\n", 1);
-	rl_replace_line("", 0);
-	rl_done = 1;
-}
 
 void	sigint_exec(int sig)
 {

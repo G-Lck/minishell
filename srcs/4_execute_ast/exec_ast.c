@@ -47,9 +47,7 @@ static void	wait_child(pid_t pid, t_minishell *minishell)
 
 	if (waitpid(pid, &status, 0) == -1)
 	{
-		perror("waitpid failed");
 		minishell->status = 1;
-		return ;
 	}
 	if (WIFEXITED(status))
 		minishell->status = WEXITSTATUS(status);
@@ -75,11 +73,20 @@ void	exec_no_pipeline(t_ast *node, t_minishell *minishell)
 	}
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		apply_redirections(node);
 		try_execve(node, minishell);
 	}
 	else
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		wait_child(pid, minishell);
+		init_signals();
+		if (minishell->status == 130)
+			ft_printf("\n");
+	}
 }
 
 void	ast_descent(t_ast *node, t_minishell *minishell)

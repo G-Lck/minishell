@@ -29,6 +29,10 @@ int		create_command_node(t_token *token, t_ast *node,
 			t_minishell *minishell);
 int		command_preparation(t_ast *node, t_minishell *minishell);
 
+// create_redirs
+int		create_redirs(char *f, t_token_type type, t_ast *n,
+			t_minishell *m);
+
 // expand_variables
 char	*get_env_value(char *key, t_minishell *minishell);
 char	*expand_variables(char *str, t_minishell *minishell);
