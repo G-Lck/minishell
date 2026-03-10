@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_preparation.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/03/05 23:16:14 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/10 18:37:48 by theo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ static int	create_redirs(char *f, t_token_type type, t_ast *n, t_minishell *m)
 		if (ft_strlen(expvar) == 0 || (expvar != NULL && check_wspaces(expvar)))
 			n->skip = true;
 		new_node = new_redir_node(expvar, type);
+		free(expvar);
 	}
-	ft_lstadd_back(&n->redirs, new_node);
 	if (n->skip == true)
 		ft_printf("ambiguous redirection\n");
-	return (free (expvar), 1);
+	return (ft_lstadd_back(&n->redirs, new_node), 1);
 }
 
 static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
