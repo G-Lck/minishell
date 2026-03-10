@@ -235,7 +235,7 @@ if [[ ${test} == all ]]; then
 	#test_command 'echo "Processing files in directory:" && ls -la /usr/bin | head -20 | tail -10 | grep -v "total" | awk "{print \$9}" | sort | uniq | wc -l > count.tmp && cat count.tmp && echo "Files with permissions:" && find /usr/bin -type f -executable 2>/dev/null | head -5 | xargs ls -l | cut -d" " -f1,9 && echo "Current user info:" && whoami && echo "Current directory:" && pwd && echo "Date and time:" && date "+%Y-%m-%d %H:%M:%S" && echo "System info:" && uname -a | cut -d" " -f1-3 && echo "Memory usage:" && free -h 2>/dev/null | grep "Mem:" | awk "{print \$3\"/\"\$2}" && echo "PATH directories count:" && echo $PATH | tr ":" "\n" | wc -l && echo "Home directory contents:" && ls -1 $HOME | head -10 && echo "Process count:" && ps aux 2>/dev/null | wc -l && echo "Disk usage of current dir:" && du -sh . 2>/dev/null && echo "File types in current dir:" && file * 2>/dev/null | head -5 && echo "Environment variables count:" && env | wc -l && echo "Shell level:" && echo $SHLVL && echo "Terminal type:" && echo $TERM && echo "Language setting:" && echo $LANG && echo "Completed complex command execution"' "super complex long command with multiple pipes and redirections"
 
 else
-	test_command "echo *" "only *"
+	test_command "echo $" "only *"
 fi
 
 rm -rf "$TMP_DIR"

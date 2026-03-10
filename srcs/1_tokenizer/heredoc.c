@@ -78,6 +78,7 @@ static int	process_heredoc_line(char **content, char *eof)
 char	*read_heredoc(char *eof)
 {
 	char	*content;
+	int		saved_sig;
 
 	init_heredoc_signals();
 	rl_event_hook = heredoc_event_hook;
@@ -85,7 +86,8 @@ char	*read_heredoc(char *eof)
 	while (process_heredoc_line(&content, eof))
 		;
 	rl_event_hook = NULL;
-	g_sig = 0;
+	saved_sig = g_sig;
 	init_signals();
+	g_sig = saved_sig;
 	return (content);
 }

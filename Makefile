@@ -14,6 +14,7 @@ SRCS =	./srcs/main.c \
 		./srcs/2_create_ast/utils_ast_2.c \
 		./srcs/2_create_ast/utils_ast.c \
 		./srcs/3_expansion_and_wildcards/command_preparation.c \
+		./srcs/3_expansion_and_wildcards/create_redirs.c \
 		./srcs/3_expansion_and_wildcards/expand_variables.c \
 		./srcs/3_expansion_and_wildcards/expansions_utils.c \
 		./srcs/3_expansion_and_wildcards/variable_parser.c \

@@ -6,7 +6,7 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/03/05 23:22:38 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/10 23:19:54 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*get_env_value(char *key, t_minishell *minishell)
 	if (!key)
 		return (NULL);
 	if (key[1] == '\0')
-		return (ft_strdup("$"));
+		return ("$");
 	if (key[0] == '$')
 	{
 		if (key[1] == '?' && key[2] == '\0')
@@ -27,7 +27,7 @@ char	*get_env_value(char *key, t_minishell *minishell)
 		if (key[1] == '$')
 			return (ft_itoa(getpid()));
 		if (ft_isdigit(key[1]))
-			return (ft_strdup(""));
+			return ("");
 		var = find_env_var(minishell->env, &key[1]);
 		if (var)
 			return (var->value);

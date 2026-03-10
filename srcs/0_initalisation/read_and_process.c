@@ -54,6 +54,7 @@ int	process_input(t_minishell *minishell)
 	tokenizer(minishell->input, minishell);
 	if (syntax_checker(minishell) && !process_ast(minishell))
 	{
+		minishell->previous_status = minishell->status;
 		free_token_list(&minishell->tokens_list);
 		return (free(minishell->input), 1);
 	}

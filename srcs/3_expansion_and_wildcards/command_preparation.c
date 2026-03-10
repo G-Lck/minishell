@@ -6,42 +6,11 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/03/10 19:19:32 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/10 22:59:57 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	create_redirs(char *f, t_token_type type, t_ast *n, t_minishell *m)
-{
-	t_list	*new_node;
-	char	*expvar;
-
-	if (f[0] != '$' || type == HERE_DOC)
-	{
-		expvar = expand_variables(f, m);
-		new_node = new_redir_node(expvar, type);
-		free(expvar);
-		if (!new_node)
-			return (0);
-	}
-	else
-	{
-		if (ft_strlen(f) == 1)
-		{
-			new_node = new_redir_node("$", type);
-			return (ft_lstadd_back(&n->redirs, new_node), 1);
-		}
-		expvar = expand_variables(f, m);
-		if (ft_strlen(expvar) == 0 || (expvar != NULL && check_wspaces(expvar)))
-			n->skip = true;
-		new_node = new_redir_node(expvar, type);
-		free(expvar);
-	}
-	if (n->skip == true)
-		ft_printf("ambiguous redirection\n");
-	return (ft_lstadd_back(&n->redirs, new_node), 1);
-}
 
 static void	create_expanded_command_node(t_token *t, t_ast *n, t_minishell *m)
 {
@@ -128,12 +97,12 @@ int	command_preparation(t_ast *node, t_minishell *minishell)
 			tmp = node->lst_token->next->content;
 			create_redirs(tmp->literal, token->type, node, minishell);
 			node->lst_token = node->lst_token->next;
-			index ++;
+			index++;
 		}
 		else
 			create_command_node(token, node, minishell);
 		node->lst_token = node->lst_token->next;
-		index ++;
+		index++;
 	}
 	return (0);
 }
