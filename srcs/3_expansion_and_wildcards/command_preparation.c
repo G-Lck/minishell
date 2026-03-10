@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_preparation.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: theo <theo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:35:07 by theo              #+#    #+#             */
-/*   Updated: 2026/03/10 18:37:48 by theo             ###   ########.fr       */
+/*   Updated: 2026/03/10 19:19:32 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@ static int	create_redirs(char *f, t_token_type type, t_ast *n, t_minishell *m)
 	t_list	*new_node;
 	char	*expvar;
 
-	if (f[0] != '$')
+	if (f[0] != '$' || type == HERE_DOC)
 	{
-		new_node = new_redir_node(f, type);
+		expvar = expand_variables(f, m);
+		new_node = new_redir_node(expvar, type);
+		free(expvar);
 		if (!new_node)
 			return (0);
 	}

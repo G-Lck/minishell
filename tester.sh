@@ -7,7 +7,7 @@ Total_tests=0
 Passed_tests=0
 details=none # output, error, all, or none
 test=all # all for all
-leak=false # true to check for leaks
+leak=true # true to check for leaks
 TMP_DIR="/tmp/minishell_test_$$"
 mkdir -p "$TMP_DIR"
 
@@ -166,7 +166,7 @@ if [[ ${test} == all ]]; then
 	test_command "pwd with args"
 
 	# others external commands
-	test_command " wc -l ./minishell-theo" "wc with args"
+	test_command " wc -l ./minishell" "wc with args"
 	test_command "awk -F: '{ print $1 }' /etc/passwd" "awk with stuff"
 
 	# PATH
