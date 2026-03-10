@@ -59,14 +59,6 @@ ${NAME} : ${OBJS}
 	${MAKE} -C ./libft
 	$(CC) $(OBJS) ./libft/libft.a -lreadline -lncurses -o $(NAME)
 
-theo: ${OBJS}
-	${MAKE} -C ./libft
-	$(CC) $(OBJS) -Iheaders tests/main-theo.c ./libft/libft.a -lreadline -lncurses -o minishell-theo
-
-garance: ${OBJS}
-	${MAKE} -C ./libft
-	$(CC) $(OBJS) -Iheaders tests/main-garance.c ./libft/libft.a -lreadline -lncurses -o minishell-garance
-
 clean:
 	${RM} ${OBJS}
 	make clean -C ./libft
