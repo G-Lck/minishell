@@ -34,7 +34,7 @@ int		create_redirs(char *f, t_token_type type, t_ast *n,
 			t_minishell *m);
 
 // expand_variables
-char	*get_env_value(char *key, t_minishell *minishell);
+char	*get_env_value(char *key, t_minishell *minishell, int *must_free);
 char	*expand_variables(char *str, t_minishell *minishell);
 
 // expansion_utils

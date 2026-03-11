@@ -12,10 +12,11 @@
 
 #include "minishell.h"
 
-char	*get_env_value(char *key, t_minishell *minishell)
+char	*get_env_value(char *key, t_minishell *minishell, int *must_free)
 {
 	t_env	*var;
 
+	*must_free = 0;
 	if (!key)
 		return (NULL);
 	if (key[1] == '\0')
@@ -23,9 +24,9 @@ char	*get_env_value(char *key, t_minishell *minishell)
 	if (key[0] == '$')
 	{
 		if (key[1] == '?' && key[2] == '\0')
-			return (ft_itoa(minishell->previous_status));
+			return (*must_free = 1, ft_itoa(minishell->previous_status));
 		if (key[1] == '$')
-			return (ft_itoa(getpid()));
+			return (*must_free = 1, ft_itoa(getpid()));
 		if (ft_isdigit(key[1]))
 			return ("");
 		var = find_env_var(minishell->env, &key[1]);
@@ -39,26 +40,36 @@ char	*get_env_value(char *key, t_minishell *minishell)
 	return (NULL);
 }
 
+static int	add_var_len(char *str, int *i, t_minishell *minishell)
+{
+	char	*var_name;
+	char	*var_value;
+	int		must_free;
+	int		len;
+
+	len = 0;
+	var_name = get_var_name(&str[*i]);
+	var_value = get_env_value(var_name, minishell, &must_free);
+	if (var_value)
+		len = ft_strlen(var_value);
+	if (must_free)
+		free(var_value);
+	*i += ft_strlen(var_name);
+	free(var_name);
+	return (len);
+}
+
 static int	get_len_variables(char *str, t_minishell *minishell)
 {
 	int		i;
 	int		len;
-	char	*var_name;
-	char	*var_value;
 
 	i = 0;
 	len = 0;
 	while (str[i])
 	{
 		if (str[i] == '$')
-		{
-			var_name = get_var_name(&str[i]);
-			var_value = get_env_value(var_name, minishell);
-			if (var_value)
-				len += ft_strlen(var_value);
-			i += ft_strlen(var_name);
-			free(var_name);
-		}
+			len += add_var_len(str, &i, minishell);
 		else
 		{
 			len++;
@@ -74,19 +85,15 @@ static int	substitute_variable(char *result, int *j, char *str,
 	char	*var_name;
 	char	*var_value;
 	int		used;
-	int		need_free_value;
+	int		must_free;
 
 	var_name = get_var_name(str);
-	var_value = get_env_value(var_name, minishell);
-	need_free_value = 0;
-	if (var_name && var_name[0] == '$' && (var_name[1] == '?'
-			|| var_name[1] == '$'))
-		need_free_value = 1;
+	var_value = get_env_value(var_name, minishell, &must_free);
 	if (var_value)
 	{
 		ft_strlcpy(&result[*j], var_value, ft_strlen(var_value) + 1);
 		*j += ft_strlen(var_value);
-		if (need_free_value)
+		if (must_free)
 			free(var_value);
 	}
 	used = ft_strlen(var_name);
