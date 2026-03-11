@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+void	clean_exit(t_minishell *minishell, int exit_code)
+{
+	cleanup_minishell(minishell);
+	return (exit(exit_code));
+}
+
+void	clean_exit_pipeline(t_minishell *minishell, t_pipeline *p, int code)
+{
+	cleanup_minishell(minishell);
+	cleanup_pipeline(p);
+	return (exit(code));
+}
+
 void	free_minishell(t_minishell *minishell)
 {
 	free(minishell->current_dir);

@@ -22,7 +22,7 @@ static void	child_process(t_ast *node, t_minishell *minishell,
 		pipeline->total_cmds, node);
 	close_all_pipes(pipeline->pipes_tab, pipeline->total_pipe);
 	node->exec_token = tokens_to_args(node->exec_lst);
-	exec_node(node, minishell);
+	exec_node(node, minishell, pipeline);
 	exit(minishell->status);
 }
 

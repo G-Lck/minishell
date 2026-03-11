@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	exec_node(t_ast *node, t_minishell *minishell)
+void	exec_node(t_ast *node, t_minishell *mini, t_pipeline *pipeline)
 {
 	char	**args;
 	int		builtin_status;
@@ -20,20 +20,20 @@ void	exec_node(t_ast *node, t_minishell *minishell)
 	args = node->exec_token;
 	if (node->skip == true)
 	{
-		minishell->status = 1;
+		mini->status = 1;
 		return ;
 	}
 	if (!node || !node->exec_token)
 		exit(EXIT_FAILURE);
 	if (!args)
 		exit(EXIT_FAILURE);
-	builtin_status = is_builtin_and_execute(args, minishell);
+	builtin_status = is_builtin_and_execute(args, mini);
 	if (builtin_status != -1)
 	{
-		minishell->status = builtin_status;
-		exit(builtin_status);
+		mini->status = builtin_status;
+		clean_exit_pipeline(mini, pipeline, builtin_status);
 	}
-	exec_in_pipeline(node, minishell);
+	try_execve_pipeline(node, mini, pipeline);
 	return ;
 }
 

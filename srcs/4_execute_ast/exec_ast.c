@@ -23,22 +23,51 @@ static void	try_execve(t_ast *node, t_minishell *minishell)
 	if (status == PERMISSION_DENIED)
 	{
 		ft_fprintf(STDERR_FILENO, "minishell: %s: permission denied\n", arg[0]);
-		exit(126);
+		clean_exit(minishell, 126);
 	}
 	if (status == OK)
 	{
 		if (execve(cmd_path, arg, minishell->envp) == -1)
 		{
 			perror(arg[0]);
-			exit(126);
+			clean_exit(minishell, 126);
 		}
 	}
 	if (execve(arg[0], arg, minishell->envp) == -1)
 	{
 		ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n", arg[0]);
-		exit(127);
+		clean_exit(minishell, 127);
 	}
-	exit(EXIT_FAILURE);
+	clean_exit(minishell, EXIT_FAILURE);
+}
+
+void	try_execve_pipeline(t_ast *node, t_minishell *mini, t_pipeline *p)
+{
+	int		status;
+	char	*cmd_path;
+	char	**arg;
+
+	arg = node->exec_token;
+	cmd_path = find_command(node, &status, mini);
+	if (status == PERMISSION_DENIED)
+	{
+		ft_fprintf(STDERR_FILENO, "minishell: %s: permission denied\n", arg[0]);
+		clean_exit_pipeline(mini, p, 126);
+	}
+	if (status == OK)
+	{
+		if (execve(cmd_path, arg, mini->envp) == -1)
+		{
+			perror(arg[0]);
+			clean_exit_pipeline(mini, p, 126);
+		}
+	}
+	if (execve(arg[0], arg, mini->envp) == -1)
+	{
+		ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n", arg[0]);
+		clean_exit_pipeline(mini, p, 127);
+	}
+	clean_exit_pipeline(mini, p, EXIT_FAILURE);
 }
 
 static void	wait_child(pid_t pid, t_minishell *minishell)
@@ -53,11 +82,6 @@ static void	wait_child(pid_t pid, t_minishell *minishell)
 		minishell->status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 		minishell->status = 128 + WTERMSIG(status);
-}
-
-void	exec_in_pipeline(t_ast *node, t_minishell *minishell)
-{
-	try_execve(node, minishell);
 }
 
 void	exec_no_pipeline(t_ast *node, t_minishell *minishell)

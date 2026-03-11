@@ -27,10 +27,15 @@ static char	*get_current_dir(void)
 	return (cwd);
 }
 
-int	ft_pwd(void)
+int	ft_pwd(char **args)
 {
 	char	*cwd;
 
+	if (args[1])
+	{
+		ft_printf("pwd: too many arguments\n");
+		return (1);
+	}
 	cwd = get_current_dir();
 	if (cwd == NULL)
 	{

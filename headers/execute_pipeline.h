@@ -46,5 +46,6 @@ void		setup_pipe_redirections(int **pipes, int idx,
 
 /* exec_pipeline.c */
 void		exec_pipeline(t_ast *node, t_minishell *minishell);
+void		try_execve_pipeline(t_ast *node, t_minishell *mini, t_pipeline *p);
 
 #endif

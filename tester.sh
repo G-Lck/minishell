@@ -6,7 +6,7 @@ Minishell="./minishell"
 Total_tests=0
 Passed_tests=0
 details=none # output, error, all, or none
-test=al # all for all
+test=all # all for all
 leak=true # true to check for leaks
 TMP_DIR="/tmp/minishell_test_$$"
 mkdir -p "$TMP_DIR"

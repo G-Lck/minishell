@@ -18,5 +18,7 @@ typedef struct s_minishell	t_minishell;
 void	free_tab(char **tab);
 void	cleanup_minishell(t_minishell *minishell);
 void	free_minishell(t_minishell *minishell);
+void	clean_exit(t_minishell *minishell, int exit_code);
+void	clean_exit_pipeline(t_minishell *minishell, t_pipeline *p, int code);
 
 #endif

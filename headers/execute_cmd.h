@@ -18,9 +18,10 @@
 
 typedef struct s_minishell	t_minishell;
 typedef struct s_env		t_env;
+typedef struct s_pipeline	t_pipeline;
 
 //exec_node
-void	exec_node(t_ast *node, t_minishell *minishell);
+void	exec_node(t_ast *node, t_minishell *minishell, t_pipeline *pipeline);
 void	exec_node_no_pipeline(t_ast *node, t_minishell *minishell);
 
 // built_ins
@@ -31,7 +32,7 @@ int		ft_echo(char **args);
 char	*expand_variables(char *str, t_minishell *minishell);
 char	*get_var_name(char *str);
 int		ft_env(t_env *env);
-int		ft_pwd(void);
+int		ft_pwd(char **args);
 int		ft_export(char **args, t_env **env);
 int		ft_unset(char **args, t_env **env);
 int		ft_cd(char **args, t_env **env, t_minishell *minishell);
