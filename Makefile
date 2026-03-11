@@ -42,10 +42,6 @@ SRCS =	./srcs/main.c \
 		./srcs/utils/signals.c \
 		./srcs/utils/token_utils.c
 
-
-
-
-
 OBJS = ${SRCS:.c=.o}
 CC = gcc -Wall -Wextra -Werror
 RM = rm -f
