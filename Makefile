@@ -66,7 +66,6 @@ clean:
 
 fclean: clean
 	${RM} ${NAME}
-	${RM} minishell-theo minishell-garance
 	make fclean -C ./libft
 
 re: fclean all
