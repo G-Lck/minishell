@@ -6,7 +6,7 @@
 /*   By: glucken <glucken@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:00:00 by garance           #+#    #+#             */
-/*   Updated: 2026/03/05 23:06:57 by glucken          ###   ########.fr       */
+/*   Updated: 2026/03/11 22:20:09 by glucken          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	main(int argc, char *argv[], char *envp[])
 	init_minishell(&minishell, envp);
 	if (!fill_env(&minishell.env, envp))
 		return (1);
+	update_shlvl(&minishell.env);
 	g_sig = 0;
 	init_signals();
 	while (1)

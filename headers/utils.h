@@ -26,4 +26,7 @@ char	*find_command(t_ast *node, int *status, t_minishell *minishell);
 int		ft_lstlen(t_list *lst);
 char	**tokens_to_args(t_list *token_list);
 
+// shlvl
+void	update_shlvl(t_env **env);
+
 #endif
