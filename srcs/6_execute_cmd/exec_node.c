@@ -24,9 +24,9 @@ void	exec_node(t_ast *node, t_minishell *mini, t_pipeline *pipeline)
 		return ;
 	}
 	if (!node || !node->exec_token)
-		exit(EXIT_FAILURE);
+		return ;
 	if (!args)
-		exit(EXIT_FAILURE);
+		return ;
 	builtin_status = is_builtin_and_execute(args, mini);
 	if (builtin_status != -1)
 	{
@@ -75,9 +75,9 @@ void	exec_node_no_pipeline(t_ast *node, t_minishell *minishell)
 		return ;
 	}
 	if (!node || !node->exec_token)
-		exit(EXIT_FAILURE);
+		return ;
 	if (!args)
-		exit(EXIT_FAILURE);
+		return ;
 	if (is_builtin(args) == 1)
 	{
 		exec_builtin_redir(node, minishell);

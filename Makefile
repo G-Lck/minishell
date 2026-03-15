@@ -39,6 +39,7 @@ SRCS =	./srcs/main.c \
 		./srcs/6_execute_cmd/exec_node.c \
 		./srcs/7_clean/cleanup_minishell.c \
 		./srcs/utils/command_finder.c \
+		./srcs/utils/shlvl.c \
 		./srcs/utils/signals.c \
 		./srcs/utils/token_utils.c
 
