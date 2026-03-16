@@ -68,6 +68,7 @@ int	create_redirs(char *f, t_token_type type, t_ast *n, t_minishell *m)
 	{
 		if (redir_expand_var(f, n, &new_node, m) == 1)
 			return (1);
+		((t_redir *)new_node->content)->redir_type = type;
 	}
 	if (n->skip == true)
 		ft_printf("ambiguous redirection\n");
