@@ -38,10 +38,12 @@ void	sig_handler(int sig)
 void	init_signals(void)
 {
 	struct sigaction	sig;
+	struct sigaction	sigquit;
 
 	sig.sa_handler = sig_handler;
+	sigquit.sa_handler = SIG_IGN;
 	sigemptyset(&sig.sa_mask);
 	sig.sa_flags = 0;
 	sigaction(SIGINT, &sig, NULL);
-	sigaction(SIGQUIT, &sig, NULL);
+	sigaction(SIGQUIT, &sigquit, NULL);
 }
